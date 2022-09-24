@@ -14,6 +14,17 @@ const initialState = {
     saved: null
 }
 
+export const registerAccount = createAsyncThunk('account/register', async (form, { rejectWithValue }) => {
+
+    const datas = { ...form }
+    try {
+        const response = await axios.post(API_USERS, datas)
+        return response.data
+    } catch (error) {
+        return rejectWithValue(error.response.data.violations)
+    }
+})
+
 
 export const loginAccount = createAsyncThunk('account/loginAccount', async (form) => {
     try {
@@ -39,7 +50,6 @@ export const currentAccount = createAsyncThunk('account/currentAccount', async (
 
 export const updateAccount = createAsyncThunk('account/updateAccount', async (form) => {
 
-    console.log('form', form)
     const datas = { ...form }
     datas.updatedAt = dayjs().format()
 
@@ -50,9 +60,9 @@ export const updateAccount = createAsyncThunk('account/updateAccount', async (fo
                 pending: 'Enregistrement',
                 success: 'Compte modifié',
                 error: 'Erreur'
-            },{
-                toastId: "updateAccount"
-            }
+            }, {
+            toastId: "updateAccount"
+        }
         )
         return response.data
     } catch (error) {
@@ -75,7 +85,7 @@ export const updateAccountMedia = createAsyncThunk('account/updateAccountMedia',
     try {
         const response = await axios.post(API_MEDIAS, formData)
 
-        const update = await axios.put(API_USERS + "/" + userId, { [form.type] : response.data['@id'] })
+        const update = await axios.put(API_USERS + "/" + userId, { [form.type]: response.data['@id'] })
         console.log('update.data', update.data)
 
         return update.data
@@ -148,7 +158,7 @@ const accountSlice = createSlice({
             })
             .addCase(updateAccount.pending, (state, action) => {
                 state.saved = state.account
-                state.account = {...state.account, ...action.meta.arg}
+                state.account = { ...state.account, ...action.meta.arg }
             })
             .addCase(updateAccount.rejected, (state, action) => {
                 state.account = state.saved
@@ -156,6 +166,18 @@ const accountSlice = createSlice({
             .addCase(updateAccountMedia.fulfilled, (state, action) => {
                 state.account = action.payload
             })
+            .addCase(registerAccount.pending, (state) => {
+                state.error = null
+                state.status = 'loading'
+            })
+            .addCase(registerAccount.fulfilled, (state, action) => {
+                state.status = 'idle'
+            })
+            .addCase(registerAccount.rejected, (state, action) => {
+                state.status = 'error'
+                state.error = action.payload
+            })
+
     }
 })
 

@@ -15,7 +15,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use ApiPlatform\Core\Annotation\ApiProperty;
+use Symfony\Component\Validator\Constraints as Assert;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -52,6 +54,27 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 )]
 #[ApiFilter(SearchFilter::class, properties: ['rcc' => 'exact'])]
 
+
+#[UniqueEntity(
+    fields: ['email'],
+    errorPath: 'email',
+    message: "Email déjà présent dans notre base de données.",
+)]
+#[UniqueEntity(
+    fields: ['mobile'],
+    errorPath: 'mobile',
+    message: "Mobile déjà présent dans notre base de données.",
+)]
+#[UniqueEntity(
+    fields: ['rcc'],
+    errorPath: 'rcc',
+    message: "Rcc déjà présent dans notre base de données.",
+)]
+#[UniqueEntity(
+    fields: ['gln'],
+    errorPath: 'gln',
+    message: "GLN déjà présent dans notre base de données.",
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -60,8 +83,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["users:read", "user:write", "partners:read", "mission:read"])]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[ORM\Column(type: 'string', length: 180)]
     #[Groups(["users:read", "user:write","partners:read", "mission:read"])]
+    #[Assert\Email(
+        message: "L'Email {{ value }} n'est pas un Email valide.",
+    )]
     private $email;
 
     #[ORM\Column(type: 'json')]
@@ -72,11 +98,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["users:read", "user:write"])]
     private $password;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(["users:read", "user:write", "missions:read", "mission:read", "partners:read"])]
     private $firstname;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(["users:read", "user:write", "missions:read", "mission:read", "partners:read"])]
     private $lastname;
 
@@ -98,6 +124,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     #[Groups(["users:read", "user:write", "partners:read", "mission:read"])]
+    #[Assert\NotBlank(message: "Le mot de passe est obligatoire")]
     private $mobile;
 
     #[ORM\Column(type: 'datetime')]
@@ -114,11 +141,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["users:read", "user:write"])]
     private $isOptin = false;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
     #[Groups(["users:read", "user:write", "missions:read", "mission:read", "partners:read"])]
     private $rcc = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
     #[Groups(["users:read", "user:write"])]
     private $gln = null;
 

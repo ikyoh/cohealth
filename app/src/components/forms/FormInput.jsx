@@ -1,7 +1,7 @@
 import React from 'react'
 import { Field, ErrorMessage } from 'formik';
 
-const FormInput = ({ label, name, placeholder, type = 'text', required = false, disabled = false, className = null }) => {
+const FormInput = ({ label, name, placeholder, type = 'text', required = false, disabled = false, error = false, className = null }) => {
 
     return (
         <div className={`bg-gray-100 p-2 rounded ${className ? className : ''}`}>
@@ -17,7 +17,8 @@ const FormInput = ({ label, name, placeholder, type = 'text', required = false, 
                     placeholder={placeholder}
                     disabled={disabled} />
             </div>
-            <ErrorMessage name={name} render={msg =>  (console.log('msg', msg),<div className="error">({msg})</div>)} />
+            <ErrorMessage name={name} render={msg =>  <div className="error">({msg})</div>} />
+            {error && <div className="error">{error}</div>}
         </div>
     )
 }

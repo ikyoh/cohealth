@@ -36,28 +36,17 @@ export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
 export const addUser = createAsyncThunk('users/addUser', async (form) => {
 
     const datas = {...form}
-    datas.password = "password"
-    datas.secureKey = "key"
-    datas.isOptin = true
-
     try {
-        const response = await toast.promise(
-            axios.post(API_USERS, datas),
-            {
-                pending: 'Enregistrement',
-                success: 'Utilisateur enregistré',
-                error: 'Erreur'
-            },
-            {
-                toastId: "addUser"
-            }
-        )
+        const response = await axios.post(API_USERS, datas)      
         return response.data
     } catch (error) {
         console.log(error)
         throw error
     }
 })
+
+
+
 
 export const updateUser = createAsyncThunk('users/updateUser', async (form) => {
 
@@ -99,9 +88,6 @@ const usersSlice = createSlice({
                 state.users = []
                 state.status = 'failed'
                 state.error = action.error.message
-            })
-            .addCase(addUser.fulfilled, (state, action) => {
-                state.users.push(action.payload)
             })
             .addCase(updateUser.pending, (state, action) => {
                 console.log('action', action)
