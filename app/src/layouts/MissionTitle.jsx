@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { AiFillPlusCircle } from "react-icons/ai"
 import { MdPendingActions } from "react-icons/md";
 import * as dayjs from 'dayjs'
+import { calcNumberOfDays } from '../utils/functions';
 
 const MissionTitle = ({ mission = false, patient = false, children }) => {
 
@@ -27,7 +28,7 @@ const MissionTitle = ({ mission = false, patient = false, children }) => {
                         " au " + dayjs(mission.endAt).format('DD/MM/YYYY')
                     }
                     {mission.beginAt && mission.endAt ?
-                        " (" + dayjs(mission.endAt).diff(mission.beginAt, 'days') + " jours)"
+                        " (" + calcNumberOfDays(mission.beginAt, mission.endAt) + " jours)"
                         : null
                     }
                 </div>

@@ -1,3 +1,4 @@
+-include ./.env
 COMPOSER ?= composer
 DOCKER_COMPOSE = docker-compose
 PROJECT = "Monitoring App."
@@ -17,6 +18,9 @@ clear: cc
 	@echo "\n==> Cleaning project and starting up fresh"
 	rm -rf vendor/* var/logs/* var/log/* bin/php* coverage/
 
+symfony-serve:
+	@echo "\n==> Symfony start dev server ..."
+	docker exec ${APP_NAME}-api symfony serve -d
 
 
-.PHONY: composer-install cc clear
+.PHONY: composer-install cc symfony-serve

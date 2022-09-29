@@ -9,6 +9,8 @@ import * as dayjs from 'dayjs'
 import { nanoid } from "@reduxjs/toolkit";
 import { services_family } from '../utils/arrays'
 import FormTextarea from '../components/forms/FormTextarea'
+import { calcNumberOfDays, calcNumberOfWeeks, calcNumberOfMonths } from '../utils/functions'
+
 
 import FormDatePicker from '../components/forms/FormDatePicker'
 
@@ -79,27 +81,6 @@ const OpasForm = ({ event = false, beginAt = false, mission = false, endAt = fal
         setCurrentStep((prev) => prev - 1)
     }
 
-    const calcNumberofDays = () => {
-        const date1 = dayjs(beginAt)
-        const date2 = dayjs(endAt)
-        console.log('jours', date2.diff(date1, 'days'))
-        return (date2.diff(date1, 'days'))
-    }
-
-    const calcNumberWeeks = () => {
-        const date1 = dayjs(beginAt).week();
-        const date2 = dayjs(endAt).week();
-        console.log('semaines', date2 - date1 + 1)
-        return (date2 - date1 + 1)
-    }
-
-    const calcNumberMonths = () => {
-        const date1 = dayjs(beginAt).month()
-        const date2 = dayjs(endAt).month()
-        console.log('mois', date2 - date1 + 1)
-        return (date2 - date1 + 1)
-    }
-
 
     const Times = () => {
 
@@ -112,14 +93,14 @@ const OpasForm = ({ event = false, beginAt = false, mission = false, endAt = fal
 
             let total = filteredServices.reduce((acc, curr) => {
 
-                if (curr.periodicity === "par période")
+                if (curr.periodicity === "pér.")
                     return Number(curr.time) * Number(curr.frequency) + acc
-                if (curr.periodicity === "par jour")
-                    return Number(curr.time) * Number(curr.frequency) * calcNumberofDays() + acc
-                if (curr.periodicity === "par semaine")
-                    return Number(curr.time) * Number(curr.frequency) * calcNumberWeeks() + acc
-                if (curr.periodicity === "par mois")
-                    return Number(curr.time) * Number(curr.frequency) * calcNumberMonths() + acc
+                if (curr.periodicity === "jour")
+                    return Number(curr.time) * Number(curr.frequency) * calcNumberOfDays(beginAt, endAt) + acc
+                if (curr.periodicity === "semaine")
+                    return Number(curr.time) * Number(curr.frequency) * calcNumberOfWeeks(beginAt, endAt) + acc
+                if (curr.periodicity === "mois")
+                    return Number(curr.time) * Number(curr.frequency) * calcNumberOfMonths(beginAt, endAt) + acc
 
             }, 0)
 
@@ -189,7 +170,7 @@ const OpasForm = ({ event = false, beginAt = false, mission = false, endAt = fal
                             " au " + dayjs(formikProps.values.content.endAt).format('dddd D MMMM')
                         }
                         {formikProps.values.content.endAt &&
-                            " (" + dayjs(formikProps.values.content.endAt).diff(dayjs(formikProps.values.content.beginAt), 'days') + " jours)"
+                            " (" + calcNumberOfDays(formikProps.values.content.beginAt, formikProps.values.content.endAt) + " jours)"
                         }
                     </div>
                 </div>
@@ -316,7 +297,7 @@ const OpasForm = ({ event = false, beginAt = false, mission = false, endAt = fal
 
             const handleAddService = (event) => {
                 let services = [...formikProps.values.content.services]
-                services.unshift({ ...event, name: nanoid(), frequency: 1, periodicity: "par période" })
+                services.unshift({ ...event, name: nanoid(), frequency: 1, periodicity: "pér." })
                 formikProps.setFieldValue("content.services", services)
             }
 
@@ -443,10 +424,10 @@ const OpasForm = ({ event = false, beginAt = false, mission = false, endAt = fal
                                                                                                 name={`content.services.${index}.periodicity`}
                                                                                                 className="border px-2 py-1 rounded-sm"
                                                                                             >
-                                                                                                <option value="par période">par période</option>
-                                                                                                <option value="par jour">par jour</option>
-                                                                                                <option value="par semaine">par semaine</option>
-                                                                                                <option value="par mois">par mois</option>
+                                                                                                <option value="pér.">par période</option>
+                                                                                                <option value="jour">par jour</option>
+                                                                                                <option value="semaine">par semaine</option>
+                                                                                                <option value="mois">par mois</option>
                                                                                             </Field>
                                                                                         </div>
                                                                                     </div>

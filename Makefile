@@ -1,8 +1,5 @@
 -include api/Makefile
 DOCKER_COMPOSE = docker-compose
-# PROJECT = "Monitoring App"
-# COMPOSE_PROJECT_NAME ?= $(notdir $(shell pwd))
-
 
 help:
 	@ echo "Usage: make <target>\n"
@@ -17,21 +14,28 @@ down:
 	@echo "\n==> Remove docker container"
 	$(DOCKER_COMPOSE) down
 
-container-remove:
+remove:
 	@echo "\n==> Remove docker container(s)"
 	$(DOCKER_COMPOSE) rm
 
-up:
-	@echo "\n==> Docker container building and starting ..."
-	$(DOCKER_COMPOSE) up --build -d
+docker-dev:
+	@echo "\n==> Docker compose development environment ..."
+	$(DOCKER_COMPOSE) -f docker-compose.dev.yml up -d --build --remove-orphans
 
-container-str: container-stop container-down container-remove
+docker-prod:
+	@echo "\n==> Docker compose production environment ..."
+	$(DOCKER_COMPOSE) up -d --build --remove-orphans
+
+dev : docker-dev symfony-serve
+	@echo "\n==> Run development environment ..."
+
+prod : docker-prod
+	@echo "\n==> Run development environment ..."
 
 caddy-reload:
-	@echo "\n==> Reload Caddy Server ..."
+	@echo "\n==> Reload Caddy Server ...""
 	$(DOCKER_COMPOSE) exec -w /etc/caddy caddy caddy reload
 	
-# all: clear up composer-install lint-composer lint-php lint-json lint-yaml lint-eol phpcs
 
-# .PHONY: help all container-down container-remove container-stop up
-.PHONY: help down container-remove stop up caddy-reload
+.PHONY: help dev prod down remove stop caddy-reload
+

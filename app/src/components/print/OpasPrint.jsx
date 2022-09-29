@@ -1,26 +1,10 @@
 import React from 'react'
-import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Image, Font } from '@react-pdf/renderer'
-import Din from '../../assets/Din/D-DIN.ttf'
-import DinBold from '../../assets/Din/D-DIN-Bold.ttf'
-import DinCondensed from '../../assets/Din/D-DINCondensed.ttf'
+import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Image } from '@react-pdf/renderer'
 import { AiOutlineDownload } from 'react-icons/ai'
 import * as dayjs from 'dayjs'
 import { nanoid } from '@reduxjs/toolkit'
+import { calcNumberOfDays, calcNumberOfWeeks, calcNumberOfMonths } from '../../utils/functions'
 import { API_URL } from '../../features/apiConfig'
-
-
-// Font.register({
-//     family: 'Din', fonts: [
-//         { src: Din },
-//         { src: DinBold, fontWeight: 'bold' },
-
-//     ]
-// })
-// Font.register({
-//     family: 'DinCondensed', fonts: [
-//         { src: DinCondensed }
-//     ]
-// })
 
 const dpi = 72
 
@@ -48,13 +32,13 @@ const styles = StyleSheet.create({
     },
     text: {
 
-        fontSize: '10px',
+        fontSize: '9px',
         lineHeight: 1.4
     },
     textBold: {
 
         fontWeight: 'bold',
-        fontSize: '10px',
+        fontSize: '9px',
         lineHeight: 1.4
     },
     mainTitle: {
@@ -105,19 +89,18 @@ const styles = StyleSheet.create({
         borderRight: '1px solid black',
     },
     careTitle: {
-        padding: '4 10',
+        padding: '4 4',
         borderBottom: '1px solid black',
         flexDirection: 'row',
 
         fontWeight: 'bold',
-        fontSize: '10px',
+        fontSize: '9px',
     },
     care: {
-        padding: '4 10',
         borderBottom: '1px solid black',
         flexDirection: 'row',
         //fontFamily: 'DinCondensed',
-        fontSize: '10px',
+        fontSize: '9px',
     },
     pagination: {
         position: 'absolute',
@@ -126,11 +109,11 @@ const styles = StyleSheet.create({
     paginationText: {
         width: '100%',
 
-        fontSize: '10px',
+        fontSize: '9px',
         textAlign: 'center',
     },
     userSignature: {
-        marginTop: "10px",
+        marginTop: "9px",
         objectFit: "contain",
         maxWidth: "230px",
         maxHeight: "95px",
@@ -268,6 +251,17 @@ const MyDoc = ({ datas, mission, patient }) => {
     }
 
 
+    const calcTotalServiceTime = (service) => {
+        if (service.periodicity === "pér.")
+            return Number(service.time) * Number(service.frequency)
+        if (service.periodicity === "jour")
+            return Number(service.time) * Number(service.frequency) * calcNumberOfDays(datas.content.beginAt, datas.content.endAt)
+        if (service.periodicity === "semaine")
+            return Number(service.time) * Number(service.frequency) * calcNumberOfWeeks(datas.content.beginAt, datas.content.endAt)
+        if (service.periodicity === "mois")
+            return Number(service.time) * Number(service.frequency) * calcNumberOfMonths(datas.content.beginAt, datas.content.endAt)
+    }
+
 
     let patientInfos = ''
 
@@ -329,7 +323,7 @@ const MyDoc = ({ datas, mission, patient }) => {
 
                 <View style={styles.pagination} fixed>
                     <Text style={styles.paginationText} render={({ pageNumber, totalPages }) => (
-                        `${pageNumber} / ${totalPages}`
+                        `Page ${pageNumber} / ${totalPages}`
                     )} />
                 </View >
 
@@ -376,7 +370,8 @@ const MyDoc = ({ datas, mission, patient }) => {
                                     {datas.content.type}
                                     {"\n"}
                                     Période : {dayjs(datas.content.beginAt).format('L')} au {dayjs(datas.content.endAt).format('L') + ' '}
-                                    ({dayjs(datas.content.endAt).diff(datas.content.beginAt, 'days')} jours)
+
+                                    ({calcNumberOfDays(datas.content.beginAt,datas.content.endAt)} jours)
                                 </Text>
                             </View>
                             <View style={{ flex: 1, flexShrink: 1, flexGrow: 1, flexBasis: 0 }}>
@@ -412,7 +407,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                             <Text style={styles.title}>
                                 Soins infirmiers
                             </Text>
-                            <Text style={{ fontSize: '10px' }}>
+                            <Text style={{ fontSize: '9px' }}>
 
                             </Text>
                         </View>
@@ -420,10 +415,10 @@ const MyDoc = ({ datas, mission, patient }) => {
                         <View style={styles.caresContainer}>
                             {displayedCares().map((displayedCare) =>
                                 <View style={styles.care} key={nanoid()}>
-                                    <Text style={{ width: 80 }}>
+                                    <Text style={{ width: 70, padding: 5 }}>
                                         {displayedCare.act}
                                     </Text>
-                                    <Text style={{ width: "100%" }}>
+                                    <Text style={{ width: "100%", padding: 5 }}>
                                         {displayedCare.description}
                                     </Text>
                                 </View>
@@ -545,7 +540,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                             <Text style={styles.title}>
                                 Soins infirmiers
                             </Text>
-                            <Text style={{ fontSize: '10px' }}>
+                            <Text style={{ fontSize: '9px' }}>
                                 Description détaillée de la prestation (selon article 7, al. 2 OPAS)
                             </Text>
                         </View>
@@ -568,24 +563,30 @@ const MyDoc = ({ datas, mission, patient }) => {
                             </View>
                         </View>
 
-                        <View style={{ marginTop: '10px' }}>
+                        <View style={{ marginTop: '9px' }}>
                             <View style={{
-                                padding: '0 10',
+                                padding: '0 0',
                                 flexDirection: 'row',
                                 //fontFamily: 'DinCondensed',
                                 fontSize: '9px',
                             }}>
-                                <Text style={{ width: 120 }}>
-                                    OPAS
+                                <Text style={{ width: 100, paddingLeft: 5 }}>
+                                    OPAS *
                                 </Text>
-                                <Text style={{ width: 80 }}>
+                                <Text style={{ width: 90, paddingLeft: 5, textAlign: 'center' }}>
                                     Code *
                                 </Text>
-                                <Text style={{ width: '100%', paddingRight: 15 }}>
+                                <Text style={{ width: '100%', paddingLeft: 5, paddingRight: 15 }}>
                                     Prestation
                                 </Text>
-                                <Text style={{ width: 140 }}>
+                                <Text style={{ width: 100, textAlign: 'center' }}>
+                                    Durée
+                                </Text>
+                                <Text style={{ width: 140, textAlign: 'center' }}>
                                     Fréquence
+                                </Text>
+                                <Text style={{ width: 120, textAlign: 'center' }}>
+                                    Durée totale
                                 </Text>
                             </View>
                         </View>
@@ -594,22 +595,28 @@ const MyDoc = ({ datas, mission, patient }) => {
                             <View style={styles.caresContainer}>
                                 <View>
                                     <Text style={styles.careTitle}>
-                                        A / Evaluation, Conseil
+                                        A / Evaluation et conseils
                                     </Text>
                                 </View>
                                 {groupedServices("A").map((s) =>
                                     <View style={styles.care} key={nanoid()}>
-                                        <Text style={{ width: 120 }}>
+                                        <Text style={{ width: 100, paddingLeft: 5, paddingTop: 5, paddingBottom: 5 }}>
                                             {s.opas}
                                         </Text>
-                                        <Text style={{ width: 80 }}>
+                                        <Text style={{ width: 90, paddingLeft: 5, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black', textAlign: 'center' }}>
                                             {s.act}
                                         </Text>
-                                        <Text style={{ width: '100%', paddingRight: 15 }}>
+                                        <Text style={{ width: '100%', paddingLeft: 5, paddingRight: 15, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black' }}>
                                             {s.title}
                                         </Text>
-                                        <Text style={{ width: 140 }}>
-                                            {s.frequency} fois {s.periodicity}
+                                        <Text style={{ width: 100, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
+                                            {s.time}
+                                        </Text>
+                                        <Text style={{ width: 140, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
+                                            {s.frequency}x / {s.periodicity === "par période" ? 'pér.' : s.periodicity}
+                                        </Text>
+                                        <Text style={{ width: 120, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
+                                            {calcTotalServiceTime(s)}
                                         </Text>
                                     </View>
                                 )}
@@ -624,17 +631,23 @@ const MyDoc = ({ datas, mission, patient }) => {
                                 </View>
                                 {groupedServices("B").map((s) =>
                                     <View style={styles.care} key={nanoid()}>
-                                        <Text style={{ width: 120 }}>
+                                        <Text style={{ width: 100, paddingLeft: 5, paddingTop: 5, paddingBottom: 5 }}>
                                             {s.opas}
                                         </Text>
-                                        <Text style={{ width: 80 }}>
+                                        <Text style={{ width: 90, paddingLeft: 5, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black', textAlign: 'center' }}>
                                             {s.act}
                                         </Text>
-                                        <Text style={{ width: '100%', paddingRight: 15 }}>
+                                        <Text style={{ width: '100%', paddingLeft: 5, paddingRight: 15, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black' }}>
                                             {s.title}
                                         </Text>
-                                        <Text style={{ width: 140 }}>
-                                            {s.frequency} fois {s.periodicity}
+                                        <Text style={{ width: 100, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
+                                            {s.time}
+                                        </Text>
+                                        <Text style={{ width: 140, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
+                                            {s.frequency}x / {s.periodicity === "par période" ? 'pér.' : s.periodicity}
+                                        </Text>
+                                        <Text style={{ width: 120, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
+                                            {calcTotalServiceTime(s)}
                                         </Text>
                                     </View>
                                 )}
@@ -649,17 +662,23 @@ const MyDoc = ({ datas, mission, patient }) => {
                                 </View>
                                 {groupedServices("C").map((s) =>
                                     <View style={styles.care} key={nanoid()}>
-                                        <Text style={{ width: 120 }}>
+                                        <Text style={{ width: 100, paddingLeft: 5, paddingTop: 5, paddingBottom: 5 }}>
                                             {s.opas}
                                         </Text>
-                                        <Text style={{ width: 80 }}>
+                                        <Text style={{ width: 90, paddingLeft: 5, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black', textAlign: 'center' }}>
                                             {s.act}
                                         </Text>
-                                        <Text style={{ width: '100%', paddingRight: 15 }}>
+                                        <Text style={{ width: '100%', paddingLeft: 5, paddingRight: 15, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black' }}>
                                             {s.title}
                                         </Text>
-                                        <Text style={{ width: 140 }}>
-                                            {s.frequency} fois {s.periodicity}
+                                        <Text style={{ width: 100, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
+                                            {s.time}
+                                        </Text>
+                                        <Text style={{ width: 140, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
+                                            {s.frequency}x / {s.periodicity === "par période" ? 'pér.' : s.periodicity}
+                                        </Text>
+                                        <Text style={{ width: 120, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
+                                            {calcTotalServiceTime(s)}
                                         </Text>
                                     </View>
                                 )}
@@ -693,7 +712,10 @@ const MyDoc = ({ datas, mission, patient }) => {
                 <View style={styles.row}>
                     <View style={styles.column}>
                         <Text style={{ fontSize: '8px', lineHeight: 1.4 }}>
-                            Code* : Selon le catalogue des actes de l'ASSASD (novembre 2015)
+                            OPAS * : Prestation selon OPAS article 7 alinéa 2
+                        </Text>
+                        <Text style={{ fontSize: '8px', lineHeight: 1.4 }}>
+                            Code * : Selon le catalogue des actes de l'ASSASD (novembre 2015)
                         </Text>
                     </View>
                 </View>
@@ -701,7 +723,7 @@ const MyDoc = ({ datas, mission, patient }) => {
 
                 <View style={styles.pagination} fixed>
                     <Text style={styles.paginationText} render={({ pageNumber, totalPages }) => (
-                        `${pageNumber} / ${totalPages}`
+                        `Page ${pageNumber} / ${totalPages}`
                     )} />
                 </View>
 
@@ -713,11 +735,6 @@ const MyDoc = ({ datas, mission, patient }) => {
 }
 
 const OpasPrint = ({ datas, mission, patient, }) => {
-
-    // console.log('datas', datas)
-    // console.log('mission', mission)
-    // console.log('patient', patient)
-    // console.log('mission.user.signature.contentUrl', mission.user.signature.contentUrl)
 
     const fileName = "Opas_" + patient.lastname.toUpperCase() + '_' + patient.firstname.toUpperCase() + '_' + dayjs().format('DD-MM-YYYY')
 
