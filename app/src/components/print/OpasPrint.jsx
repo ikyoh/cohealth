@@ -295,7 +295,8 @@ const MyDoc = ({ datas, mission, patient }) => {
     assurance += "\n"
     assurance += 'Catégorie : ' + mission.assurance.type
 
-    let doctor = mission.doctor.fullname + "\n" + '(RCC : ' + mission.doctor.rcc + ')'
+    let doctor = ''
+    doctor += mission.doctor.fullname + "\n" + '(RCC : ' + mission.doctor.rcc + ')'
     doctor += "\n"
     if (mission.doctor.address1)
         doctor += mission.doctor.address1 + ', '
@@ -308,7 +309,8 @@ const MyDoc = ({ datas, mission, patient }) => {
     if (mission.doctor.phone)
         doctor += 'Tél. : ' + mission.doctor.phone
 
-    let nurse = mission.user.lastname.toUpperCase() + ' ' + mission.user.firstname + "\n" + '(RCC : ' + mission.user.rcc + ')'
+    let nurse = ''
+    nurse += mission.user.lastname.toUpperCase() + ' ' + mission.user.firstname + "\n" + '(RCC : ' + mission.user.rcc + ')'
     nurse += "\n"
     nurse += 'Tél. : ' + mission.user.mobile
     nurse += "\n"

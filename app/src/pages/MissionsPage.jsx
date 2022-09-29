@@ -27,6 +27,7 @@ const MissionsPage = () => {
     useEffect(() => {
         if (newMissionID)
             navigate("/missions/" + newMissionID, { state: { mission: {} } })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newMissionID])
 
 
@@ -47,7 +48,7 @@ const MissionsPage = () => {
                 return (
                     <div className='px-3 py-1 rounded-full bg-error text-white'>OPAS</div>
                 )
-            else 
+            else
                 return (
                     <div className={"px-3 py-1 rounded-full text-white bg-" + opasStatus[opas[0].status]}>OPAS</div> || null
                 )
@@ -66,7 +67,7 @@ const MissionsPage = () => {
                     <div className='px-3 py-1 rounded-full bg-success text-white'>En attente</div>
                 )
 
-         
+
             return (
                 null
                 // <div className='px-3 py-1 rounded-full bg-success text-white'>En cours</div>

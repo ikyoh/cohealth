@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, useLocation } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from "react-redux"
 import { fetchPatient, selectAllPatients } from "../features/patients/patientsSlice"
 import Layout from '../layouts/Layout'
@@ -23,6 +23,7 @@ const PatientPage = () => {
 
         useEffect(() => {
             dispatch(fetchPatient(id)).then(response => setPatient(response.payload))
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
 
         useEffect(() => {
@@ -30,6 +31,7 @@ const PatientPage = () => {
                 const index = patients.findIndex(obj => (obj.id === Number(id)))
                 setPatient(patients[index])
             }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [patients])
 
         const PatientInfos = () => {

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import AssurancesContainer from '../../features/assurances/AssurancesContainer'
 import SearchFilter from '../SearchFilter'
-import { AiFillPlusCircle } from "react-icons/ai"
 import { ErrorMessage } from 'formik'
 
 const FormSelectAssuranceIRI = ({ name = false, setField, value }) => {

@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "axios"
-import { URL, API_URL, API_MISSIONS, API_PATIENTS, API_PRESCRIPTIONS, API_MEDIAS, API_DOCTORS, API_ASSURANCES } from "../apiConfig"
+import { URL, API_MISSIONS, API_PATIENTS, API_PRESCRIPTIONS, API_MEDIAS, API_DOCTORS, API_ASSURANCES } from "../apiConfig"
 import { toast } from 'react-toastify'
 import * as dayjs from 'dayjs'
 
 import { addDoctorState } from "../doctors/doctorsSlice"
 import { addAssuranceState } from "../assurances/assurancesSlice"
-import { addPatient, updatePatient } from "../patients/patientsSlice"
+import { addPatient } from "../patients/patientsSlice"
 
 
 

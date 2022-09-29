@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from "react-redux";
 import { Formik, Form, useFormikContext } from 'formik'
-import * as Yup from 'yup'
 import FormInput from '../components/forms/FormInput'
 import axios from 'axios'
 import { API_USERS } from '../features/apiConfig'

@@ -14,9 +14,9 @@ const PartnersPage = () => {
     const PageContent = ({ handleOpenModal, handleCloseModal }) => {
 
         const [search, setSearch] = useState('')
-        const [filters, setFilters] = useState({
+        const filters = {
             isActive: true
-        })
+        }
         const [sort, setSort] = useState({ by: 'lastname', direction: 'desc' })
 
         const Row = ({ item }) => {

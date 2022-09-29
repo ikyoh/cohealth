@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import PartnersContainer from '../../features/partners/PartnersContainer'
 import SearchFilter from '../SearchFilter'
-import { AiFillPlusCircle } from "react-icons/ai"
 
 
 const FormSelectPartnerIRI = ({ name = false, setField, setAction, value }) => {

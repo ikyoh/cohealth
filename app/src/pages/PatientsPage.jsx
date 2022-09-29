@@ -11,7 +11,7 @@ import PatientsContainer from '../features/patients/PatientsContainer';
 import SearchFilter from '../components/SearchFilter';
 import ThTable from '../components/table/ThTable';
 import PageTitle from '../layouts/PageTitle';
-import { API_PATIENTS } from '../features/apiConfig'
+
 
 const PatientsPage = () => {
 
@@ -22,6 +22,7 @@ const PatientsPage = () => {
     useEffect(() => {
         if (newPatientID)
         navigate("/patients/" + newPatientID, { state: { patient: {} } })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newPatientID])
 
     const PageContent = ({ handleOpenModal, handleCloseModal }) => {

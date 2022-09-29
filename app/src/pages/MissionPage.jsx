@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { useParams   } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from "react-redux"
-import { fetchMission, selectAllMissions, setMissionsStatusIddle } from "../features/missions/missionsSlice"
+import { fetchMission, selectAllMissions } from "../features/missions/missionsSlice"
 import { fetchPrescription, selectAllPrescriptions, updatePrescriptionStatus } from '../features/prescriptions/prescriptionsSlice'
 import { fetchPatient, selectAllPatients } from '../features/patients/patientsSlice'
 import Layout from '../layouts/Layout'
@@ -25,7 +25,6 @@ import { opasStatus } from '../utils/arrays'
 import axios from 'axios'
 import { URL } from '../features/apiConfig'
 import FileDownload from 'js-file-download'
-
 
 
 
@@ -58,6 +57,7 @@ const MissionPage = () => {
         useEffect(() => {
             dispatch(fetchMission(id))
                 .then(response => setMission(response.payload))
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
 
         console.log('mission', mission)
@@ -80,7 +80,7 @@ const MissionPage = () => {
                             .then(response => { setPrescriptions([...prescriptions, response.payload]) }))
                 }
             }
-
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [mission])
 
         useEffect(() => {
@@ -88,6 +88,7 @@ const MissionPage = () => {
                 const index = missionsState.findIndex(obj => (obj.id === Number(id)))
                 setMission(missionsState[index])
             }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [missionsState])
 
         useEffect(() => {
@@ -95,6 +96,7 @@ const MissionPage = () => {
                 const index = patientsState.findIndex(obj => (Number(obj.id) === Number(mission.patient.id)))
                 setPatient(patientsState[index])
             }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [patientsState])
 
         useEffect(() => {
@@ -102,12 +104,14 @@ const MissionPage = () => {
                 const fPrescriptions = prescriptionsState.filter(f => (Number(mission.id) === Number(mission.id)))
                 setPrescriptions(fPrescriptions)
             }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [prescriptionsState])
 
         useEffect(() => {
             if (prescriptions.length > 0) {
                 setOpas(prescriptions.find(item => item.type === "opas"))
             }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [prescriptions])
 
 
@@ -359,10 +363,10 @@ const MissionPage = () => {
                     url: URL + '/api' + url,
                     method: 'GET',
                     responseType: 'blob', // Important
-                  }).then((response) => {
-                      FileDownload(response.data, name);
-                  });
-              };
+                }).then((response) => {
+                    FileDownload(response.data, name);
+                });
+            };
 
 
             return (
@@ -504,9 +508,9 @@ const MissionPage = () => {
                                 <td>{dayjs(d.createdAt).format('DD/MM/YYYY')}</td>
                                 <td>{d.comment}</td>
                                 <td className='float-right'>
-                                <div onClick={()=>downloadFile(d.contentUrl, d.filePath)}>
-                                    <AiOutlineDownload size={30} />
-                                </div>
+                                    <div onClick={() => downloadFile(d.contentUrl, d.filePath)}>
+                                        <AiOutlineDownload size={30} />
+                                    </div>
                                 </td>
                             </tr>
                         )}

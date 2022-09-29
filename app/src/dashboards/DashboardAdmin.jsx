@@ -1,14 +1,7 @@
-import React, { useState } from 'react'
+import React, { } from 'react'
 import UsersContainer from '../features/users/UsersContainer'
 
 const DashboardAdmin = () => {
-
-  const [search, setSearch] = useState('')
-  const [filters, setFilters] = useState({
-    roles: null,
-    isActive: true
-  })
-  const [sort, setSort] = useState({ by: 'id', direction: 'asc' })
 
 
   const Row = () => {
@@ -18,9 +11,6 @@ const DashboardAdmin = () => {
   return (
     <>
       <div>DashboardAdmin</div>
-      <UsersContainer search={search} sort={sort} filters={filters}>
-        <Row />
-      </UsersContainer>
     </>
   )
 }

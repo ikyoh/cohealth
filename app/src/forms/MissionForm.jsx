@@ -1,15 +1,11 @@
 import React, { useState } from 'react'
 import { useDispatch } from "react-redux"
-import { addMission, updateMission } from "../features/missions/missionsSlice"
+import { addMission } from "../features/missions/missionsSlice"
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import FormSelectPatientIRI from '../components/forms/FormSelectPatientIRI'
-import FormSelectDoctorIRI from '../components/forms/FormSelectDoctorIRI'
-import FormSelectAssuranceIRI from '../components/forms/FormSelectAssuranceIRI'
 import FormTextarea from '../components/forms/FormTextarea'
 import PatientFields from '../forms/PatientFields'
-import { AiFillPlusCircle } from "react-icons/ai"
-import { IoSearchCircle, IoAddCircle } from "react-icons/io5"
 import FormDatePicker from '../components/forms/FormDatePicker'
 import dayjs from 'dayjs'
 import _ from 'lodash'

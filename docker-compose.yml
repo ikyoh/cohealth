@@ -10,7 +10,7 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      DOMAIN_NAME: ${DOMAIN_NAME:-myapp.local}
+      DOMAIN_NAME: ${DOMAIN_NAME}
       APP_UPSTREAM: app:3000
     volumes:
       - ./api:/srv/api
@@ -26,7 +26,7 @@ services:
     container_name: ${APP_NAME}-app
     build:
       context: ./app
-      target: app_prod
+      target: app_dev
     stdin_open: true
     volumes:
       - ./app:/app
@@ -34,7 +34,7 @@ services:
     restart: on-failure
     environment:
       - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_URL=${APP_URL}
+      - REACT_APP_URL=${DOMAIN_NAME}
       - REACT_APP_API=/api
     ports:
       - "3000:3000"

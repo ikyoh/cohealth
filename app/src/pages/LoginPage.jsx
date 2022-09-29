@@ -4,7 +4,6 @@ import { NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux"
 import { getAccountStatus, currentAccount } from "../features/account/accountSlice"
 import { getAuthenticationStatus, setupToken } from "../features/authentication/authenticationSlice"
-import ReactLogo from '../assets/logo-horizontal.svg'
 import LoginFrom from '../forms/LoginForm'
 import FrontLayout from '../layouts/FrontLayout'
 
@@ -14,23 +13,25 @@ const LoginPage = () => {
 
     const PageContent = () => {
 
-    const dispatch = useDispatch()
-    const authenticationStatus = useSelector(getAuthenticationStatus)
-    const accountStatus = useSelector(getAccountStatus)
+        const dispatch = useDispatch()
+        const authenticationStatus = useSelector(getAuthenticationStatus)
+        const accountStatus = useSelector(getAccountStatus)
 
-    useEffect(() => {
-        dispatch(setupToken())
-    }, [])
+        useEffect(() => {
+            dispatch(setupToken())
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
 
-    useEffect(() => {
-        if (authenticationStatus === "succeeded")
-            dispatch(currentAccount())
-    }, [authenticationStatus, authenticationStatus])
+        useEffect(() => {
+            if (authenticationStatus === "succeeded")
+                dispatch(currentAccount())
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [authenticationStatus, authenticationStatus])
 
-    if (accountStatus === "succeeded") return (
-        <Navigate to="/dashboard" />
-    )
-    else return (
+        if (accountStatus === "succeeded") return (
+            <Navigate to="/dashboard" />
+        )
+        else return (
             <div className="container w-96 p-5">
                 <div className='border rounded bg-white p-5'>
                     <div className='flex justify-center my-5 text-xl'>
@@ -49,8 +50,9 @@ const LoginPage = () => {
                 </div>
             </div>
 
- 
-    )}
+
+        )
+    }
 
     return (
         <FrontLayout>

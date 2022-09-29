@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { API_AUTHENTICATION, API_CURRENT_USER, API_USERS, API_MEDIAS, API_URL } from "../apiConfig";
+import { API_AUTHENTICATION, API_CURRENT_USER, API_USERS, API_MEDIAS } from "../apiConfig";
 import dayjs from "dayjs";
 import { toast } from 'react-toastify';
 

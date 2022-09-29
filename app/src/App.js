@@ -38,8 +38,6 @@ const App = () => {
 
   const authenticationStatus = useSelector(getAuthenticationStatus)
 
-  console.log('authenticationStatus', authenticationStatus)
-
   dispatch(setupToken())
 
   useEffect(() => {
