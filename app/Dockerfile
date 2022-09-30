@@ -1,35 +1,22 @@
-FROM node:18-alpine as app_common
+FROM node:18-alpine
 
 ARG REACT_APP_URL
 ENV REACT_APP_URL=$REACT_APP_URL
 
+ARG REACT_APP_API
+ENV REACT_APP_API=$REACT_APP_API
+
+RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
-COPY ./package.json ./
+COPY ./package.json /app/
+COPY ./package-lock.json /app/
 RUN npm i --force
 
 COPY . /app
 
-EXPOSE 3000
-
-FROM app_common AS app_dev
-
-ARG REACT_APP_API
-ENV REACT_APP_API=$REACT_APP_API
-
 CMD ["npm", "run", "start"]
-
-
-FROM app_common AS app_prod
-
-ARG REACT_APP_API
-ENV REACT_APP_API=$REACT_APP_API
-
-ENV NODE_ENV production
-
-RUN npm run build --force
-
-
+EXPOSE 3000
 
 
 

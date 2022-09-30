@@ -22,7 +22,11 @@
         )
         || path('/favicon.ico', '/manifest.json', '/robots.txt', '/_next*', '/sitemap*')`
 
-    reverse_proxy @app app:3000
+    handle @app {
+        root * /srv/app
+        encode gzip zstd
+        file_server
+    }
 
     # API
     root * /srv/api/public

@@ -14,30 +14,13 @@ services:
       APP_UPSTREAM: app:3000
     volumes:
       - ./api:/srv/api
-      - ./app:/srv/app
+      - ./app/build:/srv/app
       - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      - app
       - api
 
-  app:
-    container_name: ${APP_NAME}-app
-    build:
-      context: ./app
-      target: app_dev
-    stdin_open: true
-    volumes:
-      - ./app:/app
-      - /app/node_modules
-    restart: on-failure
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_URL=${DOMAIN_NAME}
-      - REACT_APP_API=/api
-    ports:
-      - "3000:3000"
 
   api:
     container_name: ${APP_NAME}-api

@@ -7,7 +7,6 @@ services:
     container_name: ${APP_NAME}-app
     build:
       context: ./app
-      target: app_dev
     stdin_open: true
     volumes:
       - ./app:/app
