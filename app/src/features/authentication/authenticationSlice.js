@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { API_AUTHENTICATION } from "../apiConfig";
+import { API_AUTHENTICATION, URL } from "../apiConfig";
 import { toast } from 'react-toastify';
 import jwt_decode from "jwt-decode";
 
@@ -14,6 +14,7 @@ const initialState = {
 
 export const login = createAsyncThunk('authentication/login', async (form) => {
     console.log('API_AUTHENTICATION', API_AUTHENTICATION)
+    console.log('URL', URL)
     try {
         const response = await await toast.promise(
             axios.post(API_AUTHENTICATION, form),
@@ -53,7 +54,6 @@ const authenticationSlice = createSlice({
                 const token = window.localStorage.getItem("cohealthToken")
                 // Token encore valide ?
                 if (token) {
-                    console.log('setup Token', token)
                     if (token === "undefined")
                         window.localStorage.removeItem("cohealthToken")
                     else {

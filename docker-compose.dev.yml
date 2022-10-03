@@ -14,8 +14,7 @@ services:
     restart: on-failure  
     environment:
       - CHOKIDAR_USEPOLLING=true  
-      - REACT_APP_URL=http://localhost:9000
-      - REACT_APP_API=http://localhost:9000/api
+      - REACT_APP_ENV=dev
     ports:
     - "3000:3000"  
 

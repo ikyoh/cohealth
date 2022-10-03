@@ -16,7 +16,7 @@
     # APP
     @app expression `(
             !path(
-                '/api*', '/graphql*', '/bundles*', '/contexts*', '/_profiler*', '/_wdt*',
+                '/api*', '/media*', '/graphql*', '/bundles*', '/contexts*', '/_profiler*', '/_wdt*',
                 '*.json*', '*.html', '*.csv', '*.yml', '*.yaml', '*.xml'
             )
         )

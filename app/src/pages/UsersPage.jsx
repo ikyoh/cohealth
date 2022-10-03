@@ -94,9 +94,6 @@ const UsersPage = () => {
                             <VscPerson size={30} className={`cursor-pointer ${filters.roles !== "ROLE_EMPLOYEE" ? "text-primary" : "text-error"}`} />
                         </div>
                     </SearchFilter>
-                    <div onClick={() => handleOpenModal({ title: 'Nouvel utilisateur', content: <UserForm handleCloseModal={handleCloseModal} /> })}>
-                        <AiFillPlusCircle size={52} className="text-action rounded-full hover:text-primary" />
-                    </div>
                 </PageTitle>
 
                 <table className="responsive-table">

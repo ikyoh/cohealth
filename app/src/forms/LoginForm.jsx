@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from "react-redux";
-import { getAccountError, getAccountToken, getAccountStatus } from "../features/account/accountSlice";
+import { getAccountError, getAccountToken, getAccountStatus, getAccountUsername, getAccountPassword } from "../features/account/accountSlice";
 import { login } from "../features/authentication/authenticationSlice";
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -12,10 +12,12 @@ const LoginFrom = () => {
     const error = useSelector(getAccountError);
     const token = useSelector(getAccountToken);
     const status = useSelector(getAccountStatus);
+    const username = useSelector(getAccountUsername);
+    const password = useSelector(getAccountPassword);
     
     const initialValues = {
-        username: '',
-        password: ''
+        username: username,
+        password: password
     }
 
     const validationSchema = Yup.object({

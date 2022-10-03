@@ -1,6 +1,7 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { useDispatch, useSelector } from "react-redux";
-import { registerAccount, getAccountError, getAccountStatus } from "../features/account/accountSlice";
+import { registerAccount, getAccountError, getAccountStatus, getAccountNavigate } from "../features/account/accountSlice";
+import { useNavigate } from "react-router-dom"
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import FormInput from '../components/forms/FormInput';
@@ -10,12 +11,17 @@ import { CgSpinner } from "react-icons/cg";
 
 const RegistrationForm = () => {
 
+    const navigate = useNavigate();
     const dispatch = useDispatch()
     const status = useSelector(getAccountStatus)
     const errors = useSelector(getAccountError)
+    const isRegistraded = useSelector(getAccountNavigate)
 
-    console.log('status', status)
-    console.log('errors', errors)
+    useEffect(() => {
+        if (isRegistraded)
+        navigate("/login")
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isRegistraded])
 
     const initialValues = {
         roles: ['ROLE_NURSE'],

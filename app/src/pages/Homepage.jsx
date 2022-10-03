@@ -7,6 +7,14 @@ import FrontLayout from '../layouts/FrontLayout'
 
 const Homepage = () => {
 
+    const ENV = process.env.REACT_APP_ENV
+    
+    console.log('ENV', ENV)
+
+    const bla = ENV !== "dev" ? "http://localhost:9000" : "/ddd";
+
+    console.log('bla', bla)
+
     const PageContent = () => {
 
         return (

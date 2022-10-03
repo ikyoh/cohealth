@@ -360,10 +360,11 @@ const MissionPage = () => {
 
             const downloadFile = (url, name) => {
                 axios({
-                    url: URL + '/api' + url,
+                    url: URL + url,
                     method: 'GET',
                     responseType: 'blob', // Important
                 }).then((response) => {
+                    console.log('response', response)
                     FileDownload(response.data, name);
                 });
             };

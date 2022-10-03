@@ -1,17 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { API_AUTHENTICATION, API_CURRENT_USER, API_USERS, API_MEDIAS } from "../apiConfig";
+import { API_AUTHENTICATION, API_CURRENT_USER, API_USERS, API_MEDIAS, URL } from "../apiConfig";
 import dayjs from "dayjs";
 import { toast } from 'react-toastify';
 
 
 const initialState = {
     account: null,
+    username: null,
+    password: null,
     status: 'idle', //'idle' | 'loading' | 'succeeded' | 'failed'
     token: 'idle', //'idle' | 'loading' | 'succeeded' | 'failed'
     error: null,
     isAuthenticated: false,
-    saved: null
+    saved: null,
+    navigate: null
 }
 
 export const registerAccount = createAsyncThunk('account/register', async (form, { rejectWithValue }) => {
@@ -27,6 +30,8 @@ export const registerAccount = createAsyncThunk('account/register', async (form,
 
 
 export const loginAccount = createAsyncThunk('account/loginAccount', async (form) => {
+    console.log('API_AUTHENTICATION', API_AUTHENTICATION)
+    console.log('URL', URL)
     try {
         const response = await axios.post(API_AUTHENTICATION, form)
         return response.data
@@ -166,15 +171,20 @@ const accountSlice = createSlice({
             .addCase(updateAccountMedia.fulfilled, (state, action) => {
                 state.account = action.payload
             })
-            .addCase(registerAccount.pending, (state) => {
+            .addCase(registerAccount.pending, (state, action) => {
                 state.error = null
                 state.status = 'loading'
+                state.username = action.meta.arg.email
+                state.password = action.meta.arg.password
             })
-            .addCase(registerAccount.fulfilled, (state, action) => {
+            .addCase(registerAccount.fulfilled, (state) => {
                 state.status = 'idle'
+                state.navigate = true
             })
             .addCase(registerAccount.rejected, (state, action) => {
                 state.status = 'error'
+                state.username = null
+                state.password = null
                 state.error = action.payload
             })
 
@@ -188,9 +198,12 @@ export const { logout } = accountSlice.actions
 //export const selectCount = (state: RootState) => state.counter.value
 
 export const getAccount = (state) => state.account.account;
+export const getAccountUsername = (state) => state.account.username;
+export const getAccountPassword = (state) => state.account.password;
 export const getAccountToken = (state) => state.account.token;
 export const getAccountStatus = (state) => state.account.status;
 export const getAccountError = (state) => state.account.error;
 export const getAccountIsAuthenticated = (state) => state.account.isAuthenticated;
+export const getAccountNavigate = (state) => state.account.navigate;
 
 export default accountSlice.reducer

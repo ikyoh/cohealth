@@ -102,9 +102,10 @@ export const addMission = createAsyncThunk('missions/addMission', async (form, T
     if (form.action === "addPatient") {
 
         const patient = await ThunkAPI.dispatch(addPatient({ patient: form.values.patient }))
+        console.log('patient', patient)
         try {
             const response = await toast.promise(
-                axios.post(API_MISSIONS, { ...datas, patient: URL + patient.payload['@id'] }),
+                axios.post(API_MISSIONS, { ...datas, patient: patient.payload['@id'] }),
                 {
                     pending: 'Enregistrement',
                     success: 'Mission enregistrée',

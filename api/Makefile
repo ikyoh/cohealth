@@ -18,13 +18,13 @@ clear: cc
 	rm -rf vendor/* var/logs/* var/log/* bin/php* coverage/
 
 symfony-dev:
+	rm -f api/.env.local.php
 	@echo "\n==> Symfony start dev server ..."
 	docker exec ${APP_NAME}-api symfony serve -d
 
+
 symfony-prod:
 	@echo "\n==> Symfony set production environment ..."
-	docker exec -it ${APP_NAME}-api bash composer install
-	docker exec -it ${APP_NAME}-api php bin/console lexik:jwt:generate-keypair
 	docker exec -it ${APP_NAME}-api bash composer dump-env prod
 
 

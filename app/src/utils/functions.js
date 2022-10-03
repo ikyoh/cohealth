@@ -17,7 +17,6 @@ export const calcTotalParamFromArray = (array, param, round = 0) => {
 
 
 export const download = e => {
-    console.log()
     fetch(e, {
       method: "GET",
       headers: {}

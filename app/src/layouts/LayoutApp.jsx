@@ -7,7 +7,7 @@ import Modal from '../components/modals/Modal';
 import ModalTitle from '../components/modals/ModalTitle';
 import ModalBody from '../components/modals/ModalBody';
 import { HiLogout } from "react-icons/hi";
-import { API_URL } from '../features/apiConfig';
+import { URL } from '../features/apiConfig';
 import * as dayjs from 'dayjs'
 
 
@@ -17,6 +17,8 @@ const LayoutApp = ({ children }) => {
 
     const dispatch = useDispatch()
     const account = useSelector(getAccount)
+
+    console.log('UdddRL', URL)
 
     const [modal, setModal] = useState({
         title: '',
@@ -46,6 +48,7 @@ const LayoutApp = ({ children }) => {
         )
     }
 
+
     return (
         <>
             <RenderModal />
@@ -59,7 +62,7 @@ const LayoutApp = ({ children }) => {
                             </div>
                             <div className='flex items-center text-sm space-x-4'>
                                 {account && account.avatar
-                                    ? <img src={API_URL + account.avatar.contentUrl} className='rounded-full object-cover h-10 w-10' alt="profil" />
+                                    ? <img src={URL + account.avatar.contentUrl} className='rounded-full object-cover h-10 w-10' alt="profil" />
                                     : <div className='rounded-full flex items-center h-10 justify-center w-10 bg-info'>
                                         {account.firstname.charAt(0)}
                                         {account.lastname.charAt(0)}
