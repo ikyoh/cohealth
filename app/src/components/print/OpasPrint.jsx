@@ -237,11 +237,20 @@ const MyDoc = ({ datas, mission, patient }) => {
 
         datas.content.services.forEach(service => {
             let index = cares.findIndex(obj => obj.act === service.opas)
-            displayed[index].display = true
+            if (displayed[index].display === false) {
+                displayed[index].display = true
+                displayed[index].totalTime = calcTotalServiceTime(service)
+                displayed[index].frequency = service.frequency
+                displayed[index].periodicity = service.periodicity
+            }
+            else if (displayed[index].totalTime < calcTotalServiceTime(service)) {
+                displayed[index].totalTime = calcTotalServiceTime(service)
+                displayed[index].frequency = service.frequency
+                displayed[index].periodicity = service.periodicity
+            }
+
         })
 
-        // console.log('first', datas.content.services)
-        // console.log('second', displayed.filter(c => c.display === true))
 
         return displayed.filter(c => c.display === true)
     }
@@ -373,7 +382,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                                     {"\n"}
                                     Période : {dayjs(datas.content.beginAt).format('L')} au {dayjs(datas.content.endAt).format('L') + ' '}
 
-                                    ({calcNumberOfDays(datas.content.beginAt,datas.content.endAt)} jours)
+                                    ({calcNumberOfDays(datas.content.beginAt, datas.content.endAt)} jours)
                                 </Text>
                             </View>
                             <View style={{ flex: 1, flexShrink: 1, flexGrow: 1, flexBasis: 0 }}>
@@ -420,8 +429,11 @@ const MyDoc = ({ datas, mission, patient }) => {
                                     <Text style={{ width: 70, padding: 5 }}>
                                         {displayedCare.act}
                                     </Text>
-                                    <Text style={{ width: "100%", padding: 5 }}>
+                                    <Text style={{ width: '100%', padding: 5, borderLeft: '1px solid black' }}>
                                         {displayedCare.description}
+                                    </Text>
+                                    <Text style={{ width: 70, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
+                                        {displayedCare.frequency}x / {displayedCare.periodicity}
                                     </Text>
                                 </View>
                             )}
