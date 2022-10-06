@@ -45,8 +45,8 @@ export const calcNumberOfDays = (beginAt, endAt) => {
 }
 
 export const calcNumberOfWeeks = (beginAt, endAt) => {
-    const begin = dayjs(beginAt).week();
-    const end = dayjs(endAt).week();
+    const begin = dayjs(beginAt).week()
+    const end = dayjs(endAt).week()
     return (end - begin + 1)
 }
 

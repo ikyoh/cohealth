@@ -62,7 +62,7 @@ down: ## Docker down
 
 remove:
 	@echo "\n==> Remove all images"
-	$(DOCKER) rmi $(docker images -a -q)
+	$(DOCKER) rmi $$(docker images -a -q)
 .PHONY: remove
 	
 docker-dev: ## Docker docker-compose.dev.yml

@@ -22,8 +22,6 @@ const MissionsPage = () => {
     const newMissionID = useSelector(getMissionsNavigate)
     const currentUser = useSelector(getAccount)
 
-    console.log('newMissionID', newMissionID)
-
     useEffect(() => {
         if (newMissionID)
             navigate("/missions/" + newMissionID, { state: { mission: {} } })

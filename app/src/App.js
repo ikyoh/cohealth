@@ -28,6 +28,9 @@ import * as dayjs from 'dayjs'
 require('dayjs/locale/fr')
 dayjs.locale('fr')
 
+let weekOfYear = require('dayjs/plugin/weekOfYear')
+dayjs.extend(weekOfYear)
+
 let localizedFormat = require('dayjs/plugin/localizedFormat')
 dayjs.extend(localizedFormat)
 

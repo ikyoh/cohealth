@@ -21,9 +21,6 @@ const OpasForm = ({ event = false, beginAt = false, mission = false, endAt = fal
 
     const dispatch = useDispatch()
 
-    var weekOfYear = require('dayjs/plugin/weekOfYear')
-    dayjs.extend(weekOfYear)
-
     const [data, setData] = useState({
         type: "opas",
         status: "brouillon",
@@ -93,14 +90,14 @@ const OpasForm = ({ event = false, beginAt = false, mission = false, endAt = fal
 
             let total = filteredServices.reduce((acc, curr) => {
 
-                if (curr.periodicity === "pér.")
+                if (curr.periodicity === "période")
                     return Number(curr.time) * Number(curr.frequency) + acc
                 if (curr.periodicity === "jour")
-                    return Number(curr.time) * Number(curr.frequency) * calcNumberOfDays(beginAt, endAt) + acc
+                    return Number(curr.time) * Number(curr.frequency) * Number(calcNumberOfDays(beginAt, endAt)) + acc
                 if (curr.periodicity === "semaine")
-                    return Number(curr.time) * Number(curr.frequency) * calcNumberOfWeeks(beginAt, endAt) + acc
+                    return Number(curr.time) * Number(curr.frequency) * Number(calcNumberOfWeeks(beginAt, endAt)) + acc
                 if (curr.periodicity === "mois")
-                    return Number(curr.time) * Number(curr.frequency) * calcNumberOfMonths(beginAt, endAt) + acc
+                    return Number(curr.time) * Number(curr.frequency) * Number(calcNumberOfMonths(beginAt, endAt)) + acc
 
             }, 0)
 
@@ -297,7 +294,7 @@ const OpasForm = ({ event = false, beginAt = false, mission = false, endAt = fal
 
             const handleAddService = (event) => {
                 let services = [...formikProps.values.content.services]
-                services.unshift({ ...event, name: nanoid(), frequency: 1, periodicity: "pér." })
+                services.unshift({ ...event, name: nanoid(), frequency: 1, periodicity: "période" })
                 formikProps.setFieldValue("content.services", services)
             }
 
@@ -424,7 +421,7 @@ const OpasForm = ({ event = false, beginAt = false, mission = false, endAt = fal
                                                                                                 name={`content.services.${index}.periodicity`}
                                                                                                 className="border px-2 py-1 rounded-sm"
                                                                                             >
-                                                                                                <option value="pér.">par période</option>
+                                                                                                <option value="période">par période</option>
                                                                                                 <option value="jour">par jour</option>
                                                                                                 <option value="semaine">par semaine</option>
                                                                                                 <option value="mois">par mois</option>

@@ -13,8 +13,8 @@ const initialState = {
 
 
 export const login = createAsyncThunk('authentication/login', async (form) => {
-    console.log('API_AUTHENTICATION', API_AUTHENTICATION)
-    console.log('URL', URL)
+    // console.log('API_AUTHENTICATION', API_AUTHENTICATION)
+    // console.log('URL', URL)
     try {
         const response = await await toast.promise(
             axios.post(API_AUTHENTICATION, form),
@@ -70,7 +70,7 @@ const authenticationSlice = createSlice({
     extraReducers(builder) {
         builder
             .addCase(login.fulfilled, (state, action) => {
-                console.log('action.payload', action.payload)
+                // console.log('action.payload', action.payload)
                 axios.defaults.headers["Authorization"] = "Bearer " + action.payload.token
                 localStorage.setItem("cohealthToken", action.payload.token)
                 state.status = "succeeded"

@@ -4,7 +4,8 @@ import { AiOutlineDownload } from 'react-icons/ai'
 import * as dayjs from 'dayjs'
 import { nanoid } from '@reduxjs/toolkit'
 import { calcNumberOfDays, calcNumberOfWeeks, calcNumberOfMonths } from '../../utils/functions'
-import { API_URL } from '../../features/apiConfig'
+
+import { URL } from '../../features/apiConfig'
 
 const dpi = 72
 
@@ -251,7 +252,6 @@ const MyDoc = ({ datas, mission, patient }) => {
 
         })
 
-
         return displayed.filter(c => c.display === true)
     }
 
@@ -261,7 +261,7 @@ const MyDoc = ({ datas, mission, patient }) => {
 
 
     const calcTotalServiceTime = (service) => {
-        if (service.periodicity === "pér.")
+        if (service.periodicity === "période")
             return Number(service.time) * Number(service.frequency)
         if (service.periodicity === "jour")
             return Number(service.time) * Number(service.frequency) * calcNumberOfDays(datas.content.beginAt, datas.content.endAt)
@@ -432,7 +432,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                                     <Text style={{ width: '100%', padding: 5, borderLeft: '1px solid black' }}>
                                         {displayedCare.description}
                                     </Text>
-                                    <Text style={{ width: 70, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
+                                    <Text style={{ width: 100, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
                                         {displayedCare.frequency}x / {displayedCare.periodicity}
                                     </Text>
                                 </View>
@@ -495,12 +495,15 @@ const MyDoc = ({ datas, mission, patient }) => {
                         <Text style={styles.signature}>Date et signature du médecin</Text>
                     </View>
                     <View style={styles.column}>
-                        <Text style={styles.signature}>Signature de l'infirmier</Text>
+                        <Text style={styles.signature}>Signature de l'infirmier</Text>image
                         {mission.user.signature &&
+                    <>
                             <Image
                                 style={styles.userSignature}
-                                source={API_URL + mission.user.signature.contentUrl}
+                                source={URL + mission.user.signature.contentUrl}
                             />
+                            {console.log('mission.user.signature.contentUrl', URL + mission.user.signature.contentUrl)}
+                    </>
                         }
                     </View>
                     {mission.coworkersDetailed.length > 0 &&
@@ -627,7 +630,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                                             {s.time}
                                         </Text>
                                         <Text style={{ width: 140, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
-                                            {s.frequency}x / {s.periodicity === "par période" ? 'pér.' : s.periodicity}
+                                            {s.frequency}x / {s.periodicity === "par période" ? 'période' : s.periodicity}
                                         </Text>
                                         <Text style={{ width: 120, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
                                             {calcTotalServiceTime(s)}
@@ -658,7 +661,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                                             {s.time}
                                         </Text>
                                         <Text style={{ width: 140, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
-                                            {s.frequency}x / {s.periodicity === "par période" ? 'pér.' : s.periodicity}
+                                            {s.frequency}x / {s.periodicity === "par période" ? 'période' : s.periodicity}
                                         </Text>
                                         <Text style={{ width: 120, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
                                             {calcTotalServiceTime(s)}
@@ -689,7 +692,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                                             {s.time}
                                         </Text>
                                         <Text style={{ width: 140, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
-                                            {s.frequency}x / {s.periodicity === "par période" ? 'pér.' : s.periodicity}
+                                            {s.frequency}x / {s.periodicity === "par période" ? 'période' : s.periodicity}
                                         </Text>
                                         <Text style={{ width: 120, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
                                             {calcTotalServiceTime(s)}
@@ -756,7 +759,7 @@ const OpasPrint = ({ datas, mission, patient, }) => {
         return (
             <div>
                 <PDFDownloadLink document={<MyDoc datas={datas} mission={mission} patient={patient} />} fileName={fileName}>
-                    {({ blob, url, loading, error }) =>
+                    {({ blob, loading, error }) =>
                         loading ? <AiOutlineDownload size={30} color={'white'} /> : <AiOutlineDownload size={30} />
                     }
                 </PDFDownloadLink>

@@ -60,8 +60,6 @@ const MissionPage = () => {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
 
-        console.log('mission', mission)
-
         useEffect(() => {
 
             if (mission && mission.user.id === me.id) setIsMyMission(true)
@@ -364,7 +362,6 @@ const MissionPage = () => {
                     method: 'GET',
                     responseType: 'blob', // Important
                 }).then((response) => {
-                    console.log('response', response)
                     FileDownload(response.data, name);
                 });
             };
