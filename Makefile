@@ -65,6 +65,11 @@ remove:
 	$(DOCKER) rmi $$(docker images -a -q)
 .PHONY: remove
 	
+prune :
+	@echo "\n==> Clean up"
+	$(DOCKER) system prune --all --force
+.PHONY: prune
+
 docker-dev: ## Docker docker-compose.dev.yml
 	@echo "\n==> Docker compose development environment ..."
 	$(DOCKER_COMPOSE) -f docker-compose.dev.yml up -d --build

@@ -71,8 +71,9 @@ const authenticationSlice = createSlice({
         builder
             .addCase(login.fulfilled, (state, action) => {
                 // console.log('action.payload', action.payload)
-                axios.defaults.headers["Authorization"] = "Bearer " + action.payload.token
-                localStorage.setItem("cohealthToken", action.payload.token)
+                const token = action.payload.token || action.payload.token.token
+                axios.defaults.headers["Authorization"] = "Bearer " + token
+                localStorage.setItem("cohealthToken", token)
                 state.status = "succeeded"
                 state.error = null
             })
