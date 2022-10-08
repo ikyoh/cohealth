@@ -28,6 +28,7 @@ export const login = createAsyncThunk('authentication/login', async (form) => {
             }
 
         )
+        console.log('response.data', response.data)
         return response.data
     } catch (error) {
         console.log(error)
@@ -70,14 +71,14 @@ const authenticationSlice = createSlice({
     extraReducers(builder) {
         builder
             .addCase(login.fulfilled, (state, action) => {
-                // console.log('action.payload', action.payload)
-                const token = action.payload.token || action.payload.token.token
+                console.log('action.payload', action.payload)
+                const token = action.payload.token || action.payload[1].token
                 axios.defaults.headers["Authorization"] = "Bearer " + token
                 localStorage.setItem("cohealthToken", token)
                 state.status = "succeeded"
                 state.error = null
             })
-            .addCase(login.pending, (state, action) => {
+            .addCase(login.pending, (state) => {
                 state.status = "loading"
                 state.error = null
             })
