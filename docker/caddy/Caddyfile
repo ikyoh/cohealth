@@ -20,10 +20,11 @@
                 '*.json*', '*.html', '*.csv', '*.yml', '*.yaml', '*.xml'
             )
         )
-        || path('/favicon.ico', '/manifest.json', '/robots.txt', '/_next*', '/sitemap*')`
+        || path('/favicon.ico', '/manifest.json', '/robots.txt','/sitemap*')`
 
     handle @app {
         root * /srv/app
+        try_files {path} /index.html
         encode gzip zstd
         file_server
     }
