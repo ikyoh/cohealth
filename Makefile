@@ -83,6 +83,10 @@ docker-prod:
 	$(DOCKER_COMPOSE_STOP) app
 .PHONY: docker-prod
 
+reload :
+	$(DOCKER_COMPOSE) stop api
+	$(DOCKER_COMPOSE) up -d api
+.PHONY: reload
 
 ## === SYMFONY ================================================
 symfony-dev : ## Symfony dev environment
