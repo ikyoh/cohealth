@@ -16,7 +16,7 @@ export const login = createAsyncThunk('authentication/login', async (form) => {
     // console.log('API_AUTHENTICATION', API_AUTHENTICATION)
     // console.log('URL', URL)
     try {
-        const response = await await toast.promise(
+        const response =  await toast.promise(
             axios.post(API_AUTHENTICATION, form),
             {
                 pending: 'Connexion',
