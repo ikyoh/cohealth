@@ -57,7 +57,8 @@ export const updateAccount = createAsyncThunk('account/updateAccount', async (fo
 
     const datas = { ...form }
     datas.updatedAt = dayjs().format()
-
+    delete datas.password
+    
     try {
         const response = await toast.promise(
             axios.put(API_USERS + "/" + datas.id, datas),
