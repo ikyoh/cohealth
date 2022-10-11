@@ -22,6 +22,8 @@ const MissionsPage = () => {
     const newMissionID = useSelector(getMissionsNavigate)
     const currentUser = useSelector(getAccount)
 
+    console.log('currentUSer', useSelector(getAccount))
+
     useEffect(() => {
         if (newMissionID)
             navigate("/missions/" + newMissionID, { state: { mission: {} } })
@@ -77,7 +79,7 @@ const MissionsPage = () => {
             return (
 
                 <tr
-                    className={`${item.user['@id'] !== currentUser['@id'] && 'bg-slate-200'}`}
+                    className={`${item.user.id !== currentUser.id && 'bg-slate-200'}`}
                     onClick={() =>
                         navigate("/missions/" + item.id, { state: { mission: item } })
                     }>

@@ -12,6 +12,8 @@ const MissionsContainer = ({ children, search = null, filters = { isActive: fals
     const status = useSelector(getMissionsStatus);
     const error = useSelector(getMissionsError);
 
+    console.log('missions', useSelector(selectAllMissions))
+
     const [datas, setDatas] = useState([])
 
     const filterDatas = () => {
