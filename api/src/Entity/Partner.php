@@ -2,23 +2,21 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PartnerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\UserOwnedInterface;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
 
 #[ORM\Entity(repositoryClass: PartnerRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['partners:read']],
     denormalizationContext: ['groups' => ['partner:write']],
-    itemOperations: [
-        'get' => [
-            'normalization_context' => ['groups' => ['partner:read']],
-        ],
-        'put' => []
-    ],
 )]
+#[Get(normalizationContext: ['groups' => ['partner:read']])]
+#[Put]
 class Partner implements UserOwnedInterface
 {
     #[ORM\Id]

@@ -7,18 +7,23 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\UserOwnedInterface;
 use App\Repository\PatientRepository;
-use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\GetCollection;
+
 
 #[ORM\Entity(repositoryClass: PatientRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['patients:read']],
     denormalizationContext: ['groups' => ['patient:write']],
-    itemOperations: [
-        'get' => [
-            'normalization_context' => ['groups' => ['patient:read']],
-        ],
-        'put' => []
+    operations: [
+        new GetCollection(),
+        new Get(normalizationContext: ['groups' => ['patient:read']]),
+        new Put(),
+        new Post()
     ]
 )]
 class Patient implements UserOwnedInterface

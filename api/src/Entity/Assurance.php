@@ -6,12 +6,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\AssuranceRepository;
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AssuranceRepository::class)]
 #[ApiResource(
-    attributes: ["pagination_client_enabled" => true],
+    paginationClientEnabled: true,
     normalizationContext: ['groups' => ['assurances:read']],
     denormalizationContext: ['groups' => ['assurance:write']],
 )]

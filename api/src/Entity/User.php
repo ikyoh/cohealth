@@ -5,56 +5,39 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use App\Controller\CurrentUserController;
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Core\Action\NotFoundAction;
 use Doctrine\Common\Collections\Collection;
-use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use ApiPlatform\Core\Annotation\ApiProperty;
 use Symfony\Component\Validator\Constraints as Assert;
-
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Action\NotFoundAction;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
+#[ORM\EntityListeners(['App\EntityListener\UserListener'])]
 #[ApiResource(
-    iri: 'http://schema.org/MediaObject',
+    types: ['https://schema.org/MediaObject'],
     normalizationContext: ['groups' => ["users:read"]],
     denormalizationContext : ['groups' => ["user:write"]],
-    collectionOperations: [ 
-        'post' => [],
-        'currentUser' => [
-            'pagination_enabled' => false,
-            'path' => '/current_user',
-            'method' => 'get',
-            'controller' => CurrentUserController::class,
-            'read' => false
-        ],
-        'users' => [
-            'pagination_enabled' => true,
-            'method' => 'get',
-            'read' => true
-        ],
-
-    ],
-    itemOperations: [
-        'get' => [
-            'controller' => NotFoundAction::class,
-            'openapi_context' => ['summary' => 'Hidden'],
-            'read' => false,
-            'output' => false
-        ],
-        'put' => [
-        ],
+    operations: [
+        new Post(),
+        new Get(),
+        new Put(),
+        new GetCollection(),
+        new Get(name: 'currentUser', uriTemplate: '/current_user', paginationEnabled: false, controller: CurrentUserController::class, read: false, ),
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['rcc' => 'exact'])]
-
-
 #[UniqueEntity(
     fields: ['email'],
     errorPath: 'email',

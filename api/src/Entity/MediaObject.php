@@ -2,8 +2,8 @@
 // api/src/Entity/MediaObject.php
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
+
+use ApiPlatform\Metadata\GetCollection;
 use App\Controller\CreateMediaObjectAction;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -11,22 +11,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use App\Entity\UserOwnedInterface;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 
-/**
- * @Vich\Uploadable
- */
+
+
+#[Vich\Uploadable]
 #[ORM\Entity]
 #[ApiResource(
-    iri: 'http://schema.org/MediaObject',
     normalizationContext: ['groups' => ['media_object:read']],
-    itemOperations: ['get','put'],
-    collectionOperations: [
-        'get',
-        'post' => [
-            'controller' => CreateMediaObjectAction::class,
-            'deserialize' => false,
-            'validation_groups' => ['Default', 'media_object:write'],
-            'openapi_context' => [
+    types: ['https://schema.org/MediaObject'],
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(
+            controller: CreateMediaObjectAction::class,
+            deserialize: false,
+            validationContext: ['groups' => ['Default', 'media_object_create']],
+            openapiContext: [
                 'requestBody' => [
                     'content' => [
                         'multipart/form-data' => [
@@ -35,15 +39,15 @@ use App\Entity\UserOwnedInterface;
                                 'properties' => [
                                     'file' => [
                                         'type' => 'string',
-                                        'format' => 'binary',
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ],
+                                        'format' => 'binary'
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        )
     ]
 )]
 class MediaObject implements UserOwnedInterface
@@ -51,8 +55,8 @@ class MediaObject implements UserOwnedInterface
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
     private ?int $id = null;
 
-    #[ApiProperty(iri: 'http://schema.org/contentUrl')]
-    #[Groups(['media_object:read', 'users:read', 'mission:read'])]
+    #[ApiProperty(types: ['https://schema.org/contentUrl'])]
+    #[Groups(['media_object:read'])]
     public ?string $contentUrl = null;
 
     /**
@@ -87,7 +91,9 @@ class MediaObject implements UserOwnedInterface
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'mediaObjects')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['media_object:write', 'media_object:read'])]
     private $user;
+
 
 
     public function __construct()
@@ -177,6 +183,4 @@ class MediaObject implements UserOwnedInterface
 
         return $this;
     }
-
-
 }

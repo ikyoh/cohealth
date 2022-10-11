@@ -2,27 +2,23 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\UserOwnedInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+
+
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 
 #[ApiResource(
     normalizationContext: ['groups' => ['comments:read']],
     denormalizationContext: ['groups' => ['comment:write']],
-    itemOperations: [
-        'get' => [
-            'normalization_context' => ['groups' => ['comment:read']],
-        ],
-        'put' => []
-    ],
 )]
 #[ApiFilter(ExistsFilter::class, properties: ['doctor','assurance'])]
 #[ApiFilter(SearchFilter::class, properties: ['doctor' => 'exact', 'assurance' => 'exact'])]

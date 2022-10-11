@@ -5,20 +5,25 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\UserOwnedInterface;
 use App\Repository\PrescriptionRepository;
-use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\GetCollection;
 
 #[ORM\Entity(repositoryClass: PrescriptionRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['prescriptions:read']],
     denormalizationContext: ['groups' => ['prescription:write']],
-    itemOperations: [
-        'get' => [
-            'normalization_context' => ['groups' => ['prescription:read']],
-        ],
-        'put' => []
-    ],
+    operations: [
+        new GetCollection(),
+        new Get(normalizationContext: ['groups' => ['prescription:read']]),
+        new Put(),
+        new Post()
+    ]
 )]
+
 class Prescription implements UserOwnedInterface
 {
     #[ORM\Id]
@@ -33,7 +38,7 @@ class Prescription implements UserOwnedInterface
 
     // brouillon
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["prescriptions:read", "prescription:read", "prescription:write", "mission:write", "mission:read", "missions:read"])] 
+    #[Groups(["prescriptions:read", "prescription:read", "prescription:write", "mission:write", "mission:read", "missions:read"])]
     private $status = "brouillon";
 
     #[ORM\Column(type: 'json', nullable: true)]
@@ -135,7 +140,4 @@ class Prescription implements UserOwnedInterface
 
         return $this;
     }
-
-
-
 }

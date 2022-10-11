@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\DoctorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: DoctorRepository::class)]
 
 #[ApiResource(
-    attributes: ["pagination_client_enabled" => true],
+    paginationClientEnabled: true,
     normalizationContext: ['groups' => ['doctors:read']],
     denormalizationContext: ['groups' => ['doctor:write']],
 )]

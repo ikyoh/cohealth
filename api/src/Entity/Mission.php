@@ -7,19 +7,24 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\UserOwnedInterface;
 use App\Repository\MissionRepository;
-use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\GetCollection;
+
 
 #[ORM\Entity(repositoryClass: MissionRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['missions:read']],
     denormalizationContext: ['groups' => ['mission:write']],
-    itemOperations: [
-        'get' => [
-            'normalization_context' => ['groups' => ['mission:read']],
-        ],
-        'put' => []
-    ],
+    operations: [
+        new GetCollection(),
+        new Get(normalizationContext: ['groups' => ['mission:read']]),
+        new Put(),
+        new Post()
+    ]
 )]
 class Mission implements UserOwnedInterface
 {
@@ -272,7 +277,4 @@ class Mission implements UserOwnedInterface
 
         return $this;
     }
-
-
-   
 }

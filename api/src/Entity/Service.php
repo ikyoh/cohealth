@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ServiceRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
-#[ApiResource(attributes: ["pagination_client_enabled" => true])]
+#[ApiResource(paginationClientEnabled: true)]
 class Service
 {
     #[ORM\Id]
