@@ -15,8 +15,7 @@
 
     # APP
     @app expression `(
-        header({'Accept': '*text/html*'})
-        && !path(
+            !path(
                 '/api*', '/media*', '/graphql*', '/bundles*', '/contexts*', '/_profiler*', '/_wdt*',
                 '*.json*', '*.html', '*.csv', '*.yml', '*.yaml', '*.xml'
             )
@@ -26,14 +25,14 @@
     handle @app {
         root * /srv/app
         try_files {path} /index.html
-        encode zstd gzip
+        encode gzip zstd
         file_server
     }
 
     # API
     root * /srv/api/public
     php_fastcgi /api* api:9000
-    encode zstd gzip
+    encode gzip zstd
     file_server
 
 }
