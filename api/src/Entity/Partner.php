@@ -9,14 +9,23 @@ use App\Entity\UserOwnedInterface;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\GetCollection;
+
 
 #[ORM\Entity(repositoryClass: PartnerRepository::class)]
 #[ApiResource(
+    paginationClientEnabled: true,
     normalizationContext: ['groups' => ['partners:read']],
     denormalizationContext: ['groups' => ['partner:write']],
+    operations: [
+        new GetCollection(),
+        new Get(normalizationContext: ['groups' => ['partner:read']]),
+        new Put(),
+        new Post()
+    ]
 )]
-#[Get(normalizationContext: ['groups' => ['partner:read']])]
-#[Put]
+
 class Partner implements UserOwnedInterface
 {
     #[ORM\Id]

@@ -568,7 +568,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                                     {datas.content.type}
                                     {"\n"}
                                     Période : {dayjs(datas.content.beginAt).format('L')} au {dayjs(datas.content.endAt).format('L') + ' '}
-                                    ({dayjs(datas.content.endAt).diff(datas.content.beginAt, 'days')} jours)
+                                    ({calcNumberOfDays(datas.content.beginAt, datas.content.endAt)} jours)
                                 </Text>
                             </View>
                             <View style={{ flex: 1, flexShrink: 1, flexGrow: 1, flexBasis: 0 }}>

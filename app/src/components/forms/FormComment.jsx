@@ -1,7 +1,7 @@
 import React from 'react'
 import { Field } from 'formik'
 import { useSelector } from "react-redux"
-import { API_URL } from '../../features/apiConfig'
+import { URL } from '../../features/apiConfig'
 import { getAccount } from '../../features/account/accountSlice'
 
 const FormComment = ({ label, name, required = false, disabled = false, className = null }) => {
@@ -13,7 +13,7 @@ const FormComment = ({ label, name, required = false, disabled = false, classNam
         <div className={`bg-gray-100 p-2 rounded text-sm input-group ${className ? className : ''}`}>
             <div className='flex items-center gap-3'>
                 {account && account.avatar
-                    ? <img src={API_URL + account.avatar.contentUrl} className='rounded-full object-cover h-10 w-10' alt="profil" />
+                    ? <img src={URL + account.avatar.contentUrl} className='rounded-full object-cover h-10 w-10' alt="profil" />
                     : <div className='rounded-full flex items-center h-10 justify-center w-10 bg-info'>
                         {account.firstname.charAt(0)}
                         {account.lastname.charAt(0)}

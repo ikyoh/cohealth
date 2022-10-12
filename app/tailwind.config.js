@@ -16,6 +16,7 @@ module.exports = {
         'action': '#027BBF',
         'info': '#94C121',
         'mention': '#5ac8fa',
+        'quote': '#5ac8fa',
         'success': '#28a745',
         'waiting': '#ffc107',
         'error': '#ef4444'

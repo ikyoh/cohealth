@@ -2,7 +2,6 @@
 // api/src/Entity/MediaObject.php
 namespace App\Entity;
 
-
 use App\Controller\CreateMediaObjectAction;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -18,7 +17,6 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\GetCollection;
 
 
-
 #[Vich\Uploadable]
 #[ORM\Entity]
 #[ApiResource(
@@ -26,6 +24,7 @@ use ApiPlatform\Metadata\GetCollection;
     types: ['https://schema.org/MediaObject'],
     operations: [
         new GetCollection(),
+        new Get(),
         new Put(),
         new Post(
             controller: CreateMediaObjectAction::class,
@@ -57,7 +56,7 @@ class MediaObject implements UserOwnedInterface
     private ?int $id = null;
 
     #[ApiProperty(types: ['https://schema.org/contentUrl'])]
-    #[Groups(['media_object:read'])]
+    #[Groups(['media_object:read', 'users:read'])]
     public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: "media_object", fileNameProperty: "filePath")]
@@ -65,7 +64,7 @@ class MediaObject implements UserOwnedInterface
     public ?File $file = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['media_object:write', 'media_object:read', 'mission:read'])]
+    #[Groups(['media_object:write', 'media_object:read', 'mission:read', 'users:read'])]
     public ?string $filePath = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]

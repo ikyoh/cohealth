@@ -108,6 +108,8 @@ const MissionPage = () => {
         useEffect(() => {
             if (prescriptions.length > 0) {
                 setOpas(prescriptions.find(item => item.type === "opas"))
+
+                console.log('opas', opas)
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [prescriptions])
@@ -321,10 +323,6 @@ const MissionPage = () => {
                         </div>
 
                     </div>
-
-
-
-
 
                 </div>
             )
@@ -581,10 +579,10 @@ const MissionPage = () => {
                         <div className={`px-8 py-3 text-center ${tab === "invoices" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("invoices")}>Facturation</div>
                         <div className="w-full flex items-center justify-end gap-1 px-8">
 
-
+            
                             {opas ?
                                 <>
-                                    <div className={"px-2 rounded-full bg-" + opasStatus[opas.status]}>
+                                    <div className={`px-2 rounded-full bg-${opasStatus[opas.status]}`}>
                                         OPAS
                                     </div>
                                     <div>

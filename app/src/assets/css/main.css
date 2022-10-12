@@ -161,12 +161,3 @@
 .catN {
   @apply text-gray-400;
 }
-
-.react-calendar {
-  width: unset;
-}
-
-.react-calendar__tile--active {
-  background: #20d4ed;
-  color: white;
-}
