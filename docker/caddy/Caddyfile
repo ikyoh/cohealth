@@ -30,7 +30,6 @@
         file_server
     }
 
-
     # API
     root * /srv/api/public
     php_fastcgi /api* api:9000
