@@ -18,7 +18,7 @@ const LoginPage = () => {
         const accountStatus = useSelector(getAccountStatus)
 
         useEffect(() => {
-            dispatch(setupToken())
+            //dispatch(setupToken())
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
 

@@ -4,7 +4,8 @@ export const URL = ENV === "dev" ? "http://localhost:9000" : '';
 export const API_URL = URL + '/api';
 
 
-export const API_AUTHENTICATION = API_URL + "/login"; 
+export const API_LOGIN = API_URL + "/login"; 
+export const API_LOGOUT = API_URL + "/logout"; 
 export const API_COMMENTS= API_URL + "/comments";
 export const API_CURRENT_USER = API_URL + "/current_user";
 export const API_ASSURANCES = API_URL + "/assurances";
