@@ -22,8 +22,6 @@ const MissionsPage = () => {
     const newMissionID = useSelector(getMissionsNavigate)
     const currentUser = useSelector(getAccount)
 
-    console.log('currentUSer', useSelector(getAccount))
-
     useEffect(() => {
         if (newMissionID)
             navigate("/missions/" + newMissionID, { state: { mission: {} } })
@@ -50,7 +48,7 @@ const MissionsPage = () => {
                 )
             else
                 return (
-                    <div className={"px-3 py-1 rounded-full text-white bg-" + opasStatus[opas[0].status]}>OPAS</div> || null
+                    <div className={`px-3 py-1 rounded-full text-white ${opasStatus[opas[0].status]}`}>OPAS</div> || null
                 )
 
         }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from "react-redux";
-import { logout, getAccount } from "../features/account/accountSlice";
+import { getAccount } from "../features/account/accountSlice";
+import { logout } from "../features/authentication/authenticationSlice";
 import Menu from '../layouts/Menu'
 import Modal from '../components/modals/Modal';
 import ModalTitle from '../components/modals/ModalTitle';

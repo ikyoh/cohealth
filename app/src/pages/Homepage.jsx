@@ -15,7 +15,7 @@ const Homepage = () => {
                     <div className='container max-w-8xl flex flex-col md:flex-row items-center justify-center gap-10 md:gap-28'>
                         <div className='md:w-1/3 flex flex-col gap-5'>
                             <h1 className='uppercase'>Vous êtes professionnel de santé ?</h1>
-                            <p className='text-3xl font-bold leading-tight'>Lorem ipsum dolor sit amet consectetur
+                            <p className='text-3xl font-bold leading-tight'>AAAAALorem ipsum dolor sit amet consectetur
 
                             </p>
                             <p className='text-xl leading-tight'>

@@ -39,15 +39,11 @@ const App = () => {
 
   const dispatch = useDispatch()
 
-  const authenticationStatus = useSelector(getAuthenticationStatus)
-
-  dispatch(setupToken())
-
   useEffect(() => {
-    if (authenticationStatus === "succeeded")
-      dispatch(currentAccount())
+       dispatch(currentAccount())
   }, [])
-
+  
+    
   return (
     <>
       <Router>

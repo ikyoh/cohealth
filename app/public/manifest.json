@@ -1,6 +1,6 @@
 {
-  "short_name": "CoHealth",
-  "name": "CoHealth App",
+  "short_name": "Cohealth",
+  "name": "Cohealth",
   "icons": [
     {
       "src": "favicon.ico",
@@ -11,12 +11,6 @@
       "src": "logo192.png",
       "type": "image/png",
       "sizes": "192x192"
-    },
-    {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192",
-      "purpose":"any maskable"
     },
     {
       "src": "logo512.png",

@@ -2,6 +2,25 @@ version: "3.8"
 
 services:
 
+  caddy:
+    image: caddy:2.5.2-alpine
+    container_name: ${APP_NAME}-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME}
+      APP_UPSTREAM: app:3000
+    volumes:
+      - ./api:/srv/api
+      - ./app/build:/srv/app
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+
 
   app:
     container_name: ${APP_NAME}-app
@@ -67,4 +86,6 @@ services:
 
 volumes:
   database:
+  caddy_data:
+  caddy_config:
 

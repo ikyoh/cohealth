@@ -50,7 +50,8 @@ const FrontLayout = ({ children }) => {
                             <img src={ReactLogo} alt="React Logo" style={{ width: 150 }} />
                         </NavLink>
                         <nav>
-                            {location.pathname === "/login" ?
+                            {location.pathname === "/login"
+                                ?
                                 <NavLink className="" to='/registration'>
                                     <button className="button-submit flex justify-center h-10 items-center w-36">
                                         Je m'inscrit !

@@ -1,6 +1,7 @@
 // from .env
 export const ENV = process.env.REACT_APP_ENV;
-export const URL = ENV === "dev" ? "http://localhost:9000" : '';
+//export const URL = ENV === "dev" ? "http://localhost:9000" : '';
+export const URL = '';
 export const API_URL = URL + '/api';
 
 

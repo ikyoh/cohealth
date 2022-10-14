@@ -131,9 +131,9 @@ export const legalCares = [
 ]
 
 export const opasStatus = {
-    "brouillon" : "waiting",
-    "envoyé au médecin" : "quote",
-    "validé par le médecin" : "error",
-    "envoyé à l'assurance" : "success",
-    "contesté" : "black"
+    "brouillon" : 'bg-waiting',
+    "envoyé au médecin" : 'bg-mention',
+    "validé par le médecin" : 'bg-info',
+    "envoyé à l'assurance" : 'bg-success',
+    "contesté" : 'bg-black text-white'
 }

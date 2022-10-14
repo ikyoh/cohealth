@@ -108,8 +108,6 @@ const MissionPage = () => {
         useEffect(() => {
             if (prescriptions.length > 0) {
                 setOpas(prescriptions.find(item => item.type === "opas"))
-
-                console.log('opas', opas)
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [prescriptions])
@@ -349,6 +347,7 @@ const MissionPage = () => {
             const { buttonProps, itemProps, isOpen, setIsOpen } = useDropdownMenu(5);
 
             const handleUpdateOpasStatus = (e) => {
+                console.log('e.target.value', e.target.value)
                 dispatch(updatePrescriptionStatus({ id: opas['@id'], status: e.target.value }))
                 setIsOpen(false)
             }
@@ -582,7 +581,7 @@ const MissionPage = () => {
             
                             {opas ?
                                 <>
-                                    <div className={`px-2 rounded-full bg-${opasStatus[opas.status]}`}>
+                                    <div className={`px-2 rounded-full ${opasStatus[opas.status]}`}>
                                         OPAS
                                     </div>
                                     <div>

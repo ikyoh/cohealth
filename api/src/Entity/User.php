@@ -34,7 +34,14 @@ use ApiPlatform\Metadata\Put;
         new Get(),
         new Put(),
         new GetCollection(),
-        new Get(name: 'currentUser', uriTemplate: '/current_user', paginationEnabled: false, controller: CurrentUserController::class, read: false, ),
+        new Get(
+            name: 'currentUser',
+            uriTemplate: '/current_user',
+            paginationEnabled: false, 
+            controller: CurrentUserController::class,
+            read: false, 
+            security: "is_granted('ROLE_USER')"    
+        ),
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['rcc' => 'exact'])]

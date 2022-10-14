@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { API_LOGIN, API_CURRENT_USER, API_USERS, API_MEDIAS, URL } from "../apiConfig";
+import { API_CURRENT_USER, API_USERS, API_MEDIAS } from "../apiConfig";
 import dayjs from "dayjs";
 import { toast } from 'react-toastify';
 
@@ -11,7 +11,7 @@ const initialState = {
     password: null,
     status: 'idle', //'idle' | 'loading' | 'succeeded' | 'failed'
     token: 'idle', //'idle' | 'loading' | 'succeeded' | 'failed'
-    error: null,
+    error: false,
     isAuthenticated: false,
     saved: null,
     navigate: null
@@ -29,21 +29,11 @@ export const registerAccount = createAsyncThunk('account/register', async (form,
 })
 
 
-export const loginAccount = createAsyncThunk('account/loginAccount', async (form) => {
-    try {
-        const response = await axios.post(API_LOGIN, form)
-        return response.data
-    } catch (error) {
-        console.log(error)
-        throw error
-    }
-})
 
 
 export const currentAccount = createAsyncThunk('account/currentAccount', async () => {
     try {
         const response = await axios.get(API_CURRENT_USER)
-        console.log('response.data', response)
         return response.data;
     } catch (error) {
         console.log(error)
@@ -117,44 +107,19 @@ const accountSlice = createSlice({
     name: 'account',
     initialState,
     reducers: {
-        logout: {
-            reducer(state) {
-                window.localStorage.removeItem("cohealthToken")
-                delete axios.defaults.headers["Authorization"]
-                state = initialState
-                window.location.href = '/'
-            }
-        }
     },
     extraReducers(builder) {
         builder
-            .addCase(loginAccount.fulfilled, (state, action) => {
-                console.log('action.payload', action.payload)
-                localStorage.setItem("cohealthToken", action.payload.token)
-                axios.defaults.headers["Authorization"] = "Bearer " + action.payload.token
-                state.token = "succeeded"
-                state.error = null
-            })
-            .addCase(loginAccount.pending, (state, action) => {
-                state.token = "loading"
-                state.error = null
-            })
-            .addCase(loginAccount.rejected, (state, action) => {
-                state.account = null
-                state.token = "failed"
-                state.error = action.error
-            })
             .addCase(currentAccount.fulfilled, (state, action) => {
-                console.log('action', action)
                 state.account = action.payload
                 state.status = "succeeded"
                 state.isAuthenticated = true
-                state.error = null
+                state.error = false
             })
             .addCase(currentAccount.pending, (state) => {
                 state.status = "loading"
                 state.isAuthenticated = false
-                state.error = null
+                state.error = false
             })
             .addCase(currentAccount.rejected, (state, action) => {
                 state.account = null
@@ -192,8 +157,6 @@ const accountSlice = createSlice({
     }
 })
 
-
-export const { logout } = accountSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 //export const selectCount = (state: RootState) => state.counter.value
