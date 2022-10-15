@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 
 
@@ -26,6 +27,7 @@ use ApiPlatform\Metadata\GetCollection;
         new GetCollection(),
         new Get(),
         new Put(),
+        new Delete(),
         new Post(
             controller: CreateMediaObjectAction::class,
             deserialize: false,
@@ -53,10 +55,11 @@ use ApiPlatform\Metadata\GetCollection;
 class MediaObject implements UserOwnedInterface
 {
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
+    #[Groups(['media_object:read', 'mission:read'])]
     private ?int $id = null;
 
     #[ApiProperty(types: ['https://schema.org/contentUrl'])]
-    #[Groups(['media_object:read', 'users:read'])]
+    #[Groups(['media_object:read', 'users:read', 'mission:read'])]
     public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: "media_object", fileNameProperty: "filePath")]

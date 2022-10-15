@@ -14,6 +14,8 @@ import PageTitle from '../layouts/PageTitle'
 import dayjs from 'dayjs'
 import { getAccount } from '../features/account/accountSlice'
 import { opasStatus } from '../utils/arrays'
+import useDropdownMenu from 'react-accessible-dropdown-menu-hook';
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 const MissionsPage = () => {
 
@@ -74,6 +76,51 @@ const MissionsPage = () => {
 
         const Row = ({ item }) => {
 
+
+            const DropDown = ({ item }) => {
+
+ 
+                const { buttonProps, itemProps, isOpen, setIsOpen } = useDropdownMenu(5);
+
+                return (
+
+                    <div className='relative flex justify-end'>
+                        <button {...buttonProps}
+                            className='h-[44px] w-[44px] flex items-center rounded-full p-2 space-x-1 cursor-pointer text-primary hover:bg-slate-300'
+                        >
+                            <BsThreeDotsVertical size={26} />
+                        </button>
+                        <div className={isOpen ? "absolute right-0 z-10 top-12 w-max  bg-white border rounded-sm p-3 flex flex-col" : "hidden"} role="menu"
+                            onMouseLeave={() => setIsOpen(false)}
+                        >
+                            <button
+                                className='text-center hover:text-action py-1'
+                                {...itemProps[0]}
+                                onClick={()=>console.log('first')}
+                            >
+                                Télécharger
+                            </button>
+                            <button
+                                className='text-center hover:text-action py-1'
+                                {...itemProps[1]}
+                                onClick={()=>console.log('first')}
+                            >
+                                Modifier
+                            </button>
+                            <button
+                                className='text-center hover:text-action py-1'
+                                {...itemProps[2]}
+                                onClick={()=>console.log('first')}
+                            >
+                                Supprimer
+                            </button>
+                        </div>
+                    </div>
+
+                )
+
+            }
+
             return (
 
                 <tr
@@ -103,6 +150,9 @@ const MissionsPage = () => {
                             {/* <div className='px-3 py-1 rounded-full bg-success text-white'>OPAS</div>
                             <div className='px-3 py-1 rounded-full bg-waiting text-white'>OPAS</div> */}
                         </div>
+                    </td>
+                    <td className='flex justify-end'>
+                        <DropDown item={item} />
                     </td>
                 </tr>
             )
@@ -143,6 +193,7 @@ const MissionsPage = () => {
                             <ThTable handleSort={handleSort} title="Fin" sort={sort} sortBy='organization' />
                             <ThTable handleSort={handleSort} title="Durée" sort={sort} sortBy='type' />
                             <ThTable handleSort={handleSort} title="Statut" sort={sort} sortBy='email' />
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>

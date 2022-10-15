@@ -9,7 +9,6 @@ import { CgSpinner } from "react-icons/cg";
 const LoginFrom = () => {
 
     const dispatch = useDispatch()
-    const error = useSelector(getAccountError);
     const accountstatus = useSelector(getAccountStatus);
     const authstatus = useSelector(getAuthenticationStatus);
     const username = useSelector(getAccountUsername);

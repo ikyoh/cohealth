@@ -497,13 +497,12 @@ const MyDoc = ({ datas, mission, patient }) => {
                     <View style={styles.column}>
                         <Text style={styles.signature}>Signature de l'infirmier</Text>image
                         {mission.user.signature &&
-                    <>
-                            <Image
-                                style={styles.userSignature}
-                                source={URL + mission.user.signature.contentUrl}
-                            />
-                            {console.log('mission.user.signature.contentUrl', URL + mission.user.signature.contentUrl)}
-                    </>
+                            <>
+                                <Image
+                                    style={styles.userSignature}
+                                    source={URL + mission.user.signature.contentUrl}
+                                />
+                            </>
                         }
                     </View>
                     {mission.coworkersDetailed.length > 0 &&
@@ -760,7 +759,14 @@ const OpasPrint = ({ datas, mission, patient, }) => {
             <div>
                 <PDFDownloadLink document={<MyDoc datas={datas} mission={mission} patient={patient} />} fileName={fileName}>
                     {({ blob, loading, error }) =>
-                        loading ? <AiOutlineDownload size={30} color={'white'} /> : <AiOutlineDownload size={30} />
+                        loading ?
+                            <div className='h-[44px] w-[44px] flex items-center rounded-full p-2 space-x-1 cursor-pointer text-white hover:bg-slate-300'>
+                                <AiOutlineDownload size={26} />
+                            </div>
+                            :
+                            <div className='h-[44px] w-[44px] flex items-center rounded-full p-2 space-x-1 cursor-pointer text-primary hover:bg-slate-300'>
+                                <AiOutlineDownload size={26} />
+                            </div>
                     }
                 </PDFDownloadLink>
             </div>

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit"
 import axios from "axios"
 import { URL, API_MISSIONS, API_PATIENTS, API_PRESCRIPTIONS, API_MEDIAS, API_DOCTORS, API_ASSURANCES } from "../apiConfig"
 import { toast } from 'react-toastify'
@@ -175,6 +175,16 @@ export const addDocument = createAsyncThunk('missions/addDocument', async (form)
         console.log(error.config);
     }
 
+})
+
+export const deleteDocument = createAsyncThunk('missions/deleteDocument', async ({documentId, missionId}) => {
+    try {
+        const response = await axios.delete(API_MEDIAS + '/' + documentId)
+        return (response)
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
 
 })
 
@@ -299,6 +309,12 @@ const missionsSlice = createSlice({
             .addCase(addDocument.fulfilled, (state, action) => {
                 const index = state.missions.findIndex(obj => obj['@id'] === action.payload.mission)
                 state.missions[index].documents.push(action.payload)
+                console.log('state.missions', state.missions)
+            })
+            .addCase(deleteDocument.fulfilled, (state, action) => {
+                const missionIndex = state.missions.findIndex(obj => obj.id === action.meta.arg.missionId)
+                const documentIndex = state.missions[missionIndex].documents.findIndex(obj => obj.id === action.meta.arg.documentId)
+                state.missions[missionIndex].documents.splice(documentIndex,1)
             })
     }
 })

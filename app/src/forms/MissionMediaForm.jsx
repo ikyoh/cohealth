@@ -7,18 +7,16 @@ import FormSelect from "../components/forms/FormSelect"
 import FormInput from "../components/forms/FormInput"
 import { MediaCategories } from '../utils/arrays';
 
-const MissionMediaForm = ({ handleCloseModal, mission }) => {
-
-    console.log('mission', mission)
+const MissionMediaForm = ({ handleCloseModal, mission, document={} }) => {
 
     const dispatch = useDispatch()
 
     const initialValues = {
-        type: 'opas',
+        type: document.type || 'opas',
         file: '',
-        comment :'',
-        mission : mission
-    }
+        comment: document.item || '',
+        mission: mission || null
+     }
 
     const validationSchema = Yup.object({
         file: Yup.string().required('Champ obligatoire'),
@@ -28,6 +26,7 @@ const MissionMediaForm = ({ handleCloseModal, mission }) => {
         <Formik
             enableReinitialize={true}
             initialValues={initialValues}
+            validationSchema={validationSchema}
             onSubmit={async (values, { setSubmitting }) => {
                 setSubmitting(true)
                 dispatch(addDocument(values))

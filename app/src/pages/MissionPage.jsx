@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from "react-redux"
-import { fetchMission, selectAllMissions } from "../features/missions/missionsSlice"
+import { fetchMission, selectAllMissions, deleteDocument } from "../features/missions/missionsSlice"
 import { fetchPrescription, selectAllPrescriptions, updatePrescriptionStatus } from '../features/prescriptions/prescriptionsSlice'
 import { fetchPatient, selectAllPatients } from '../features/patients/patientsSlice'
 import Layout from '../layouts/Layout'
@@ -9,6 +9,7 @@ import MissionTitle from '../layouts/MissionTitle'
 import { AiOutlinePlusCircle, AiOutlineDownload } from "react-icons/ai"
 import { VscCloud, VscFile } from "react-icons/vsc"
 import { IoSettingsOutline } from "react-icons/io5"
+import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaCircle } from "react-icons/fa"
 import MissionEditForm from '../forms/MissionEditForm'
 import ThTable from '../components/table/ThTable'
@@ -353,15 +354,61 @@ const MissionPage = () => {
             }
 
 
-            const downloadFile = (url, name) => {
-                axios({
-                    url: URL + url,
-                    method: 'GET',
-                    responseType: 'blob', // Important
-                }).then((response) => {
-                    FileDownload(response.data, name);
-                });
-            };
+            const FileDropDown = ({ item }) => {
+
+                const { buttonProps, itemProps, isOpen, setIsOpen } = useDropdownMenu(5);
+
+                const downloadFile = () => {
+                    axios({
+                        url: URL + item.contentUrl,
+                        method: 'GET',
+                        responseType: 'blob', // Important
+                    }).then((response) => {
+                        FileDownload(response.data, item.filePath);
+                    });
+                };
+
+                return (
+
+                    <div className='relative'>
+                        <button {...buttonProps}
+                            className='h-[44px] w-[44px] flex items-center rounded-full p-2 space-x-1 cursor-pointer text-primary hover:bg-slate-300'
+                        >
+                            <BsThreeDotsVertical size={26} />
+                        </button>
+                        <div className={isOpen ? "absolute right-0 z-10 top-12 w-max  bg-white border rounded-sm p-3 flex flex-col" : "hidden"} role="menu"
+                            onMouseLeave={() => setIsOpen(false)}
+                        >
+                            <button
+                                className='text-center hover:text-action py-1'
+                                {...itemProps[0]}
+                                onClick={downloadFile}
+                            >
+                                Télécharger
+                            </button>
+                            <button
+                                className='text-center hover:text-action py-1'
+                                {...itemProps[1]}
+                                onClick={() => window.alert("Fonction à développer")}
+                            >
+                                Modifier
+                            </button>
+                            <button
+                                className='text-center hover:text-action py-1'
+                                {...itemProps[2]}
+                                onClick={() => {
+                                    dispatch(deleteDocument({ documentId: item.id, missionId: mission.id }))
+                                }
+                                }
+                            >
+                                Supprimer
+                            </button>
+                        </div>
+                    </div>
+
+                )
+
+            }
 
 
             return (
@@ -465,8 +512,6 @@ const MissionPage = () => {
                                             </>
                                         }
 
-
-
                                         <div className='bg-action rounded-full p-1 cursor-pointer hover:bg-primary'
                                             onClick={() => handleOpenModal({ title: 'Ajouter un document', content: <MissionMediaForm handleCloseModal={handleCloseModal} mission={mission['@id']} /> })}>
                                             <AiOutlinePlusCircle size={36} className="text-white rounded-full" />
@@ -478,7 +523,7 @@ const MissionPage = () => {
                     </thead>
                     <tbody>
                         {prescriptions?.map(p =>
-                            <tr key={nanoid()}>
+                            <tr className='!cursor-auto' key={nanoid()}>
                                 <td>
                                     <div className='flex items-center gap-3'>
                                         <VscCloud size={25} />
@@ -493,7 +538,7 @@ const MissionPage = () => {
                             </tr>
                         )}
                         {mission.documents.map(d =>
-                            <tr key={nanoid()}>
+                            <tr className='!cursor-auto' key={nanoid()}>
                                 <td>
                                     <div className='flex items-center gap-3'>
                                         <VscFile size={25} />
@@ -503,16 +548,14 @@ const MissionPage = () => {
                                 <td>{dayjs(d.createdAt).format('DD/MM/YYYY')}</td>
                                 <td>{d.comment}</td>
                                 <td className='float-right'>
-                                    <div onClick={() => downloadFile(d.contentUrl, d.filePath)}>
-                                        <AiOutlineDownload size={30} />
+                                    <div className='flex'>
+                                        <FileDropDown item={d} />
                                     </div>
                                 </td>
                             </tr>
                         )}
                     </tbody>
                 </table>
-
-
             )
         }
 
@@ -569,7 +612,6 @@ const MissionPage = () => {
                                 <span className='text-white pr-3'>Mission</span>
                             </div>
                         }
-
                     </MissionTitle>
                     <div className='bg-white flex rounded-sm col-span-3 mb-5'>
                         <div className={`px-8 py-3 text-center ${tab === "infos" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("infos")}>Informations</div>
@@ -577,8 +619,6 @@ const MissionPage = () => {
                         <div className={`px-8 py-3 text-center ${tab === "schedules" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("schedules")}>Planning</div>
                         <div className={`px-8 py-3 text-center ${tab === "invoices" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("invoices")}>Facturation</div>
                         <div className="w-full flex items-center justify-end gap-1 px-8">
-
-            
                             {opas ?
                                 <>
                                     <div className={`px-2 rounded-full ${opasStatus[opas.status]}`}>
@@ -597,10 +637,7 @@ const MissionPage = () => {
                                         aucun OPAS
                                     </div>
                                 </>
-
                             }
-
-
                         </div>
                     </div>
                     <div>
