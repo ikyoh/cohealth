@@ -3,11 +3,11 @@
     email ohsito@gmail.com
 
     # HTTP/3 support
-    servers {
-        protocol {
-            experimental_http3
-        }
-    }
+    # servers {
+    #     protocol {
+    #         experimental_http3
+    #     }
+    # }
 }
 
 # Host which Caddy will handle

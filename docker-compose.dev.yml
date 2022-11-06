@@ -35,7 +35,7 @@ services:
       - CHOKIDAR_USEPOLLING=true  
       - REACT_APP_ENV=dev
     ports:
-    - "3000:3000"  
+      - "3000:3000"  
 
 
   api:

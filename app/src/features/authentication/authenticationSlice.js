@@ -27,6 +27,7 @@ export const login = createAsyncThunk('authentication/login', async (form) => {
             }
 
         )
+        console.log('login response', response)
         return response.data
     } catch (error) {
         console.log(error)
