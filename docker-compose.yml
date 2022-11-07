@@ -21,7 +21,6 @@ services:
       - caddy_config:/config
     depends_on:
       - api
-      - app
     networks:
       - cohealth
 
