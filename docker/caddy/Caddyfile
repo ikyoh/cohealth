@@ -23,16 +23,16 @@
         || path('/favicon.ico', '/manifest.json', '/robots.txt','/sitemap*')`
 
     handle @app {
-        root * /srv/app
-        try_files {path} /index.html
-        #reverse_proxy app:3000
+        #root * /srv/app
+        #try_files {path} /index.html
+        reverse_proxy app:3000
         encode gzip zstd
         file_server
     }
 
     # API
     root * /srv/api/public
-    php_fastcgi /api* api:9000
+    php_fastcgi unix//var/run/php/php-fpm.sock
     encode gzip zstd
     file_server
 
