@@ -73,13 +73,13 @@ const RegistrationForm = () => {
     })
 
     const checkError = (inputname) => {
-        if (errors) {
-            const index = errors.findIndex(obj => obj.propertyPath === inputname)
-            if (index >= 0)
-                return errors[index].message
-            else return false
-        }
-        else return false
+        // if (errors) {
+        //     const index = errors.findIndex(obj => obj.propertyPath === inputname)
+        //     if (index >= 0)
+        //         return errors[index].message
+        //     else return false
+        // }
+        // else return false
     }
 
 

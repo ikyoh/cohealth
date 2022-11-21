@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { getMissionsNavigate } from "../features/missions/missionsSlice"
 import Layout from '../layouts/Layout'
@@ -13,13 +13,16 @@ import ThTable from '../components/table/ThTable'
 import PageTitle from '../layouts/PageTitle'
 import dayjs from 'dayjs'
 import { getAccount } from '../features/account/accountSlice'
-import { opasStatus } from '../utils/arrays'
 import useDropdownMenu from 'react-accessible-dropdown-menu-hook';
 import { BsThreeDotsVertical } from "react-icons/bs";
+import OpasStatus from '../components/opas_status/OpasStatus'
+import MissionStatus from '../components/mission_status/MissionsStatus'
+import { updateMission } from "../features/missions/missionsSlice"
 
 const MissionsPage = () => {
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const newMissionID = useSelector(getMissionsNavigate)
     const currentUser = useSelector(getAccount)
@@ -40,80 +43,73 @@ const MissionsPage = () => {
         const [sort, setSort] = useState({ by: 'id', direction: 'asc' })
 
 
-        const OpasStatus = ({ prescriptions }) => {
-
-            let opas = prescriptions.filter(p => p.type === "opas")
-
-            if (opas.length === 0)
-                return (
-                    <div className='px-3 py-1 rounded-full bg-error text-white'>OPAS</div>
-                )
-            else
-                return (
-                    <div className={`px-3 py-1 rounded-full text-white ${opasStatus[opas[0].status]}`}>OPAS</div> || null
-                )
-
-        }
-
-        const MissionStatus = ({ mission }) => {
-
-            if (mission.status === "Annulée")
-                return (
-                    <div className='px-3 py-1 rounded-full bg-success text-white'>Annulée</div>
-                )
-
-            if (mission.status === "En attente")
-                return (
-                    <div className='px-3 py-1 rounded-full bg-success text-white'>En attente</div>
-                )
-
-
-            return (
-                null
-                // <div className='px-3 py-1 rounded-full bg-success text-white'>En cours</div>
-            )
-        }
-
         const Row = ({ item }) => {
-
 
             const DropDown = ({ item }) => {
 
- 
-                const { buttonProps, itemProps, isOpen, setIsOpen } = useDropdownMenu(5);
+                const { buttonProps, itemProps, isOpen, setIsOpen } = useDropdownMenu(3, { disableFocusFirstItemOnClick: true, })
+
+                const handleChangeStatus = (event) => {
+                    event.stopPropagation()
+                    dispatch(updateMission({ values: { id: item.id, status: event.target.value } }))
+                }
 
                 return (
 
                     <div className='relative flex justify-end'>
                         <button {...buttonProps}
                             className='h-[44px] w-[44px] flex items-center rounded-full p-2 space-x-1 cursor-pointer text-primary hover:bg-slate-300'
+                            onMouseEnter={() => setIsOpen(true)}
                         >
                             <BsThreeDotsVertical size={26} />
                         </button>
-                        <div className={isOpen ? "absolute right-0 z-10 top-12 w-max  bg-white border rounded-sm p-3 flex flex-col" : "hidden"} role="menu"
+                        <div className={isOpen ? "absolute z-10 w-max bg-white border rounded-sm p-3 flex flex-col cursor-default" : "hidden"} role="menu"
                             onMouseLeave={() => setIsOpen(false)}
+                            onClick={(event) => event.stopPropagation()}
                         >
-                            <button
-                                className='text-center hover:text-action py-1'
-                                {...itemProps[0]}
-                                onClick={()=>console.log('first')}
-                            >
-                                Télécharger
-                            </button>
-                            <button
-                                className='text-center hover:text-action py-1'
-                                {...itemProps[1]}
-                                onClick={()=>console.log('first')}
-                            >
-                                Modifier
-                            </button>
-                            <button
-                                className='text-center hover:text-action py-1'
-                                {...itemProps[2]}
-                                onClick={()=>console.log('first')}
-                            >
-                                Supprimer
-                            </button>
+                            <div className='text-right border-b pb-2 mb-2'>
+                                Action
+                            </div>
+                            {item.status !== 'current' &&
+                                <button
+                                    className='text-right hover:text-action py-1'
+                                    {...itemProps[0]}
+                                    onClick={handleChangeStatus}
+                                    value='current'
+                                >
+                                    Réactiver la mission
+                                </button>
+                            }
+                            {item.status !== 'annulée' &&
+                                <button
+                                    className='text-right hover:text-action py-1'
+                                    {...itemProps[0]}
+                                    onClick={handleChangeStatus}
+                                    value='annulée'
+                                >
+                                    Annuler la mission
+                                </button>
+                            }
+                            {item.status !== 'suspendue' && item.status === 'current' &&
+                                <button
+                                    className='text-right hover:text-action py-1'
+                                    {...itemProps[1]}
+                                    onClick={handleChangeStatus}
+                                    value='suspendue'
+                                >
+                                    Suspendre la mission
+                                </button>
+                            }
+                            {item.status !== 'archivée' &&
+                                <button
+                                    className='text-right hover:text-action py-1'
+                                    {...itemProps[2]}
+                                    onClick={handleChangeStatus}
+                                    value='archivée'
+                                >
+                                    Archiver la mission
+                                </button>
+                            }
                         </div>
                     </div>
 
@@ -127,7 +123,8 @@ const MissionsPage = () => {
                     className={`${item.user.id !== currentUser.id && 'bg-slate-200'}`}
                     onClick={() =>
                         navigate("/missions/" + item.id, { state: { mission: item } })
-                    }>
+                    }
+                >
                     <td >{item.id}</td>
                     <td>
                         {item.patient.gender === 'homme' ? 'Mr ' : 'Mme '}
@@ -144,11 +141,11 @@ const MissionsPage = () => {
                         }
                     </td>
                     <td>
+                        <OpasStatus prescriptions={item.prescriptions} />
+                    </td>
+                    <td>
                         <div className="flex flex-wrap gap-2">
                             <MissionStatus mission={item} />
-                            <OpasStatus prescriptions={item.prescriptions} />
-                            {/* <div className='px-3 py-1 rounded-full bg-success text-white'>OPAS</div>
-                            <div className='px-3 py-1 rounded-full bg-waiting text-white'>OPAS</div> */}
                         </div>
                     </td>
                     <td className='flex justify-end'>
@@ -192,6 +189,7 @@ const MissionsPage = () => {
                             <ThTable handleSort={handleSort} title="Début" sort={sort} sortBy='organization' />
                             <ThTable handleSort={handleSort} title="Fin" sort={sort} sortBy='organization' />
                             <ThTable handleSort={handleSort} title="Durée" sort={sort} sortBy='type' />
+                            <ThTable handleSort={handleSort} title="OPAS" sort={sort} sortBy='email' />
                             <ThTable handleSort={handleSort} title="Statut" sort={sort} sortBy='email' />
                             <th></th>
                         </tr>

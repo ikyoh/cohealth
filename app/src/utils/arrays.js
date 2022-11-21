@@ -137,3 +137,13 @@ export const opasStatus = {
     "envoyé à l'assurance" : 'bg-success',
     "contesté" : 'bg-black text-white'
 }
+
+export const missionStatus = {
+    "programmée" : 'bg-waiting',
+    "en cours" : 'bg-mention',
+    "suspendue" : 'bg-waiting',
+    "terminée" : 'bg-info',
+    "archivée" : 'bg-info',
+    "facturée" : 'bg-success',
+    "annulée" : 'bg-black text-white',
+}

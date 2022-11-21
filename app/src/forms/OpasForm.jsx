@@ -204,10 +204,10 @@ const OpasForm = ({ event = false, beginAt = false, mission = false, endAt = fal
                             <StepBar />
                             <div className="form-content flex flex-col space-y-5">
 
-                                <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
+                                {/* <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
                                     <FormDatePicker name="content.beginAt" label="Début d'OPAS" />
                                     <FormDatePicker name="content.endAt" label="Fin d'OPAS" />
-                                </div>
+                                </div> */}
 
                                 <div className='bg-gray-100 p-2 rounded flex items-center gap-5 text-sm'>
                                     <div>
@@ -264,6 +264,7 @@ const OpasForm = ({ event = false, beginAt = false, mission = false, endAt = fal
                                         name="content.diagnosticNurse"
                                         label="Diagnostic infirmier"
                                         placeholder="Votre diagnostic"
+                                        rows={8}
                                     />
                                 </div>
                             </div>

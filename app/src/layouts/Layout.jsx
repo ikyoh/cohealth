@@ -16,6 +16,8 @@ const Layout = ({ children }) => {
     const dispatch = useDispatch()
     const account = useSelector(getAccount)
 
+    console.log('account', account)
+
     const [modal, setModal] = useState({
         title: '',
         show: false,

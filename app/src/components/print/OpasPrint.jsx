@@ -134,6 +134,8 @@ const Separator = () => {
 // Create Document Component
 const MyDoc = ({ datas, mission, patient }) => {
 
+    console.log('mission', mission)
+
     const cares = [
         {
             act: "let. a ch. 1",
@@ -319,7 +321,7 @@ const MyDoc = ({ datas, mission, patient }) => {
         doctor += 'Tél. : ' + mission.doctor.phone
 
     let nurse = ''
-    nurse += mission.user.lastname.toUpperCase() + ' ' + mission.user.firstname + "\n" + '(RCC : ' + mission.user.rcc + ')'
+    nurse += mission.user.lastname + ' ' + mission.user.firstname + "\n" + '(RCC : ' + mission.user.rcc + ')'
     nurse += "\n"
     nurse += 'Tél. : ' + mission.user.mobile
     nurse += "\n"

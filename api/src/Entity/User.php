@@ -31,7 +31,7 @@ use ApiPlatform\Metadata\Put;
     denormalizationContext : ['groups' => ["user:write"]],
     operations: [
         new Post(),
-        new Get(),
+        new Get(normalizationContext: ['groups' => ['user:read']]),
         new Put(),
         new GetCollection(),
         new Get(

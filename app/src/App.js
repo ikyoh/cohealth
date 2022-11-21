@@ -30,7 +30,8 @@ dayjs.locale('fr')
 
 let weekOfYear = require('dayjs/plugin/weekOfYear')
 dayjs.extend(weekOfYear)
-
+let isBetween = require('dayjs/plugin/isBetween')
+dayjs.extend(isBetween)
 let localizedFormat = require('dayjs/plugin/localizedFormat')
 dayjs.extend(localizedFormat)
 
@@ -40,10 +41,10 @@ const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-       dispatch(currentAccount())
+    dispatch(currentAccount())
   }, [])
-  
-    
+
+
   return (
     <>
       <Router>

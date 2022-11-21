@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from "react-redux";
 import { selectAllMissions, getMissionsStatus, getMissionsError, fetchMissions } from "./missionsSlice";
 import _ from 'lodash'
 
 
-const MissionsContainer = ({ children, search = null, filters = { isActive: false }, sort = { by: "id", direction: "asc" } }) => {
+const MissionsContainer = ({ children, search = null, filters = { isActive: true }, sort = { by: "id", direction: "asc" } }) => {
 
     const dispatch = useDispatch();
     const missions = useSelector(selectAllMissions);
@@ -14,18 +13,26 @@ const MissionsContainer = ({ children, search = null, filters = { isActive: fals
 
     const [datas, setDatas] = useState([])
 
+
     const filterDatas = () => {
 
-        // return _.orderBy(datas.filter(f =>
-        //     f.isActive === filters.isActive
-        //      && (
-        //         f.company.toLowerCase().includes(search.toLowerCase()) ||
-        //         f.type.toLowerCase().includes(search.toLowerCase()) ||
-        //         f.gln.toLowerCase().includes(search.toLowerCase())
-        //     )
-        // ), sort.by, sort.direction)
+        if (filters.isActive) {
+            return _.orderBy(datas.filter(f =>
+                f.status === 'current' && (
+                    f.patient.firstname.toLowerCase().includes(search.toLowerCase()) ||
+                    f.patient.lastname.toLowerCase().includes(search.toLowerCase())
+                )
+            ), sort.by, sort.direction)
+        }
+        else {
+            return _.orderBy(datas.filter(f =>
+                f.status !== 'current' && (
+                    f.patient.firstname.toLowerCase().includes(search.toLowerCase()) ||
+                    f.patient.lastname.toLowerCase().includes(search.toLowerCase())
+                )
+            ), sort.by, sort.direction)
+        }
 
-        return datas
 
     }
 
