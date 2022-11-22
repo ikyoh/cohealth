@@ -1,5 +1,4 @@
 import React from 'react'
-import classNames from 'classnames'
 import { opasStatus } from '../../utils/arrays'
 
 const OpasStatus = ({ prescriptions }) => {

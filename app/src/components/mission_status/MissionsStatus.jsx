@@ -6,8 +6,8 @@ const MissionStatus = ({ mission }) => {
 
     const showStatus = () => {
         if (dayjs().isBetween(dayjs(mission.beginAt), dayjs(mission.endAt))) return 'en cours'
-        if (dayjs().isBefore(dayjs(mission.endAt))) return 'terminée'
-        if (dayjs().isAfter(dayjs(mission.beginAt))) return 'programmée'
+        if (dayjs().isBefore(dayjs(mission.endAt))) return 'programmée'
+        if (dayjs().isAfter(dayjs(mission.beginAt))) return 'terminée'
     }
 
     if (mission.status !== 'current')
