@@ -11,7 +11,11 @@ const FormSelectPatientIRI = ({ name = false, setField, value }) => {
     const Patient = ({ item }) => {
         return (
             <div className={`border-b px-3 py-2 flex justify-between ${value === item.id ? 'bg-action' : 'hover:bg-slate-200 cursor-pointer'}`}
-                onClick={() => setField('patientIRI', item.id)}
+                onClick={() => {
+                    setField('patientIRI', item.id)
+                    if (item.doctor) setField('doctorIRI', item.doctor.id)
+                    if (item.assurance) setField('assuranceIRI', item.assurance.id)
+                }}
             >
                 <div>
                     {item.firstname} {item.lastname}

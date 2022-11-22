@@ -80,6 +80,13 @@ export const addMission = createAsyncThunk('missions/addMission', async (form, T
 
     if (form.action === "patientIRI") {
         datas.patient = API_PATIENTS + "/" + form.values.patientIRI
+
+        if (form.values.doctorIRI)
+            datas.doctor = API_DOCTORS + "/" + form.values.doctorIRI
+
+        if (form.values.assuranceIRI)
+            datas.assurance = API_ASSURANCES + "/" + form.values.assuranceIRI
+
         try {
             const response = await toast.promise(
                 axios.post(API_MISSIONS, datas),
@@ -177,7 +184,7 @@ export const addDocument = createAsyncThunk('missions/addDocument', async (form)
 
 })
 
-export const deleteDocument = createAsyncThunk('missions/deleteDocument', async ({documentId, missionId}) => {
+export const deleteDocument = createAsyncThunk('missions/deleteDocument', async ({ documentId, missionId }) => {
     try {
         const response = await axios.delete(API_MEDIAS + '/' + documentId)
         return (response)
@@ -314,7 +321,7 @@ const missionsSlice = createSlice({
             .addCase(deleteDocument.fulfilled, (state, action) => {
                 const missionIndex = state.missions.findIndex(obj => obj.id === action.meta.arg.missionId)
                 const documentIndex = state.missions[missionIndex].documents.findIndex(obj => obj.id === action.meta.arg.documentId)
-                state.missions[missionIndex].documents.splice(documentIndex,1)
+                state.missions[missionIndex].documents.splice(documentIndex, 1)
             })
     }
 })

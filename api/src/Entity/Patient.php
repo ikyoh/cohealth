@@ -118,7 +118,7 @@ class Patient implements UserOwnedInterface
     #[Groups(["patient:write", "mission:write", "patient:read"])]
     private $contacts;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 1020, nullable: true)]
     #[Groups(["patient:write", "mission:write", "patient:read","mission:read", "patients:read"])]
     private $furtherInfos;
 
