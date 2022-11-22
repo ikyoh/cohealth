@@ -41,17 +41,20 @@ export const download = e => {
 export const calcNumberOfDays = (beginAt, endAt) => {
     const begin = dayjs(beginAt).subtract(1, 'day')
     const end = dayjs(endAt).add(1, 'day')
+    console.log('calcNumberOfDays', end.diff(begin, 'days'))
     return (end.diff(begin, 'days'))
 }
 
 export const calcNumberOfWeeks = (beginAt, endAt) => {
     const begin = dayjs(beginAt).week()
     const end = dayjs(endAt).week()
+    console.log('fircalcNumberOfWeeksst', end - begin + 1)
     return (end - begin + 1)
 }
 
 export const calcNumberOfMonths = (beginAt, endAt) => {
     const begin = dayjs(beginAt).month()
     const end = dayjs(endAt).month()
+    console.log('calcNumberOfMonths', end - begin + 1)
     return (end - begin + 1)
 }

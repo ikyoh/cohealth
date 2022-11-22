@@ -10,10 +10,6 @@ import { nanoid } from "@reduxjs/toolkit";
 import { services_family } from '../utils/arrays'
 import FormTextarea from '../components/forms/FormTextarea'
 import { calcNumberOfDays, calcNumberOfWeeks, calcNumberOfMonths } from '../utils/functions'
-
-
-import FormDatePicker from '../components/forms/FormDatePicker'
-
 import { VscChevronDown, VscClose, VscChevronUp } from 'react-icons/vsc'
 
 
@@ -55,7 +51,6 @@ const OpasForm = ({ event = false, beginAt = false, mission = false, endAt = fal
     const [currentStep, setCurrentStep] = useState(0)
 
     const makeRequest = (formData) => {
-        console.log('formData', formData)
         if (!event) dispatch(addPrescription(formData))
         else dispatch(updatePrescription(formData))
         handleCloseModal()
@@ -93,11 +88,11 @@ const OpasForm = ({ event = false, beginAt = false, mission = false, endAt = fal
                 if (curr.periodicity === "période")
                     return Number(curr.time) * Number(curr.frequency) + acc
                 if (curr.periodicity === "jour")
-                    return Number(curr.time) * Number(curr.frequency) * Number(calcNumberOfDays(beginAt, endAt)) + acc
+                    return Number(curr.time) * Number(curr.frequency) * Number(calcNumberOfDays(data.content.beginAt, data.content.endAt)) + acc
                 if (curr.periodicity === "semaine")
-                    return Number(curr.time) * Number(curr.frequency) * Number(calcNumberOfWeeks(beginAt, endAt)) + acc
+                    return Number(curr.time) * Number(curr.frequency) * Number(calcNumberOfWeeks(data.content.beginAt, data.content.endAt)) + acc
                 if (curr.periodicity === "mois")
-                    return Number(curr.time) * Number(curr.frequency) * Number(calcNumberOfMonths(beginAt, endAt)) + acc
+                    return Number(curr.time) * Number(curr.frequency) * Number(calcNumberOfMonths(data.content.beginAt, data.content.endAt)) + acc
 
             }, 0)
 
