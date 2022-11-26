@@ -41,9 +41,9 @@ const OpasForm = ({ event = false, beginAt = false, mission = false, endAt = fal
 
     useEffect(() => {
         if (event) {
-            let beginAt = dayjs(event.content.beginAt).toDate()
-            let endAt = dayjs(event.content.endAt).toDate()
-            let content = { ...event.content, beginAt: beginAt, endAt: endAt }
+            let beginDate = dayjs(beginAt).toDate()
+            let endDate = dayjs(endAt).toDate()
+            let content = { ...event.content, beginAt: beginDate, endAt: endDate }
             setData({ ...event, content, content: content })
         }
     }, [])

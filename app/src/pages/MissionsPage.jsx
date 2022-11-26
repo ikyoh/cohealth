@@ -18,6 +18,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import OpasStatus from '../components/opas_status/OpasStatus'
 import MissionStatus from '../components/mission_status/MissionsStatus'
 import { updateMission } from "../features/missions/missionsSlice"
+import { calcNumberOfDays } from '../utils/functions'
 
 const MissionsPage = () => {
 
@@ -135,10 +136,7 @@ const MissionsPage = () => {
                         {item.endAt ? dayjs(item.endAt).format('DD/MM/YYYY') : "...."}
                     </td>
                     <td>
-                        {item.endAt
-                            ? dayjs(item.endAt).diff(dayjs(item.beginAt), 'days') + " jours"
-                            : "...."
-                        }
+                        {calcNumberOfDays(item.beginAt, item.endAt)} jours
                     </td>
                     <td>
                         <OpasStatus prescriptions={item.prescriptions} />
