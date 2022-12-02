@@ -76,7 +76,6 @@ export const addMission = createAsyncThunk('missions/addMission', async (form, T
     datas.createdAt = dayjs().format()
     datas.beginAt = dayjs(form.values.beginAt).format()
     datas.endAt = dayjs(form.values.endAt).format()
-    datas.status = "En cours"
 
     if (form.action === "patientIRI") {
         datas.patient = API_PATIENTS + "/" + form.values.patientIRI

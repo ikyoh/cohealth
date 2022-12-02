@@ -307,7 +307,7 @@ const MyDoc = ({ datas, mission, patient }) => {
     assurance += 'Catégorie : ' + mission.assurance.type
 
     let doctor = ''
-    doctor += mission.doctor.fullname + "\n" + '(RCC : ' + mission.doctor.rcc + ')'
+    doctor += mission.doctor.fullname + "\n" + 'RCC : ' + mission.doctor.rcc
     doctor += "\n"
     if (mission.doctor.address1)
         doctor += mission.doctor.address1 + ', '
@@ -321,8 +321,7 @@ const MyDoc = ({ datas, mission, patient }) => {
         doctor += 'Tél. : ' + mission.doctor.phone
 
     let nurse = ''
-    nurse += mission.user.lastname + ' ' + mission.user.firstname + "\n" + '(RCC : ' + mission.user.rcc + ')'
-    nurse += "\n"
+    nurse += mission.user.lastname + ' ' + mission.user.firstname + "\n" + 'RCC : ' + mission.user.rcc
     nurse += 'Tél. : ' + mission.user.mobile
     nurse += "\n"
     nurse += 'Email. : ' + mission.user.email
@@ -334,11 +333,11 @@ const MyDoc = ({ datas, mission, patient }) => {
 
             <Page size="A4" style={styles.page} dpi={dpi} wrap debug={false}>
 
-                <View style={styles.pagination} fixed>
+                {/* <View style={styles.pagination} fixed>
                     <Text style={styles.paginationText} render={({ pageNumber, totalPages }) => (
                         `Page ${pageNumber} / ${totalPages}`
                     )} />
-                </View >
+                </View > */}
 
                 <View style={styles.header}>
                     <View>
@@ -428,7 +427,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                         <View style={styles.caresContainer}>
                             {displayedCares().map((displayedCare) =>
                                 <View style={styles.care} key={nanoid()}>
-                                    <Text style={{ width: 70, padding: 5 }}>
+                                    <Text style={{ width: 80, padding: 5 }}>
                                         {displayedCare.act}
                                     </Text>
                                     <Text style={{ width: '100%', padding: 5, borderLeft: '1px solid black' }}>
@@ -485,7 +484,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                             <Separator />
                             {mission.coworkersDetailed.map(p =>
                                 <Text style={styles.text} key={nanoid()}>
-                                    {p.lastname.toUpperCase()} {p.firstname} {"\n"} (RCC: {p.rcc})
+                                    {p.lastname.toUpperCase()} {p.firstname} {"\n"} RCC: {p.rcc}
                                 </Text>
                             )}
                         </View>
@@ -618,7 +617,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                                 </View>
                                 {groupedServices("A").map((s) =>
                                     <View style={styles.care} key={nanoid()}>
-                                        <Text style={{ width: 100, paddingLeft: 5, paddingTop: 5, paddingBottom: 5 }}>
+                                        <Text style={{ width: 110, paddingLeft: 5, paddingTop: 5, paddingBottom: 5 }}>
                                             {s.opas}
                                         </Text>
                                         <Text style={{ width: 90, paddingLeft: 5, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black', textAlign: 'center' }}>
@@ -627,7 +626,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                                         <Text style={{ width: '100%', paddingLeft: 5, paddingRight: 15, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black' }}>
                                             {s.title}
                                         </Text>
-                                        <Text style={{ width: 100, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
+                                        <Text style={{ width: 110, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
                                             {s.time}
                                         </Text>
                                         <Text style={{ width: 140, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
@@ -649,7 +648,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                                 </View>
                                 {groupedServices("B").map((s) =>
                                     <View style={styles.care} key={nanoid()}>
-                                        <Text style={{ width: 100, paddingLeft: 5, paddingTop: 5, paddingBottom: 5 }}>
+                                        <Text style={{ width: 110, paddingLeft: 5, paddingTop: 5, paddingBottom: 5 }}>
                                             {s.opas}
                                         </Text>
                                         <Text style={{ width: 90, paddingLeft: 5, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black', textAlign: 'center' }}>
@@ -658,7 +657,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                                         <Text style={{ width: '100%', paddingLeft: 5, paddingRight: 15, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black' }}>
                                             {s.title}
                                         </Text>
-                                        <Text style={{ width: 100, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
+                                        <Text style={{ width: 110, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
                                             {s.time}
                                         </Text>
                                         <Text style={{ width: 140, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
@@ -680,7 +679,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                                 </View>
                                 {groupedServices("C").map((s) =>
                                     <View style={styles.care} key={nanoid()}>
-                                        <Text style={{ width: 100, paddingLeft: 5, paddingTop: 5, paddingBottom: 5 }}>
+                                        <Text style={{ width: 110, paddingLeft: 5, paddingTop: 5, paddingBottom: 5 }}>
                                             {s.opas}
                                         </Text>
                                         <Text style={{ width: 90, paddingLeft: 5, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black', textAlign: 'center' }}>
@@ -689,7 +688,7 @@ const MyDoc = ({ datas, mission, patient }) => {
                                         <Text style={{ width: '100%', paddingLeft: 5, paddingRight: 15, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black' }}>
                                             {s.title}
                                         </Text>
-                                        <Text style={{ width: 100, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
+                                        <Text style={{ width: 110, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
                                             {s.time}
                                         </Text>
                                         <Text style={{ width: 140, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
@@ -738,12 +737,11 @@ const MyDoc = ({ datas, mission, patient }) => {
                     </View>
                 </View>
 
-
-                <View style={styles.pagination} fixed>
+                {/* <View style={styles.pagination} fixed>
                     <Text style={styles.paginationText} render={({ pageNumber, totalPages }) => (
                         `Page ${pageNumber} / ${totalPages}`
                     )} />
-                </View>
+                </View> */}
 
             </Page>
 
@@ -762,13 +760,9 @@ const OpasPrint = ({ datas, mission, patient, }) => {
                 <PDFDownloadLink document={<MyDoc datas={datas} mission={mission} patient={patient} />} fileName={fileName}>
                     {({ blob, loading, error }) =>
                         loading ?
-                            <div className='h-[44px] w-[44px] flex items-center rounded-full p-2 space-x-1 cursor-pointer text-white hover:bg-slate-300'>
-                                <AiOutlineDownload size={26} />
-                            </div>
+                            <button disabled>Télécharger</button>
                             :
-                            <div className='h-[44px] w-[44px] flex items-center rounded-full p-2 space-x-1 cursor-pointer text-primary hover:bg-slate-300'>
-                                <AiOutlineDownload size={26} />
-                            </div>
+                            <button>Télécharger</button>
                     }
                 </PDFDownloadLink>
             </div>

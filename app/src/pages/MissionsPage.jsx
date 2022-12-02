@@ -59,8 +59,11 @@ const MissionsPage = () => {
 
                     <div className='relative flex justify-end'>
                         <button {...buttonProps}
-                            className='h-[44px] w-[44px] flex items-center rounded-full p-2 space-x-1 cursor-pointer text-primary hover:bg-slate-300'
-                            onMouseEnter={() => setIsOpen(true)}
+                            className='h-[44px] w-[44px] flex items-center justify-center rounded-full cursor-pointer text-primary hover:bg-slate-300'
+                            onClick={(event) => {
+                                event.stopPropagation()
+                                setIsOpen(true)
+                            }}
                         >
                             <BsThreeDotsVertical size={26} />
                         </button>
@@ -146,7 +149,7 @@ const MissionsPage = () => {
                             <MissionStatus mission={item} />
                         </div>
                     </td>
-                    <td className='flex justify-end'>
+                    <td className='flex justify-end !pr-1'>
                         <DropDown item={item} />
                     </td>
                 </tr>

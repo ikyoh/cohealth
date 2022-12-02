@@ -20,14 +20,17 @@ const PartnersPage = () => {
         const [sort, setSort] = useState({ by: 'lastname', direction: 'desc' })
 
         const Row = ({ item }) => {
-            return (
-                <tr className='pointer-events-none'>
-                    <td>{item.lastname.toUpperCase()} {item.firstname}</td>
-                    <td>{item.mobile}</td>
-                    <td>{item.email}</td>
-                    <td>{item.rcc}</td>
-                </tr>
-            )
+            console.log('item', item)
+            if (item)
+                return (
+                    <tr className='pointer-events-none'>
+                        <td>{item.lastname} {item.firstname}</td>
+                        <td>{item.mobile}</td>
+                        <td>{item.email}</td>
+                        <td>{item.rcc}</td>
+                    </tr>
+                )
+            else return null
         }
 
         const handleSort = (event) => {

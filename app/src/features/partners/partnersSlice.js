@@ -26,6 +26,7 @@ export const fetchPartners = createAsyncThunk('partners/fetchPartners', async ()
                 toastId: "fetchPartners"
             }
         )
+        console.log('first', response.data["hydra:member"])
         return response.data["hydra:member"];
     } catch (error) {
         console.log(error)

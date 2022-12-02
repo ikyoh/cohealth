@@ -60,6 +60,11 @@ down: ## Docker down
 	$(DOCKER_COMPOSE) down
 .PHONY: down
 
+up: ## Docker down
+	@echo "\n==> Docker container up"
+	$(DOCKER_COMPOSE_UP)
+.PHONY: up
+
 remove:
 	@echo "\n==> Remove all images"
 	$(DOCKER) rmi $$(docker images -a -q)

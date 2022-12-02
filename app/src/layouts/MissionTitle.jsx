@@ -15,24 +15,6 @@ const MissionTitle = ({ mission = false, patient = false, children }) => {
                 <div className='font-medium text-2xl'>
                     Mission
                 </div>
-                <div className='flex pt-1'>
-                    {patient.gender === "homme" ? "Mr " : "Mme "}
-                    {patient.firstname} {patient.lastname}
-                    {patient.birthdate &&
-                        " (" + dayjs().diff(patient.birthdate, 'years') + " ans)"
-                    }
-                    {mission.beginAt &&
-                        " du " + dayjs(mission.beginAt).format('DD/MM/YYYY')
-                    }
-                    {mission.endAt &&
-                        " au " + dayjs(mission.endAt).format('DD/MM/YYYY')
-                    }
-                    {mission.beginAt && mission.endAt ?
-                        " (" + calcNumberOfDays(mission.beginAt, mission.endAt) + " jours)"
-                        : null
-                    }
-                </div>
-
             </div>
             <div className='flex items-center gap-10'>
                 <div className='flex gap-3'>
