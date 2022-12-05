@@ -119,9 +119,7 @@ const MissionPage = () => {
         const MissionInfos = () => {
 
             const handleUpdateOpasStatus = (e) => {
-                console.log('e.target.value', e.target.value)
                 dispatch(updatePrescriptionStatus({ id: opas['@id'], status: e.target.value }))
-                setIsOpen(false)
             }
 
             if (!patient || !mission) return null
@@ -448,11 +446,6 @@ const MissionPage = () => {
                 if (event === sort.by) setSort({ by: event, direction: checkDirection() })
                 else setSort({ by: event, direction: "asc" })
             }
-
-
-            const { buttonProps, itemProps, isOpen, setIsOpen } = useDropdownMenu(5);
-
-
 
 
             const FileDropDown = ({ item }) => {
