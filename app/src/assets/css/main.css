@@ -25,7 +25,6 @@
   
 }
 
-
 .responsive-table {
   @apply w-full divide-y bg-white table-fixed;
 }
@@ -89,7 +88,7 @@
 }
 
 .form-footer {
-  @apply mt-auto w-full border-t flex justify-around items-center py-3;
+  @apply mt-auto w-full border-t flex justify-around items-center py-3 bg-slate-400;
 }
 
 .input-group>input[type="text"] {
@@ -127,8 +126,9 @@
 
 /* BUTTONS */
 
+
 .button-submit {
-  @apply rounded-full text-white bg-action px-3 py-1 disabled:bg-gray-400 hover:bg-primary;
+  @apply rounded-full text-white !bg-action px-3 py-1 disabled:bg-gray-400 hover:bg-primary;
 }
 
 .button-error {

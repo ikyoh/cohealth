@@ -37,7 +37,7 @@ const LoginFrom = () => {
                 }}
             >
                 {({ isSubmitting }) => (
-                    <Form className=''>
+                    <Form>
                         <div className="my-3">
                             <label htmlFor="username" className='text-sm'>
                                 Identifiant*
