@@ -126,25 +126,27 @@ const MissionPage = () => {
             else return (
                 <div className="flex flex-row gap-3">
                     <div className="basis-5/12 relative bg-white border p-5 flex flex-col gap-5">
-                        <div className="absolute top-3 right-2">
-                            <Dropdown>
-                                <button
-                                    onClick={() => handleOpenModal({ title: 'Edition mission', content: <MissionEditForm event={mission} modalAction="updateMission" handleCloseModal={handleCloseModal} /> })}
-                                >
-                                    Editer la mission
-                                </button>
-                                <button
-                                    onClick={() => handleOpenModal({ title: 'Médecin mandataire', content: <MissionEditForm event={mission} modalAction="doctorIRI" handleCloseModal={handleCloseModal} /> })}
-                                >
-                                    Editer le médecin mandataire
-                                </button>
-                                <button
-                                    onClick={() => handleOpenModal({ title: 'Assurance', content: <MissionEditForm event={mission} modalAction="assuranceIRI" handleCloseModal={handleCloseModal} /> })}
-                                >
-                                    Editer l'assurance
-                                </button>
-                            </Dropdown>
-                        </div>
+                        {isMyMission &&
+                            <div className="absolute top-3 right-2">
+                                <Dropdown>
+                                    <button
+                                        onClick={() => handleOpenModal({ title: 'Edition mission', content: <MissionEditForm event={mission} modalAction="updateMission" handleCloseModal={handleCloseModal} /> })}
+                                    >
+                                        Editer la mission
+                                    </button>
+                                    <button
+                                        onClick={() => handleOpenModal({ title: 'Médecin mandataire', content: <MissionEditForm event={mission} modalAction="doctorIRI" handleCloseModal={handleCloseModal} /> })}
+                                    >
+                                        Editer le médecin mandataire
+                                    </button>
+                                    <button
+                                        onClick={() => handleOpenModal({ title: 'Assurance', content: <MissionEditForm event={mission} modalAction="assuranceIRI" handleCloseModal={handleCloseModal} /> })}
+                                    >
+                                        Editer l'assurance
+                                    </button>
+                                </Dropdown>
+                            </div>
+                        }
                         <div className='font-semibold uppercase'>
                             Mission :
                             {mission.beginAt &&
@@ -218,15 +220,17 @@ const MissionPage = () => {
 
 
                     <div className="basis-5/12 relative bg-white border p-5 flex flex-col gap-5">
-                        <div className="absolute top-3 right-2">
-                            <Dropdown>
-                                <button
-                                    onClick={() => handleOpenModal({ title: 'Fiche patient', content: <PatientForm event={patient} modalAction="patient" handleCloseModal={handleCloseModal} /> })}
-                                >
-                                    Editer le patient
-                                </button>
-                            </Dropdown>
-                        </div>
+                        {isMyMission &&
+                            <div className="absolute top-3 right-2">
+                                <Dropdown>
+                                    <button
+                                        onClick={() => handleOpenModal({ title: 'Fiche patient', content: <PatientForm event={patient} modalAction="patient" handleCloseModal={handleCloseModal} /> })}
+                                    >
+                                        Editer le patient
+                                    </button>
+                                </Dropdown>
+                            </div>
+                        }
                         <div className='font-semibold uppercase'>
                             Patient :
                             {patient.gender === "homme" ? " Mr " : " Mme "}
@@ -297,11 +301,16 @@ const MissionPage = () => {
                             <div className="absolute top-3 right-2">
                                 <Dropdown>
                                     {mission.prescriptions.length < 1 ?
-                                        <button
-                                            onClick={() => handleOpenModal({ title: 'Nouveau OPAS', content: <OpasForm event={false} mission={mission['@id']} beginAt={mission.beginAt} endAt={mission.endAt} handleCloseModal={handleCloseModal} /> })}
-                                        >
-                                            Créer un OPAS
-                                        </button>
+
+                                        <>
+                                            {isMyMission &&
+                                                <button
+                                                    onClick={() => handleOpenModal({ title: 'Nouveau OPAS', content: <OpasForm event={false} mission={mission['@id']} beginAt={mission.beginAt} endAt={mission.endAt} handleCloseModal={handleCloseModal} /> })}
+                                                >
+                                                    Créer un OPAS
+                                                </button>
+                                            }
+                                        </>
                                         :
                                         <>
                                             {isMyMission &&
@@ -485,23 +494,27 @@ const MissionPage = () => {
                             >
                                 Télécharger
                             </button>
-                            <button
-                                className='text-center hover:text-action py-1'
-                                {...itemProps[1]}
-                                onClick={() => window.alert("Fonction à développer")}
-                            >
-                                Modifier
-                            </button>
-                            <button
-                                className='text-center hover:text-action py-1'
-                                {...itemProps[2]}
-                                onClick={() => {
-                                    dispatch(deleteDocument({ documentId: item.id, missionId: mission.id }))
-                                }
-                                }
-                            >
-                                Supprimer
-                            </button>
+                            {isMyMission &&
+                                <>
+                                    <button
+                                        className='text-center hover:text-action py-1'
+                                        {...itemProps[1]}
+                                        onClick={() => window.alert("Fonction à développer")}
+                                    >
+                                        Modifier
+                                    </button>
+                                    <button
+                                        className='text-center hover:text-action py-1'
+                                        {...itemProps[2]}
+                                        onClick={() => {
+                                            dispatch(deleteDocument({ documentId: item.id, missionId: mission.id }))
+                                        }
+                                        }
+                                    >
+                                        Supprimer
+                                    </button>
+                                </>
+                            }
                         </div>
                     </div>
                 )
