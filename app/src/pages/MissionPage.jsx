@@ -304,57 +304,62 @@ const MissionPage = () => {
                                         </button>
                                         :
                                         <>
-                                            <button
-                                                onClick={() => handleOpenModal({ title: 'Edition OPAS', content: <OpasForm event={prescriptions[0]} mission={mission['@id']} beginAt={mission.beginAt} endAt={mission.endAt} handleCloseModal={handleCloseModal} /> })}
-                                            >
-                                                Editer l'OPAS
-                                            </button>
+                                            {isMyMission &&
+                                                <button
+                                                    onClick={() => handleOpenModal({ title: 'Edition OPAS', content: <OpasForm event={prescriptions[0]} mission={mission['@id']} beginAt={mission.beginAt} endAt={mission.endAt} handleCloseModal={handleCloseModal} /> })}
+                                                >
+                                                    Editer l'OPAS
+                                                </button>
+                                            }
 
                                             {prescriptions?.map(p =>
                                                 <button>
                                                     <OpasPrint datas={p} mission={mission} patient={patient} />
                                                 </button>
                                             )}
-
-                                            <div className='border-b'>
-                                                Status de l'OPAS
-                                            </div>
-                                            <button
-                                                onClick={handleUpdateOpasStatus}
-                                                value="brouillon"
-                                            >
-                                                <FaCircle className="text-waiting" />
-                                                Brouillon
-                                            </button>
-                                            <button
-                                                onClick={handleUpdateOpasStatus}
-                                                value="envoyé au médecin"
-                                            >
-                                                <FaCircle className="text-mention" />
-                                                Envoyé au médecin
-                                            </button>
-                                            <button
-                                                onClick={handleUpdateOpasStatus}
-                                                value="validé par le médecin"
-                                            >
-                                                <FaCircle className="text-info" />
-                                                Validé par le médecin
-                                            </button>
-                                            <button
-                                                onClick={handleUpdateOpasStatus}
-                                                value="envoyé à l'assurance"
-                                            >
-                                                <FaCircle className="text-success" />
-                                                Envoyé à l'assurance
-                                            </button>
-                                            <button
-                                                className='flex items-center gap-1 hover:text-action py-1'
-                                                onClick={handleUpdateOpasStatus}
-                                                value="contesté"
-                                            >
-                                                <FaCircle className="text-black" />
-                                                Contesté par l'assurance
-                                            </button>
+                                            {isMyMission &&
+                                                <>
+                                                    <div className='border-b'>
+                                                        Status de l'OPAS
+                                                    </div>
+                                                    <button
+                                                        onClick={handleUpdateOpasStatus}
+                                                        value="brouillon"
+                                                    >
+                                                        <FaCircle className="text-waiting" />
+                                                        Brouillon
+                                                    </button>
+                                                    <button
+                                                        onClick={handleUpdateOpasStatus}
+                                                        value="envoyé au médecin"
+                                                    >
+                                                        <FaCircle className="text-mention" />
+                                                        Envoyé au médecin
+                                                    </button>
+                                                    <button
+                                                        onClick={handleUpdateOpasStatus}
+                                                        value="validé par le médecin"
+                                                    >
+                                                        <FaCircle className="text-info" />
+                                                        Validé par le médecin
+                                                    </button>
+                                                    <button
+                                                        onClick={handleUpdateOpasStatus}
+                                                        value="envoyé à l'assurance"
+                                                    >
+                                                        <FaCircle className="text-success" />
+                                                        Envoyé à l'assurance
+                                                    </button>
+                                                    <button
+                                                        className='flex items-center gap-1 hover:text-action py-1'
+                                                        onClick={handleUpdateOpasStatus}
+                                                        value="contesté"
+                                                    >
+                                                        <FaCircle className="text-black" />
+                                                        Contesté par l'assurance
+                                                    </button>
+                                                </>
+                                            }
                                         </>
                                     }
                                 </Dropdown>

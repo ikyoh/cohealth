@@ -27,6 +27,7 @@ const MissionsPage = () => {
 
     const newMissionID = useSelector(getMissionsNavigate)
     const currentUser = useSelector(getAccount)
+    const me = useSelector(getAccount)
 
     useEffect(() => {
         if (newMissionID)
@@ -150,7 +151,9 @@ const MissionsPage = () => {
                         </div>
                     </td>
                     <td className='flex justify-end !pr-1'>
-                        <DropDown item={item} />
+                        {item.user.id === me.id ?
+                            <DropDown item={item} />
+                            : null}
                     </td>
                 </tr>
             )
@@ -190,7 +193,7 @@ const MissionsPage = () => {
                             <ThTable handleSort={handleSort} title="Début" sort={sort} sortBy='organization' />
                             <ThTable handleSort={handleSort} title="Fin" sort={sort} sortBy='organization' />
                             <ThTable handleSort={handleSort} title="Durée" sort={sort} sortBy='type' />
-                            <ThTable handleSort={handleSort} title="OPAS" sort={sort} sortBy='email' />
+                            <ThTable handleSort={handleSort} title="OPAS" sort={sort} sortBy='email' className="w-60" />
                             <ThTable handleSort={handleSort} title="Statut" sort={sort} sortBy='email' />
                             <th></th>
                         </tr>

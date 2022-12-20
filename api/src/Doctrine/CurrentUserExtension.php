@@ -35,18 +35,18 @@ final class CurrentUserExtension implements QueryCollectionExtensionInterface, Q
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
 
-        if ($reflexionClass->implementsInterface(UserOwnedInterface::class)) {
-            $queryBuilder->andWhere("$rootAlias.user = :user");
-            $queryBuilder->setParameter("user", $user);
-        }
-        // if ($reflexionClass->implementsInterface(UserOwnedInterface::class) && $resourceClass === Mission::class) {
-        //     $queryBuilder->andWhere("$rootAlias.user = :user OR $rootAlias.coworkers LIKE :userId");
-        //     $queryBuilder->setParameter("user", $user);
-        //     $queryBuilder->setParameter('userId', '%' . $user->getId() . '%');
-        // } elseif ($reflexionClass->implementsInterface(UserOwnedInterface::class)) {
+        // if ($reflexionClass->implementsInterface(UserOwnedInterface::class)) {
         //     $queryBuilder->andWhere("$rootAlias.user = :user");
         //     $queryBuilder->setParameter("user", $user);
         // }
+        if ($reflexionClass->implementsInterface(UserOwnedInterface::class) && $resourceClass === Mission::class) {
+            $queryBuilder->andWhere("$rootAlias.user = :user OR $rootAlias.coworkers LIKE :userId");
+            $queryBuilder->setParameter("user", $user);
+            $queryBuilder->setParameter('userId', '%' . $user->getId() . '%');
+        } elseif ($reflexionClass->implementsInterface(UserOwnedInterface::class)) {
+            $queryBuilder->andWhere("$rootAlias.user = :user");
+            $queryBuilder->setParameter("user", $user);
+        }
     }
 
     //public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null): void;

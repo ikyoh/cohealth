@@ -14,6 +14,8 @@ const MissionsContainer = ({ children, search = null, filters = { isActive: true
     const [datas, setDatas] = useState([])
 
 
+    console.log('missions', missions)
+
     const filterDatas = () => {
 
         if (filters.isActive) {
