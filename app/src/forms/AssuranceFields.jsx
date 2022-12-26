@@ -12,6 +12,7 @@ const AssuranceFields = ({name=false, className=false}) => {
             <FormInput name={name ? name + ".organization" : "organization"} label="Groupe" placeholder="" />
             <FormSelect name={name ? name + ".type" : "type"} label="Type" placeholder="" required={true}>
                 <option value="">Choisir un type</option>
+                <option value="INTERNATIONALE">Internationale</option>
                 <option value="LAMAL">LAMAL</option>
                 <option value="LAA">LAA</option>
                 <option value="LAI">LAI</option>
