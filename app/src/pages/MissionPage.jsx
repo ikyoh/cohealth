@@ -328,7 +328,7 @@ const MissionPage = () => {
                                             )}
                                             {isMyMission &&
                                                 <>
-                                                    <div className='border-b text-zinc-400p p-2 font-light'>
+                                                    <div className='border-b text-zinc-400 p-2 font-light'>
                                                         Status de l'OPAS
                                                     </div>
                                                     <button
