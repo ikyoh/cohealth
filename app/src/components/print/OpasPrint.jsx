@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
         paddingLeft: gap / 2
     },
     mainSubtitle: {
-
         fontSize: '12px',
         textAlign: 'left',
         paddingTop: '4px',
@@ -106,7 +105,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     userSignature: {
-        marginTop: '9px',
+        marginTop: 9,
         objectFit: 'contain',
         maxWidth: '230px',
         maxHeight: '95px',
