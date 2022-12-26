@@ -19,6 +19,7 @@ use ApiPlatform\Metadata\GetCollection;
 #[ApiResource(
     normalizationContext: ['groups' => ['missions:read']],
     denormalizationContext: ['groups' => ['mission:write']],
+    paginationEnabled: false,
     operations: [
         new GetCollection(),
         new Get(normalizationContext: ['groups' => ['mission:read']]),
