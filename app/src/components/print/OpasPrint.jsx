@@ -106,12 +106,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     userSignature: {
-        marginTop: "9px",
-        objectFit: "contain",
-        maxWidth: "230px",
-        maxHeight: "95px",
-        width: "auto",
-        height: "auto",
+        marginTop: '9px',
+        objectFit: 'contain',
+        maxWidth: '230px',
+        maxHeight: '95px',
+        width: 'auto',
+        height: 'auto',
     }
 });
 
@@ -313,7 +313,10 @@ const MyDoc = ({ datas, mission, patient }) => {
         doctor += 'Tél. : ' + mission.doctor.phone
 
     let nurse = ''
-    nurse += mission.user.lastname + ' ' + mission.user.firstname + "\n" + 'RCC : ' + mission.user.rcc
+    nurse += mission.user.lastname + ' ' + mission.user.firstname
+    nurse += "\n"
+    nurse += 'RCC : ' + mission.user.rcc
+    nurse += "\n"
     nurse += 'Tél. : ' + mission.user.mobile
     nurse += "\n"
     nurse += 'Email. : ' + mission.user.email
