@@ -6,9 +6,6 @@
     @apply leading-tight absolute py-3 bg-white z-40 w-48 right-0 top-0 border;
 }
 
-.dropdown>div {
-    @apply p-2 text-zinc-400 font-light;
-}
 
 .dropdown>button {
     @apply p-2 hover:text-action cursor-pointer flex gap-3 items-center justify-start text-left;

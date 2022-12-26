@@ -105,13 +105,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     userSignature: {
-        marginTop: 9,
         objectFit: 'contain',
         maxWidth: '230px',
         maxHeight: '95px',
         width: 'auto',
         height: 'auto',
-    }
+    },
 });
 
 const Separator = () => {
