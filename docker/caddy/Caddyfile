@@ -24,9 +24,9 @@
 
 
     handle @app {
+        #reverse_proxy app:3000
         root * /srv/app
         try_files {path} /index.html
-        #reverse_proxy app:3000
         encode gzip zstd
         file_server
     }
@@ -36,7 +36,6 @@
     php_fastcgi unix//var/run/php/php-fpm.sock
     encode gzip zstd
     file_server
-
 }
 
 
