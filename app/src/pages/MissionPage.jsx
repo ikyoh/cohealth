@@ -322,7 +322,7 @@ const MissionPage = () => {
                                             }
 
                                             {prescriptions?.map(p =>
-                                                <button>
+                                                <button key={nanoid()}>
                                                     <OpasPrint datas={p} mission={mission} patient={patient} />
                                                 </button>
                                             )}

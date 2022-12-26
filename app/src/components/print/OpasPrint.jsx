@@ -32,18 +32,15 @@ const styles = StyleSheet.create({
         marginHorizontal: gap / 2,
     },
     text: {
-
         fontSize: '9px',
         lineHeight: 1.4
     },
     textBold: {
-
         fontWeight: 'bold',
         fontSize: '9px',
         lineHeight: 1.4
     },
     mainTitle: {
-
         fontWeight: 'bold',
         fontSize: '18px',
         textAlign: 'left',
@@ -55,16 +52,13 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         paddingTop: '4px',
         paddingLeft: '8px'
-
     },
     title: {
-
         fontWeight: 'bold',
         fontSize: '12px',
         textAlign: 'left'
     },
     signature: {
-
         fontSize: '9px',
         textAlign: 'left',
     },
@@ -93,7 +87,6 @@ const styles = StyleSheet.create({
         padding: '4 4',
         borderBottom: '1px solid black',
         flexDirection: 'row',
-
         fontWeight: 'bold',
         fontSize: '9px',
     },
@@ -109,7 +102,6 @@ const styles = StyleSheet.create({
     },
     paginationText: {
         width: '100%',
-
         fontSize: '9px',
         textAlign: 'center',
     },
@@ -511,8 +503,6 @@ const MyDoc = ({ datas, mission, patient }) => {
                         </View>
                     }
                 </View>
-
-
 
             </Page >
 

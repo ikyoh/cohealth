@@ -15,6 +15,7 @@
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "classnames": "^2.3.2",
+    "daisyui": "^2.45.0",
     "dayjs": "^1.11.5",
     "formik": "^2.2.9",
     "js-file-download": "^0.4.12",
