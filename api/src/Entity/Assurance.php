@@ -35,7 +35,7 @@ class Assurance
     #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write"]) ]
     private $organization;
 
-    #[ORM\Column(type: 'string', length: 10)]
+    #[ORM\Column(type: 'string', length: 20)]
     #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write", "patient:read", "patients:read", "mission:read", "missions:read"])]
     private $type;
 
