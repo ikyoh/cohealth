@@ -315,10 +315,15 @@ const MyDoc = ({ datas, mission, patient }) => {
     nurse += "\n"
     nurse += 'RCC : ' + mission.user.rcc
     nurse += "\n"
-    nurse += 'Tél. : ' + mission.user.mobile
+    nurse += 'Tél. : ' + mission.user.phone || mission.user.mobile
     nurse += "\n"
-    nurse += 'Email. : ' + mission.user.email
+    nurse += 'Email : ' + mission.user.email
+    nurse += "\n"
+    nurse += 'Adresse : ' + mission.user.address1
+    nurse += "\n"
+    nurse += mission.user.npa + ' ' + mission.user.city
 
+    console.log('mission.user', mission.user)
 
     return (
 

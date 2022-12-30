@@ -156,7 +156,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $signature;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:write"])]
+    #[Groups(["users:read", "user:write", "partners:read", "mission:read"])]
     private $address1;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -168,11 +168,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $bic;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:write"])]
+    #[Groups(["users:read", "user:write", "partners:read", "mission:read"])]
     private $city;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:write"])]
+    #[Groups(["users:read", "user:write", "partners:read", "mission:read"])]
     private $npa;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: MediaObject::class)]

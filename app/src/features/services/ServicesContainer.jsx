@@ -15,6 +15,7 @@ const ServicesContainer = ({ children, search = null, filters = { isActive: true
 
     const [datas, setDatas] = useState([])
 
+    console.log('search', search)
     const filterDatas = () => {
 
         return _.orderBy(datas.filter(f =>
@@ -40,7 +41,7 @@ const ServicesContainer = ({ children, search = null, filters = { isActive: true
     }, [services, dispatch])
 
 
-
+console.log('filterDatas', filterDatas)
 
     if (error) return null
     else return (
