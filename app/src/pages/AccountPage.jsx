@@ -39,7 +39,7 @@ const AccountPage = () => {
                             {account && account.signature
                                 ? <img src={URL + account.signature.contentUrl} className='object-cover max-w-xs' alt="profil" />
                                 : <div className='flex items-center justify-center rounded-full px-3 py-2 bg-action'>
-                                   Ma signature
+                                    Ma signature
                                 </div>
                             }
                         </div>

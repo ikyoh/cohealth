@@ -55,51 +55,51 @@ stop: ## Docker stop
 	$(DOCKER_COMPOSE) stop
 .PHONY: stop
 
+up: ## Docker up
+	@echo "\n==> Up docker container"
+	$(DOCKER_COMPOSE) up -d --build
+.PHONY: up
+
 down: ## Docker down
 	@echo "\n==> Remove docker container"
 	$(DOCKER_COMPOSE) down
 .PHONY: down
 
-up: ## Docker down
-	@echo "\n==> Docker container up"
-	$(DOCKER_COMPOSE_UP)
-.PHONY: up
-
 remove:
 	@echo "\n==> Remove all images"
 	$(DOCKER) rmi $$(docker images -a -q)
 .PHONY: remove
-	
+
 prune :
 	@echo "\n==> Clean up"
 	$(DOCKER) system prune --all --force
 .PHONY: prune
-
+	
 docker-dev: ## Docker docker-compose.dev.yml
 	@echo "\n==> Docker compose development environment ..."
-	$(DOCKER_COMPOSE) -f docker-compose.dev.yml up -d --build
+	$(DOCKER_COMPOSE) up -d --build
 .PHONY: docker-dev
 
 docker-prod:
 	@echo "\n==> Docker compose production environment ..."
-	$(DOCKER_COMPOSE) up -d --build
+	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.production.yml up -d --build
 	$(DOCKER) exec -it ${APP_NAME}-app npm run build --force
 	$(DOCKER) exec -it ${APP_NAME}-api composer dump-env prod
 	$(DOCKER_COMPOSE_STOP) app
 .PHONY: docker-prod
 
-reload :
-	$(DOCKER_COMPOSE) stop api
-	$(DOCKER_COMPOSE) up -d api
-.PHONY: reload
 
 ## === SYMFONY ================================================
 symfony-dev : ## Symfony dev environment
 	@echo "\n==> Start Symfony dev environment ..."
 	rm -f api/.env.local.php
-	$(DOCKER_EXEC) ${APP_NAME}-api symfony serve -d
+	$(DOCKER_EXEC) ${APP_NAME}-api symfony server:start --no-tls -d
 .PHONY: symfony-dev
 
+symfony-bash : ## Symfony bash
+	@echo "\n==> Start Symfony bash ..."
+	$(DOCKER) exec -it ${APP_NAME}-api bash
+.PHONY: symfony-bash
 
 
 ## === CADDY ================================================
@@ -109,6 +109,7 @@ caddy-reload: ## Reload Caddy Server
 .PHONY: caddy-reload
 
 
+
 ## === FIRST INSTALL ================================================
 install: 
 	@echo "\n==> Run production environment ..."
@@ -116,14 +117,12 @@ install:
 
 
 ## === DEVELOPMENT ================================================
-dev: ## Development environment
-	$(MAKE) docker-dev
-	$(MAKE) symfony-dev
+dev: docker-dev symfony-dev
 	@echo "\n==> Running development environment ..."
 .PHONY: dev
 
 
 ## === PRODUCTION ================================================
 prod: docker-prod caddy-reload
-	@echo "\n==> Run production environment ..."
+	@echo "\n==> Running production environment ..."
 .PHONY: prod

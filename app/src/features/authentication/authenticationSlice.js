@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { API_LOGIN, API_LOGOUT, URL } from "../apiConfig";
+import { API_LOGIN, API_LOGOUT, URL } from '../../config/api.config'
 import { toast } from 'react-toastify';
-import jwt_decode from "jwt-decode";
 
 
 const initialState = {

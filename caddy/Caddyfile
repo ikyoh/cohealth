@@ -13,6 +13,8 @@
 # Host which Caddy will handle
 {$DOMAIN_NAME} {
 
+log
+
     # APP
     @app expression `(
             !path(
@@ -20,23 +22,25 @@
                 '*.json*', '*.html', '*.csv', '*.yml', '*.yaml', '*.xml'
             )
         )
-        || path('/favicon.ico', '/manifest.json', '/robots.txt','/sitemap*')`
-
+        || path('/favicon.ico', '/manifest.json', '/robots.txt', '/_next*', '/sitemap*')`
 
     handle @app {
-        #reverse_proxy app:3000
         root * /srv/app
         try_files {path} /index.html
         encode gzip zstd
         file_server
     }
 
+    #vulcain
+
     # API
     root * /srv/api/public
     php_fastcgi unix//var/run/php/php-fpm.sock
     encode gzip zstd
     file_server
+
 }
+
 
 
 

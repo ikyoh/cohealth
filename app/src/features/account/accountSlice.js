@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { API_CURRENT_USER, API_USERS, API_MEDIAS } from "../apiConfig";
+import { API_CURRENT_USER, API_USERS, API_MEDIAS, API_URL } from "../../config/api.config";
 import dayjs from "dayjs";
 import { toast } from 'react-toastify';
 
@@ -32,6 +32,7 @@ export const registerAccount = createAsyncThunk('account/register', async (form,
 
 
 export const currentAccount = createAsyncThunk('account/currentAccount', async () => {
+    console.log('API_URL', API_URL)
     try {
         const response = await axios.get(API_CURRENT_USER)
         return response.data;
