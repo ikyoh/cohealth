@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-import { usePostData as usePostDocument, useDeleteData as useDeleteDocument } from '../queryHooks/useDocument'
+import { usePostData as usePostDocument, useDeleteID as useDeleteDocument } from '../queryHooks/useDocument'
 import { useGetCurrentAccount, usePutData as usePutAccount } from '../queryHooks/useAccount'
 import { useForm } from "react-hook-form"
 import Form from "../components/form/form/Form"

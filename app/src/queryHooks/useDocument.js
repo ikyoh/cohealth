@@ -51,6 +51,10 @@ const deleteIRI = iri => {
     return requestIRI({ url: iri, method: 'delete'})
 }
 
+const deleteID = iri => {
+    return request({ url: API + "/" + id, method: 'delete' })
+}
+
 /* HOOKS */
 export const useGetAllDatas = (search = '', sortValue, sortDirection, enabled) => {
     return useQuery([queryKey], fetchAllDatas, {
@@ -133,6 +137,19 @@ export const usePutData = () => {
 export const useDeleteIRI = () => {
     const queryClient = useQueryClient()
     return useMutation(deleteIRI, {
+        onError: (error, _, context) => {
+            console.log('error', error)
+            queryClient.setQueryData([queryKey], context.previousDatas)
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries()
+        }
+    })
+}
+
+export const useDeleteID = () => {
+    const queryClient = useQueryClient()
+    return useMutation(deleteID, {
         onError: (error, _, context) => {
             console.log('error', error)
             queryClient.setQueryData([queryKey], context.previousDatas)
