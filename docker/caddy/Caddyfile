@@ -11,7 +11,7 @@
 }
 
 # Host which Caddy will handle
-{$DOMAIN_NAME} {
+{$DOMAIN_NAME} 
 
 log
 
@@ -31,8 +31,7 @@ log
         file_server
     }
 
-    #vulcain
-
+route {
     # API
     root * /srv/api/public
     php_fastcgi unix//var/run/php/php-fpm.sock
