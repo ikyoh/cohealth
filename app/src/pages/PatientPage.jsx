@@ -16,6 +16,7 @@ import { MdOutlineHealthAndSafety } from "react-icons/md";
 import PageTitle from '../layouts/PageTitle'
 import { MdPendingActions, MdArrowBack } from "react-icons/md";
 import Button from '../components/buttons/Button'
+import _ from 'lodash'
 
 const PatientPage = () => {
 

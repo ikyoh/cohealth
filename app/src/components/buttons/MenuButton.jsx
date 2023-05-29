@@ -1,12 +1,10 @@
 import React from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { getAccount } from '../../features/account/accountSlice'
 import { useGetCurrentAccount } from '../../queryHooks/useAccount'
-import { useSelector } from "react-redux"
 
 const MenuButton = ({ children, title=false, disabled = false, link = "/", roles = [false] }) => {
 
-	// const location = useLocation();
+	const location = useLocation();
 	// const account = useSelector(getAccount)
 
 	const { data:account, isLoading, error } = useGetCurrentAccount()

@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { request, requestIRI } from '../utils/axios.utils'
 import { API_MEDIAS as API, itemsPerPage } from '../config/api.config'
-
+import _ from 'lodash'
 
 /* CONFIG */
 const queryKey = 'documents'
@@ -51,7 +51,7 @@ const deleteIRI = iri => {
     return requestIRI({ url: iri, method: 'delete'})
 }
 
-const deleteID = iri => {
+const deleteID = id => {
     return request({ url: API + "/" + id, method: 'delete' })
 }
 
