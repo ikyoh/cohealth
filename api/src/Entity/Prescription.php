@@ -29,29 +29,29 @@ class Prescription implements UserOwnedInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["prescriptions:read", "mission:read"])]
+    #[Groups(["prescriptions:read", "prescription:read"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["prescriptions:read", "prescription:read", "prescription:write", "mission:write", "mission:read", "missions:read"])]
+    #[Groups(["prescriptions:read", "prescription:read", "prescription:write", "mission:write", "missions:read"])]
     private $type;
 
     // brouillon
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["prescriptions:read", "prescription:read", "prescription:write", "mission:write", "mission:read", "missions:read"])]
+    #[Groups(["prescriptions:read", "prescription:read", "prescription:write", "mission:write", "missions:read"])]
     private $status = "brouillon";
 
     #[ORM\Column(type: 'json', nullable: true)]
-    #[Groups(["prescriptions:read", "prescription:read", "prescription:write", "mission:write", "mission:read", "missions:read"])]
+    #[Groups(["prescriptions:read", "prescription:read", "prescription:write", "mission:write", "missions:read"])]
     private $content = [];
 
     #[ORM\Column(type: 'datetime')]
-    #[Groups(["prescriptions:read", "prescription:read", "prescription:write", "mission:write", "mission:read", "missions:read"])]
+    #[Groups(["prescriptions:read", "prescription:read", "prescription:write", "mission:write", "missions:read"])]
     private $createdAt;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["prescriptions:read", "prescription:read", "prescription:write", "mission:write", "mission:read", "missions:read"])]
+    #[Groups(["prescriptions:read", "prescription:read", "prescription:write", "mission:write", "missions:read"])]
     private $user;
 
     #[ORM\ManyToOne(targetEntity: Mission::class, inversedBy: 'prescriptions')]

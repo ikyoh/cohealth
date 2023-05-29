@@ -1,91 +1,118 @@
-import React, { useState } from 'react'
-import Layout from '../layouts/Layout'
-import { AiFillPlusCircle } from "react-icons/ai";
-import { BsCheck2Circle } from "react-icons/bs";
+import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { MdOutlineHealthAndSafety } from "react-icons/md";
-import AssuranceForm from '../forms/AssuranceForm';
-import AssurancesContainer from '../features/assurances/AssurancesContainer';
-import SearchFilter from '../components/SearchFilter';
-import ThTable from '../components/table/ThTable';
-import PageTitle from '../layouts/PageTitle';
+import AssuranceForm from '../forms/AssuranceForm'
+import PageTitle from '../layouts/PageTitle'
+import { useGetPaginatedDatas } from '../queryHooks/useAssurance'
+import { useSearch } from '../hooks/useSearch'
+import { useSortBy } from '../hooks/useSortBy'
+import { useModal } from '../hooks/useModal'
+import * as Table from '../components/table/Table'
+import Pagination from '../components/pagination/Pagination'
+import AddButton from '../components/buttons/AddButton'
+import Loader from '../components/Loader'
 
+const AssurancesPage = () => {
 
-const AssurancesPage= () => {
+    const { state: initialPageState } = useLocation()
+    const { Modal, handleOpenModal, handleCloseModal } = useModal()
 
-    const PageContent = ({ handleOpenModal, handleCloseModal }) => {
+    const { searchValue, searchbar } = useSearch(initialPageState ? initialPageState.searchValue : "")
+    const [page, setPage] = useState(initialPageState ? initialPageState.page : 1)
+    const { sortValue, sortDirection, handleSort } = useSortBy(initialPageState ? { value: initialPageState.sortValue, direction: initialPageState.sortDirection } : "")
+    const { data, isLoading, error } = useGetPaginatedDatas(page, sortValue, sortDirection, searchValue)
 
-        const [search, setSearch] = useState('')
-        const [filters, setFilters] = useState({
-            isActive: true
-        })
-        const [sort, setSort] = useState({ by: 'id', direction: 'asc' })
-
-        const Row = ({ item }) => {
-            return (
-                <tr onClick={() => handleOpenModal({ title: 'Edition assurance', content: <AssuranceForm event={item} handleCloseModal={handleCloseModal} /> })}>
-                    <td>{item.id}</td>
-                    <td>{item.company}</td>
-                    <td>{item.organization}</td>
-                    <td>{item.type}</td>
-                    <td>{item.phone}</td>
-                    <td>{item.email}</td>
-                    <td>{item.gln}</td>
-                </tr>
-            )
+    useEffect(() => {
+        if (searchValue && !initialPageState) {
+            setPage(1)
         }
-
-        const handleSort = (event) => {
-            const checkDirection = () => {
-                if (sort.direction === "asc") return "desc"
-                if (sort.direction === "desc") return "asc"
-            }
-            if (event === sort.by) setSort({ by: event, direction: checkDirection() })
-            else setSort({ by: event, direction: "asc" })
+        if (sortValue && !initialPageState) {
+            setPage(1)
         }
+        if (sortDirection && !initialPageState) {
+            setPage(1)
+        }
+    }, [searchValue, sortValue])
 
+    if (isLoading) return <Loader />
+    else return (
+        <>
+            <Modal />
+            <PageTitle title="Liste des assurances" icon={<MdOutlineHealthAndSafety size={40} />}>
+                {searchbar}
+                <AddButton onClick={() => handleOpenModal({ title: 'Nouvelle assurance', content: <AssuranceForm handleCloseModal={handleCloseModal} /> })} />
+            </PageTitle>
 
-
-        return (
-            <>
-            
-                <PageTitle title="Gestion des assurances" icon={<MdOutlineHealthAndSafety size={40} />}>
-                    <SearchFilter value={search} handleSearch={({ currentTarget }) => setSearch(currentTarget.value)}>
-                        <div onClick={() => setFilters({ ...filters, isActive: !filters.isActive })}>
-                            <BsCheck2Circle size={30} className={`cursor-pointer ${filters.isActive ? "text-primary" : "text-error"}`} />
-                        </div>
-                    </SearchFilter>
-                    <div onClick={() => handleOpenModal({ title: 'Nouvelle assurance', content: <AssuranceForm handleCloseModal={handleCloseModal} /> })}>
-                        <AiFillPlusCircle size={52} className="text-action rounded-full hover:text-primary" />
-                    </div>
-                </PageTitle>
-
-                <table className="responsive-table">
-                    <thead>
-                        <tr>
-                            <ThTable handleSort={handleSort} title="#" sort={sort} sortBy='id' className='w-24' />
-                            <ThTable handleSort={handleSort} title="Assurance" sort={sort} sortBy='company' />
-                            <ThTable handleSort={handleSort} title="Groupe" sort={sort} sortBy='organization' />
-                            <ThTable handleSort={handleSort} title="Type" sort={sort} sortBy='type' />
-                            <ThTable handleSort={handleSort} title="Téléphone" sort={sort} sortBy='phone' />
-                            <ThTable handleSort={handleSort} title="Email" sort={sort} sortBy='email' />
-                            <ThTable handleSort={handleSort} title="N° GLN" sort={sort} sortBy='gln' />
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <AssurancesContainer search={search} sort={sort} filters={filters}>
-                            <Row />
-                        </AssurancesContainer>
-                    </tbody>
-                </table>
-
-            </>
-        )
-    }
-
-    return (
-        <Layout>
-            <PageContent />
-        </Layout>
+            <Table.Table>
+                <Table.Thead>
+                    <Table.Th
+                        label="#"
+                        sortBy='id'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="Assurance"
+                        sortBy='company'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="Groupe"
+                        sortBy='organization'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="Type"
+                        sortBy='type'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="Téléphone"
+                        sortBy='phone'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="Email"
+                        sortBy='email'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="N° GLN"
+                        sortBy='gln'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                </Table.Thead>
+                <Table.Tbody>
+                    {!isLoading && data['hydra:member'].map(data =>
+                        <Table.Tr key={data.id}
+                            onClick={() => handleOpenModal({ title: data.company, content: <AssuranceForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}
+                        >
+                            <Table.Td text={data.id} />
+                            <Table.Td label="Assurance" text={data.company} />
+                            <Table.Td label="Groupe" text={data.organization} />
+                            <Table.Td label="Type" text={data.type} />
+                            <Table.Td label="Téléphone" text={data.phone} />
+                            <Table.Td label="Email" text={data.email} />
+                            <Table.Td label="N° GLN" text={data.gln} />
+                        </Table.Tr>
+                    )}
+                </Table.Tbody>
+            </Table.Table>
+            <Pagination totalItems={data['hydra:totalItems']} page={page} setPage={setPage} />
+        </>
     )
 }
 

@@ -1,0 +1,34 @@
+.form-input {
+    @apply bg-gray-100 p-2 rounded;
+}
+
+.form-input input[type="text"] {
+    @apply appearance-none h-10 p-2 border rounded-md focus:outline-action;
+}
+
+.form-input input[type="password"] {
+    @apply appearance-none h-10 p-2 border rounded-md focus:outline-action;
+}
+
+.form-input input[type="checkbox"] {
+    @apply checkbox checkbox-primary checkbox-lg bg-white border-[#e5e7eb] rounded-md;
+}
+
+.form-input select {
+    @apply appearance-none !bg-white h-10 p-2 border rounded-md focus:outline-action;
+    background:url("data:image/svg+xml;utf8,<svg width='14' height='8' viewBox='0 0 14 8' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M7 8L0.0717971 0.499999L13.9282 0.5L7 8Z' fill='black'/></svg>") no-repeat;
+    background-position:right 10px top 54%;
+}
+
+.form-input input[type="checkbox"] {
+    @apply flex flex-col;
+}
+
+input[type="file"] {
+    @apply w-full;
+}
+
+input[type="file"]::file-selector-button {
+    @apply btn btn-info mr-3;
+}
+

@@ -1,5 +1,34 @@
+export const account = {
+    roles: ['ROLE_NURSE'],
+    isOptin: false,
+    isApproved: false,
+}
+
+export const password = {
+    password: "",
+    checkpassword: "",
+}
+
+export const user = {
+    firstname: '',
+    lastname: '',
+    organization: '',
+    phone: '',
+    email: '',
+    fax: '',
+    mobile: '',
+    npa: '',
+    city: '',
+    address1: '',
+    address2: '',
+    gln: '',
+    rcc: '',
+    iban: '',
+    bic: '',
+}
+
 export const doctor = {
-    category: '',
+    category: 'Médecine générale',
     fullname: '',
     organization: '',
     phone: '',
@@ -8,7 +37,7 @@ export const doctor = {
     mobile: '',
     npa: '',
     city: '',
-    canton: '',
+    canton: 'Genève',
     address1: '',
     address2: '',
     gln: '',
@@ -34,7 +63,7 @@ export const assurance = {
 export const patient = {
     firstname: '',
     lastname: '',
-    gender: '',
+    gender: 'femme',
     status: '',
     address1: '',
     address2: '',
@@ -48,8 +77,36 @@ export const patient = {
     avsNumber: '',
     assuranceNumber: '',
     furtherInfos: '',
-    doctorIRI: null,
-    assuranceIRI: null
+    doctor: null,
+    assurance: null
+}
+
+export const mission = {
+    patient: patient,
+    doctor: null,
+    assurance: null,
+    beginAt: '',
+    endAt: '',
+    status: 'en cours',
+    coworkers: []
+}
+
+export const opas = {
+    type: 'opas',
+    status: 'brouillon',
+    content: {
+        "case": "maladie",
+        "type": "Prescription initiale",
+        "totalA": 0,
+        "totalB": 0,
+        "totalC": 0,
+        "totalN": 0,
+        "services": [],
+        "coworkers": [],
+        "disability": "non",
+        "diagnosticNurse": "",
+        "diagnosticDoctor": ""
+    }
 }
 
 export const services_family = [
@@ -66,6 +123,31 @@ export const services_family = [
     "Entretien du domicile",
     "Suppléance parentale",
     "Psychiatrie"
+]
+
+export const assuranceCategories = [
+    "LAMAL",
+    "LAA",
+    "LAI",
+    "VVG",
+    "Internationale"
+]
+
+export const doctorCategories = [
+    "Chirurgie",
+    "Cardiologie",
+    "Chirurgie dentaire",
+    "Dermatologie et vénéréologie",
+    "Endocrinologie et diabétologie",
+    "Gynécologie et obstétrique",
+    "Médecine interne générale",
+    "Médecine générale",
+    "Médecine praticienne",
+    "Ophtalmologie",
+    "Psychiatrie et psychothérapie",
+    "Radiologie",
+    "Urologie",
+    "Autre"
 ]
 
 export const cantons = {
@@ -96,7 +178,15 @@ export const cantons = {
     "Jura": "Jura (26)"
 }
 
-export const MediaCategories = [
+export const roles = {
+    "ROLE_ADMIN": "Administrateur",
+    "ROLE_NURSE": "Infirmier",
+    "ROLE_DOCTOR": "Médecin",
+    "ROLE_ORGANIZATION_MANDATOR": "Organisation mandataire",
+    "ROLE_ORGANIZATION_BENEFIT": "Organisation"
+}
+
+export const documentCategories = [
     "OPAS",
     "Prescription médicale",
     "Plan de médication",
@@ -131,19 +221,27 @@ export const legalCares = [
 ]
 
 export const opasStatus = {
-    "brouillon" : 'bg-waiting',
-    "envoyé au médecin" : 'bg-mention',
-    "validé par le médecin" : 'bg-info',
-    "envoyé à l'assurance" : 'bg-success',
-    "contesté" : 'bg-black text-white'
+    "brouillon": 'bg-waiting',
+    "envoyé au médecin": 'bg-mention',
+    "validé par le médecin": 'bg-info',
+    "envoyé à l'assurance": 'bg-success',
+    "contesté": 'bg-black text-white'
 }
 
 export const missionStatus = {
-    "programmée" : 'bg-waiting',
-    "en cours" : 'bg-mention',
-    "suspendue" : 'bg-waiting',
-    "terminée" : 'bg-info',
-    "archivée" : 'bg-info',
-    "facturée" : 'bg-success',
-    "annulée" : 'bg-black text-white',
+    "programmé": 'bg-waiting',
+    "en cours": 'bg-mention',
+    "suspendu": 'bg-waiting',
+    "terminé": 'bg-info',
+    "archivé": 'bg-info',
+    "facturé": 'bg-success',
+    "annulé": 'bg-black text-white',
 }
+
+export const serviceCategoryColor = {
+    "A": 'text-green-400',
+    "B": 'text-pink-400',
+    "C": 'text-orange-400',
+    "N": 'text-gray-400',
+}
+

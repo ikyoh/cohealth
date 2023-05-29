@@ -2,6 +2,7 @@ import React from 'react'
 import Layout from '../layouts/Layout'
 import { useSelector } from "react-redux";
 import { getAccount } from "../features/account/accountSlice";
+import { useGetCurrentAccount } from '../queryHooks/useAccount';
 import DashboardAdmin from "../dashboards/DashboardAdmin"
 import DashboardOrganization from "../dashboards/DashboardOrganization"
 import DashboardNurse from "../dashboards/DashboardNurse"
@@ -10,8 +11,12 @@ import DashboardEmployee from "../dashboards/DashboardEmployee"
 
 const DashboardPage = () => {
 
-  const Dashboard = () => {    
-    const account = useSelector(getAccount);
+  const Dashboard = () => {
+
+    // const account = useSelector(getAccount);
+
+    const { data: account, isLoading, error } = useGetCurrentAccount()
+
     if (account.roles.includes("ROLE_ADMIN")) return <DashboardAdmin />
     if (account.roles.includes("ROLE_ORGANIZATION")) return <DashboardOrganization />
     if (account.roles.includes("ROLE_NURSE")) return <DashboardNurse />

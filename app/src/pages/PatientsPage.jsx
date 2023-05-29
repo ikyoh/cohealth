@@ -1,103 +1,125 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
-import { getPatientsNavigate } from "../features/patients/patientsSlice"
-import Layout from '../layouts/Layout'
-import { AiFillPlusCircle } from "react-icons/ai";
-import { BsCheck2Circle } from "react-icons/bs";
-import { IoPersonCircleOutline}  from "react-icons/io5";
-import PatientForm from '../forms/PatientForm';
-import PatientsContainer from '../features/patients/PatientsContainer';
-import SearchFilter from '../components/SearchFilter';
-import ThTable from '../components/table/ThTable';
-import PageTitle from '../layouts/PageTitle';
-
+import { useLocation, useNavigate } from 'react-router-dom'
+import { IoPersonCircleOutline } from "react-icons/io5"
+import PatientForm from '../forms/PatientForm'
+import PageTitle from '../layouts/PageTitle'
+import { useGetPaginatedDatas } from '../queryHooks/usePatient'
+import { useSearch } from '../hooks/useSearch'
+import { useSortBy } from '../hooks/useSortBy'
+import { useModal } from '../hooks/useModal'
+import * as Table from '../components/table/Table'
+import Pagination from '../components/pagination/Pagination'
+import AddButton from '../components/buttons/AddButton'
+import Dropdown from '../components/dropdown/Dropdown'
+import { API_PATIENTS } from '../config/api.config'
+import Loader from '../components/Loader'
+import dayjs from 'dayjs'
 
 const PatientsPage = () => {
 
-    const navigate = useNavigate();
+    const { state: initialPageState } = useLocation()
+    const navigate = useNavigate()
+    const { Modal, handleOpenModal, handleCloseModal } = useModal()
 
-    const newPatientID = useSelector(getPatientsNavigate)
-    
+    const { searchValue, searchbar } = useSearch(initialPageState ? initialPageState.searchValue : "")
+    const [page, setPage] = useState(initialPageState ? initialPageState.page : 1)
+    const { sortValue, sortDirection, handleSort } = useSortBy(initialPageState ? { value: initialPageState.sortValue, direction: initialPageState.sortDirection } : "")
+    const { data = [], isLoading, error } = useGetPaginatedDatas(page, sortValue, sortDirection, searchValue)
+
     useEffect(() => {
-        if (newPatientID)
-        navigate("/patients/" + newPatientID, { state: { patient: {} } })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [newPatientID])
-
-    const PageContent = ({ handleOpenModal, handleCloseModal }) => {
-
-        const [search, setSearch] = useState('')
-        const [filters, setFilters] = useState({
-            isActive: true
-        })
-        const [sort, setSort] = useState({ by: 'id', direction: 'asc' })
-
-        const Row = ({ item }) => {
-            return (
-                <tr onClick={() =>
-                    navigate("/patients/" + item.id, { state: { patient: item } })
-                }>
-                {/* <tr onClick={() => handleOpenModal({ title: 'Edition patient', content: <PatientForm event={item} handleCloseModal={handleCloseModal} /> })}> */}
-                    <td>{item.id}</td>
-                    <td>{item.lastname.toUpperCase()} {item.firstname}</td>
-                    <td>{item.doctor && item.doctor.fullname}</td>
-                    <td>{item.assurance && item.assurance.company}</td>
-                    <td>Status</td>
-                </tr>
-            )
+        if (searchValue && !initialPageState) {
+            setPage(1)
         }
-
-        const handleSort = (event) => {
-            const checkDirection = () => {
-                if (sort.direction === "asc") return "desc"
-                if (sort.direction === "desc") return "asc"
-            }
-            if (event === sort.by) setSort({ by: event, direction: checkDirection() })
-            else setSort({ by: event, direction: "asc" })
+        if (sortValue && !initialPageState) {
+            setPage(1)
         }
+        if (sortDirection && !initialPageState) {
+            setPage(1)
+        }
+    }, [searchValue, sortValue])
 
-
-
-        return (
-            <>
-            
-                <PageTitle title="Gestion des patients" icon={<IoPersonCircleOutline size={40} />}>
-                    <SearchFilter value={search} handleSearch={({ currentTarget }) => setSearch(currentTarget.value)}>
-                        <div onClick={() => setFilters({ ...filters, isActive: !filters.isActive })}>
-                            <BsCheck2Circle size={30} className={`cursor-pointer ${filters.isActive ? "text-primary" : "text-error"}`} />
-                        </div>
-                    </SearchFilter>
-                    <div onClick={() => handleOpenModal({ title: 'Nouveau patient', content: <PatientForm handleCloseModal={handleCloseModal} /> })}>
-                        <AiFillPlusCircle size={52} className="text-action rounded-full hover:text-primary" />
-                    </div>
-                </PageTitle>
-
-                <table className="responsive-table">
-                    <thead>
-                        <tr>
-                            <ThTable handleSort={handleSort} title="#" sort={sort} sortBy='id' className='w-24' />
-                            <ThTable handleSort={handleSort} title="Nom / Prénom" sort={sort} sortBy='company' />
-                            <ThTable handleSort={handleSort} title="Médecin" sort={sort} sortBy='type' />
-                            <ThTable handleSort={handleSort} title="Assurance" sort={sort} sortBy='type' />
-                            <ThTable handleSort={handleSort} title="Status" sort={sort} sortBy='type' />
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <PatientsContainer search={search} sort={sort} filters={filters}>
-                            <Row />
-                        </PatientsContainer>
-                    </tbody>
-                </table>
-
-            </>
-        )
-    }
-
+    if (isLoading) return <Loader />
     return (
-        <Layout>
-            <PageContent />
-        </Layout>
+        <>
+            <Modal />
+            <PageTitle title="Liste des patients" icon={<IoPersonCircleOutline size={40} />}>
+                {searchbar}
+                <AddButton onClick={() => handleOpenModal({ title: 'Nouveau patient', content: <PatientForm handleCloseModal={handleCloseModal} /> })} />
+            </PageTitle>
+
+            <Table.Table>
+                <Table.Thead>
+                    <Table.Th
+                        label="#"
+                        sortBy='id'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="Patient"
+                        sortBy='lastname'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="Médecin"
+                        sortBy='doctor.fullname'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="Assurance"
+                        sortBy='assurance.company'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="Statut"
+                        sortBy='lastMissionEndAt'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th label="" style={{ width: 10 }} />
+                </Table.Thead>
+                <Table.Tbody>
+                    {!isLoading && data['hydra:member'].map(data =>
+                        <Table.Tr key={data.id}
+                            onClick={() => navigate(API_PATIENTS + "/" + data.id, { state: { page: page, sortDirection: sortDirection, sortValue: sortValue, searchValue: searchValue } })}
+                        >
+                            <Table.Td text={data.id} />
+                            <Table.Td label="Patient" text={data.lastname + " " + data.firstname} />
+                            <Table.Td label="Médecin" text={data.doctor ? data.doctor.fullname : ''} />
+                            <Table.Td label="Assurance" text={data.assurance ? data.assurance.company : ''} />
+                            <Table.Td label="Statut">
+                                {data.lastMissionEndAt && (dayjs(data.lastMissionEndAt) > dayjs())
+                                    ? <span className="px-3 py-1 uppercase text-xs rounded-full text-white bg-info">Situation en cours</span>
+                                    : <span className="px-3 py-1 uppercase text-xs rounded-full text-white bg-neutral">Aucune situation</span>
+                                }
+                            </Table.Td>
+                            <Table.Td label="" text="" >
+                                <Dropdown type='table'>
+                                    <button
+                                        onClick={() => navigate(API_PATIENTS + "/" + data.id, { state: { page: page, sortDirection: sortDirection, sortValue: sortValue, searchValue: searchValue } })}
+                                    >
+                                        Voir la fiche patient
+                                    </button>
+                                    <button
+                                        onClick={() => handleOpenModal({ title: "édition du patient", content: <PatientForm iri={data['@id']} /> })}>
+                                        Modifier la patient
+                                    </button>
+                                </Dropdown>
+                            </Table.Td>
+                        </Table.Tr>
+                    )}
+                </Table.Tbody>
+            </Table.Table>
+            <Pagination totalItems={data['hydra:totalItems']} page={page} setPage={setPage} />
+        </>
     )
 }
 

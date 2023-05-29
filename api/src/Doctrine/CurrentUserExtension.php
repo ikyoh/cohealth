@@ -15,7 +15,6 @@ use App\Entity\Mission;
 use App\Entity\Prescription;
 
 
-
 final class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
     private $security;

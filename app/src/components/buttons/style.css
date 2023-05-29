@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.scaledown { 
+    @apply transition ease-in-out active:scale-[0.9] duration-100;
+}

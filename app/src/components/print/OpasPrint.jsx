@@ -1,6 +1,5 @@
 import React from 'react'
 import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Image } from '@react-pdf/renderer'
-import { AiOutlineDownload } from 'react-icons/ai'
 import * as dayjs from 'dayjs'
 import { nanoid } from '@reduxjs/toolkit'
 import { calcNumberOfDays, calcNumberOfWeeks, calcNumberOfMonths } from '../../utils/functions'
@@ -123,8 +122,6 @@ const Separator = () => {
 
 // Create Document Component
 const MyDoc = ({ datas, mission, patient }) => {
-
-    console.log('mission', mission)
 
     const cares = [
         {
@@ -754,11 +751,14 @@ const OpasPrint = ({ datas, mission, patient, }) => {
         return (
             <div>
                 <PDFDownloadLink document={<MyDoc datas={datas} mission={mission} patient={patient} />} fileName={fileName}>
-                    {({ blob, loading, error }) =>
+                    {({ blob, loading, error }) => {
+                        console.log('loading', loading)
+                        console.log('error', error)
                         loading ?
                             <button disabled>Télécharger</button>
                             :
                             <button>Télécharger</button>
+                    }
                     }
                 </PDFDownloadLink>
             </div>

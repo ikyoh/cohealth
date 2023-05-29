@@ -2,88 +2,103 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
 use App\Repository\DoctorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use App\Filter\CustomSearchFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\GetCollection;
 
 
 #[ORM\Entity(repositoryClass: DoctorRepository::class)]
-
 #[ApiResource(
     paginationClientEnabled: true,
     normalizationContext: ['groups' => ['doctors:read']],
     denormalizationContext: ['groups' => ['doctor:write']],
+    operations: [
+        new GetCollection(),
+        new Get(normalizationContext: ['groups' => ['doctor:read']]),
+        new Put(),
+        new Post()
+    ]
 )]
+#[ApiFilter(OrderFilter::class, properties: ['id', 'category', 'fullname', 'phone', 'email', 'gln', 'rcc'])]
+#[ApiFilter(CustomSearchFilter::class)]
 
 class Doctor 
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["doctors:read", "patients:read","missions:read"])]
+    #[Groups(["doctors:read", "doctor:read", "patients:read","missions:read"])]
     private $id;
 
     #[ORM\Column(type: 'boolean')]
-    #[Groups(["doctors:read", "doctor:write", "patient:write", "mission:write"])]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write"])]
     private $isActive = true;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["doctors:read", "doctor:write", "patient:write", "mission:write", "mission:read", "patients:read", "patient:read","missions:read"])]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write", "patients:read","missions:read"])]
     private $category;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["doctors:read", "doctor:write", "patient:write", "mission:write", "mission:read", "missions:read", "patients:read", "patient:read"])]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write", "missions:read", "patients:read"])]
     private $fullname;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["doctors:read", "doctor:write", "patient:write", "mission:write"])]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write"])]
     private $organization;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["doctors:read", "doctor:write", "patient:write", "mission:write", "mission:read"])]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write"])]
     private $phone;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["doctors:read", "doctor:write", "patient:write", "mission:write"])]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write"])]
     private $fax;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["doctors:read", "doctor:write", "patient:write", "mission:write"])]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write"])]
     private $mobile;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["doctors:read", "doctor:write", "mission:read"])]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write"])]
     private $email;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["doctors:read", "doctor:write", "patient:write", "mission:write", "mission:read"])]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write"])]
     private $npa;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["doctors:read", "doctor:write", "patient:write", "mission:write", "mission:read"])]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write"])]
     private $city;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["doctors:read", "doctor:write", "patient:write", "mission:write"])]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write"])]
     private $canton;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["doctors:read", "doctor:write", "patient:write", "mission:write", "mission:read"])]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write"])]
     private $address1;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["doctors:read", "doctor:write", "patient:write", "mission:write"])]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write"])]
     private $address2;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["doctors:read", "doctor:write", "patient:write", "mission:write"])]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write"])]
     private $gln;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["doctors:read", "doctor:write", "patient:write", "mission:write", "mission:read", "missions:read"])]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write", "missions:read"])]
     private $rcc;
 
     #[ORM\OneToMany(mappedBy: 'doctor', targetEntity: Patient::class)]

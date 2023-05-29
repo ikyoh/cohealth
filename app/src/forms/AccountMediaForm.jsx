@@ -1,54 +1,91 @@
-import React from 'react'
-import { useDispatch, useSelector } from "react-redux"
-import { updateAccountMedia } from "../features/account/accountSlice"
-import { Formik, Form, ErrorMessage } from 'formik'
+import React, { useEffect } from 'react'
+
+import { usePostData as usePostDocument, useDeleteData as useDeleteDocument } from '../queryHooks/useDocument'
+import { useGetCurrentAccount, usePutData as usePutAccount } from '../queryHooks/useAccount'
+import { useForm } from "react-hook-form"
+import Form from "../components/form/form/Form"
+import { FormFile } from "../components/form/file/FormFile"
+
 import * as Yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 
-const AccountMediaForm = ({ type = "avatar", handleCloseModal }) => {
+const AccountMediaForm = ({ id, type, handleCloseModal }) => {
 
-    const dispatch = useDispatch()
-
-    const initialValues = {
-        type: type,
-        file: ''
-    }
+    const { data: dataDocument, mutate: postDocument } = usePostDocument()
+    const { data: currentAccount, isError, error } = useGetCurrentAccount()
+    const { mutate: putAccount, isSuccess } = usePutAccount()
+    const { mutate: deleteDocument } = useDeleteDocument()
 
     const validationSchema = Yup.object({
-        file: Yup.string().required('Champ obligatoire'),
+        file: Yup.mixed().required('Fichier obligatoire'),
     })
 
+    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
+        resolver: yupResolver(validationSchema),
+        defaultValues: {
+            type: type,
+            file: null,
+        }
+    })
+
+    // Case update
+    useEffect(() => {
+        if (id) {
+            reset({
+                id: id,
+                type: type,
+                file: null,
+            })
+        }
+    }, [])
+
+
+    useEffect(() => {
+        if (dataDocument && dataDocument.id) {
+            const data = { ...currentAccount }
+            delete data.avatar
+            delete data.signature
+            delete data.password
+            delete data.partners
+            if (type === "avatar")
+                data.avatar = dataDocument["@id"]
+            if (type === "signature")
+                data.signature = dataDocument["@id"]
+            putAccount(data)
+            if (!id) handleCloseModal()
+        }
+    }, [dataDocument])
+
+
+    useEffect(() => {
+        if (id && isSuccess) {
+            deleteDocument(id)
+            handleCloseModal()
+        }
+    }, [isSuccess])
+
+
+
+    const onSubmit = (form) => {
+        postDocument(form)
+    }
 
     return (
-        <Formik
-            enableReinitialize={true}
-            initialValues={initialValues}
-            validationSchema = {validationSchema}
-            onSubmit={async (values, { setSubmitting }) => {
-                setSubmitting(true)
-                dispatch(updateAccountMedia(values))
-                setSubmitting(false)
-                handleCloseModal()
-            }}
+        <Form onSubmit={handleSubmit(onSubmit)}
+            // isLoading={isPosting}
+            // isDisabled={isPosting}
+            className="p-5"
         >
-            {({ isSubmitting, setFieldValue }) => (
-                <Form className='form-body'>
-                    <div className="form-content">
-                        <div className='grid gap-x-10 gap-y-5 grid-cols-1 md:grid-cols-2'>
-                            <input
-                                name='file'
-                                type='file'
-                                onChange={(event) => setFieldValue("file", event.target.files[0])}
-                            />
-                        </div>
-                        <ErrorMessage name='file' render={msg => <div className="error">({msg})</div>} />
-                    </div>
-                    <div className="form-footer">
-                        <button type="submit" className='button-submit' disabled={isSubmitting}>Valider</button>
-                    </div>
-                </Form>
-            )}
-        </Formik>
+            <FormFile
+                type="text"
+                name="file"
+                label="Fichier"
+                error={errors['file']}
+                register={register}
+                required={true}
+            />
+        </Form>
     )
 
 }

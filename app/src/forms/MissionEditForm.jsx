@@ -4,13 +4,12 @@ import { updateMission } from "../features/missions/missionsSlice";
 import { fetchPatient } from "../features/patients/patientsSlice";
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import DoctorFields from './DoctorFields';
-import AssuranceFields from './AssuranceFields';
-import PatientFields from './PatientFields';
-import FormSelectDoctorIRI from '../components/forms/FormSelectDoctorIRI';
-import FormSelectPartnerIRI from '../components/forms/FormSelectPartnerIRI';
-import FormSelectAssuranceIRI from '../components/forms/FormSelectAssuranceIRI';
-import MissionFields from './MissionFields';
+// import DoctorFields from './DoctorFields';
+// import AssuranceFields from './AssuranceFields';
+// import FormSelectDoctorIRI from '../components/forms/FormSelectDoctorIRI';
+// import FormSelectPartnerIRI from '../components/forms/FormSelectPartnerIRI';
+// import FormSelectAssuranceIRI from '../components/forms/FormSelectAssuranceIRI';
+// import MissionFields from './MissionFields';
 import _ from 'lodash';
 import { doctor, assurance, patient } from '../utils/arrays';
 
@@ -99,8 +98,7 @@ const MissionEditForm = ({ event = false, modalAction = false, handleCloseModal 
         >
             {({ isSubmitting, values, setFieldValue, errors }) => (
                 <Form className='form-body'>
-                    <div className="form-content" style={{ paddingTop: 0 }}>
-                        {action === 'updatePatient' && <PatientFields name="patient" className='pt-5' />}
+                    {/* <div className="form-content" style={{ paddingTop: 0 }}>
                         {action === 'updateMission' && <MissionFields />}
                         {action === 'addDoctor' && <DoctorFields name="doctor" className='pt-5' />}
                         {action === 'selectPartners' && <FormSelectPartnerIRI setField={setFieldValue} value={values.coworkersDetailed} />}
@@ -126,7 +124,7 @@ const MissionEditForm = ({ event = false, modalAction = false, handleCloseModal 
                             :
                             <button type="submit" className='button-submit' disabled={true}>Valider</button>
                         }
-                    </div>
+                    </div> */}
                 </Form>
             )}
         </Formik>

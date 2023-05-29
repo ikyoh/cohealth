@@ -1,32 +1,39 @@
-import { useEffect, useRef, useState } from "react";
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import "./style.css"
+import classNames from 'classnames'
 
-const Dropdown = ({ children }) => {
+const Dropdown = ({ type = "card", children }) => {
 
-    const [isOpen, setIsOpen] = useState(false)
+    const className = classNames({
+            "top-1 right-1 absolute": type === "card",
+            "top-0 right-1": type === "table",
+        })
+
+    const classNameContent = classNames("border border-primary pr-2",{
+        "dropdown-content bg-slate-100 rounded -translate-x-1 translate-y-1": type === "card",
+        "dropdown-content bg-slate-100 rounded -translate-x-1 translate-y-2": type === "table",
+    })
 
     return (
-        <div className="flex relative">
-            <button
-                className="relative rounded-full hover:bg-slate-400/10 p-1"
-                onClick={(e) => {
-                    e.stopPropagation()
-                    setIsOpen(true)
-                }}
-            >
-                <BsThreeDotsVertical className='text-primary text-3xl' />
-            </button>
-            {isOpen && (
-                <div className="dropdown"
+        <div className={className}>
+            <div className="dropdown dropdown-left dropdown-end">
+                <label
+                    tabIndex={0}
+                    className="btn btn-circle btn-sm bg-transparent border-none hover:bg-slate-200"
                     onClick={(e) => { e.stopPropagation() }}
-                    onMouseLeave={() => setIsOpen(false)}
+                >
+                    <BsThreeDotsVertical className='text-primary text-2xl' />
+                </label>
+                <div tabIndex={0} className={classNameContent}
+                    onClick={(e) => { e.stopPropagation() }}
                 >
                     {children}
                 </div>
-            )}
+            </div>
         </div>
     )
 }
 
 export default Dropdown
+
+

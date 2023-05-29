@@ -1,5 +1,7 @@
 export const API_URL =  process.env.REACT_APP_ENV === "prod" ? '/api' : 'https://localhost/api';
 
+export const IRI = "/api"; 
+
 export const API_LOGIN = "/login"; 
 export const API_LOGOUT = "/logout"; 
 export const API_COMMENTS= "/comments";
@@ -13,5 +15,6 @@ export const API_PARTNERS = "/partners";
 export const API_PRESCRIPTIONS = "/prescriptions";
 export const API_SERVICES = "/services";
 export const API_USERS = "/users";
+export const API_PASSWORD = "/forgot_password/";
 
 export const itemsPerPage = 20

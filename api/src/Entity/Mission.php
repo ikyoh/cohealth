@@ -2,24 +2,29 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
-use App\Entity\UserOwnedInterface;
-use App\Repository\MissionRepository;
-use Symfony\Component\Serializer\Annotation\Groups;
-use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
+use Doctrine\ORM\Mapping as ORM;
+use App\Entity\UserOwnedInterface;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use App\Repository\MissionRepository;
 use ApiPlatform\Metadata\GetCollection;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use App\Filter\MultipleFieldsSearchFilter;
+use App\Filter\NotEqualFilter;
 
 
 #[ORM\Entity(repositoryClass: MissionRepository::class)]
 #[ApiResource(
+    paginationClientEnabled: true,
     normalizationContext: ['groups' => ['missions:read']],
     denormalizationContext: ['groups' => ['mission:write']],
-    paginationEnabled: false,
     operations: [
         new GetCollection(),
         new Get(normalizationContext: ['groups' => ['mission:read']]),
@@ -27,6 +32,17 @@ use ApiPlatform\Metadata\GetCollection;
         new Post()
     ]
 )]
+#[ApiFilter(OrderFilter::class, properties: ['id', 'status', 'patient.lastname', 'prescriptions.status','user.id'])]
+#[ApiFilter(SearchFilter::class, properties: ['status' => 'exact', 'user.id' => 'exact'])]
+#[ApiFilter(MultipleFieldsSearchFilter::class, properties: [
+    "id",
+    "patient.lastname",
+    "patient.firstname",
+])]
+#[ApiFilter(NotEqualFilter::class, properties: [
+    "user.id",
+])]
+
 class Mission implements UserOwnedInterface
 {
     #[ORM\Id]
@@ -37,8 +53,8 @@ class Mission implements UserOwnedInterface
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(["missions:read", "mission:read", "mission:write"])]
-    // suspendu, archivé, annulé, facturée
-    private $status = 'current';
+    // suspendu, archivé, annulé, facturé
+    private $status = 'en cours';
 
     #[ORM\Column(type: 'string', length: 2047, nullable: true)]
     #[Groups(["missions:read", "mission:read", "mission:write"])]
@@ -50,16 +66,15 @@ class Mission implements UserOwnedInterface
     private $beginAt;
 
     #[ORM\Column(type: 'date', nullable: true)]
-    #[Groups(["missions:read", "mission:read", "mission:write"])]
+    #[Groups(["missions:read", "mission:read", "mission:write", "patients:read"])]
     private $endAt;
 
-    #[ORM\ManyToOne(targetEntity: Patient::class, inversedBy: 'missions')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["missions:read", "mission:read", "mission:write"])]
+    #[ORM\ManyToOne(targetEntity: Patient::class, inversedBy: 'missions', cascade: ['persist', 'remove'])]
+    #[Groups(["missions:read", "mission:read", "mission:write", "patient:write"])]
     private $patient;
 
     #[ORM\ManyToOne(targetEntity: Doctor::class, inversedBy: 'missions', cascade: ['persist', 'remove'])]
-    #[Groups(["missions:read", "mission:read", "mission:write", "doctor:write"])]
+    #[Groups(["missions:read", "mission:read", "mission:write", "patient:read"])]
     private $doctor;
 
     #[ORM\ManyToOne(targetEntity: Assurance::class, inversedBy: 'missions', cascade: ['persist', 'remove'])]
@@ -123,9 +138,10 @@ class Mission implements UserOwnedInterface
         return $this;
     }
 
-    public function getBeginAt(): ?\DateTimeInterface
+    public function getBeginAt(): ?string
     {
-        return $this->beginAt;
+        if ($this->beginAt) {return $this->beginAt->format('Y-m-d');}
+        else {return $this->beginAt;}
     }
 
     public function setBeginAt(?\DateTimeInterface $beginAt): self
@@ -135,9 +151,10 @@ class Mission implements UserOwnedInterface
         return $this;
     }
 
-    public function getEndAt(): ?\DateTimeInterface
+    public function getEndAt(): ?string
     {
-        return $this->endAt;
+        if ($this->endAt) {return $this->endAt->format('Y-m-d');}
+        else {return $this->endAt;}
     }
 
     public function setEndAt(?\DateTimeInterface $endAt): self

@@ -12,12 +12,12 @@ export const useSortBy = ({value, direction}) => {
 
     const [sortValue, setValue] = useState(value ? value : 'id')
 
-    const [sortDirection, setDirection] = useState(direction ? direction : 'asc')
+    const [sortDirection, setDirection] = useState(direction ? direction : 'desc')
 
-    const [previousValue, setPreviousValue] = useState('asc')
+    const [previousValue, setPreviousValue] = useState('desc')
 
     useEffect(() => {
-        if (sortValue === previousValue) setDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+        if (sortValue === previousValue) setDirection(sortDirection === 'desc' ? 'asc' : 'desc')
     }, [updateHook])
 
     return {

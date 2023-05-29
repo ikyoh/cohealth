@@ -1,119 +1,98 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from "react-redux";
-import { addPatient, updatePatient, fetchPatient } from "../features/patients/patientsSlice";
-import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
-import PatientFields from './PatientFields';
-import DoctorFields from './DoctorFields';
-import AssuranceFields from './AssuranceFields';
-import FormSelectDoctorIRI from '../components/forms/FormSelectDoctorIRI';
-import FormSelectAssuranceIRI from '../components/forms/FormSelectAssuranceIRI';
-import { doctor, assurance, patient } from '../utils/arrays';
-import _ from 'lodash';
+import { useGetIRI, usePostData, usePutData } from '../queryHooks/usePatient'
+import { useGetAllDatas as useDoctors } from '../queryHooks/useDoctor'
+import { useForm } from "react-hook-form"
+import Form from "../components/form/form/Form"
+import * as Yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { patient } from '../utils/arrays'
+import { FormSelectDoctorIRI } from '../components/form/selectDoctorIRI/FormSelectDoctorIRI'
+import { FormSelectAssuranceIRI } from '../components/form/selectAssuranceIRI/FormSelectAssuranceIRI'
+import PatientFields from '../fields/PatientFields'
+import AssuranceFields from '../fields/AssuranceFields'
+import DoctorFields from '../fields/DoctorFields'
+import { useSearch } from '../hooks/useSearch'
+import AddButton from '../components/buttons/AddButton'
+import { patient as patientSchema, doctorIRI as doctorIRISchema, doctor as doctorSchema, assuranceIRI as assuranceIRISchema, assurance as assuranceSchema } from '../utils/validationSchemas'
+import Loader from '../components/Loader'
 
-// modalAction can be  / selectDoctor / addDoctor / selectAssurance / addAssurance /
-const PatientForm = ({ event = false, modalAction = 'patient', handleCloseModal }) => {
+const DoctorForm = ({ iri, handleCloseModal, action = "patient" }) => {
 
-    const [action, setAction] = useState(modalAction)
+    const [modalAction, setModalAction] = useState(action)
+    const { isLoading, data, isError, error } = useGetIRI(iri)
+    const { isLoading: isLoadingDoctors, data: doctors } = useDoctors('', 'fullname', 'asc', action === 'doctorIRI' ? true : false)
+    const { mutate: postData, isLoading: isPosting, isSuccess } = usePostData()
+    const { mutate: putData } = usePutData(iri)
 
-    const dispatch = useDispatch()
-
-    const [initialValues, setInitialValues] = useState({
-        patient: patient,
-        doctorIRI: null,
-        assuranceIRI: null,
-        doctor: doctor,
-        assurance: assurance
-    })
-
-    useEffect(() => {
-        if (event) {
-            const datas = {...event}
-            delete datas.doctor
-            delete datas.assurance
-            setInitialValues({ ...initialValues, patient: datas })
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    const { searchValue, searchbar } = useSearch("")
 
     const validationSchema = {
-        patient: Yup.object({
-            patient: Yup.object({
-                firstname: Yup.string().required('Champ obligatoire'),
-                lastname: Yup.string().required('Champ obligatoire'),
-                gender: Yup.string().required('Champ obligatoire'),
-                // phone: Yup.string().matches(/^0[0-9]{9}/, "Numéro incorrect"),
-                //mobile: Yup.string().matches(/^0[0-9]{10}/, "Numéro incorrect"),
-                email: Yup.string().email('Email incorrect')
-            })
-        }),
-        doctorIRI: Yup.object({
-            doctorIRI: Yup.string().required('Choix obligatoire').typeError('Choix obligatoire')
-        }),
-        assuranceIRI: Yup.object({
-            assuranceIRI: Yup.string().required('Choix obligatoire').typeError('Choix obligatoire')
-        }),
-        addDoctor: Yup.object({
-            doctor: Yup.object({
-                fullname: Yup.string().required('Champ obligatoire'),
-                category: Yup.string().required('Choix obligatoire'),
-            })
-        }),
-        addAssurance: Yup.object({
-            assurance: Yup.object({
-                company: Yup.string().required('Champ obligatoire'),
-                type: Yup.string().required('Champ obligatoire'),
-            })
-        }),
+        patient: patientSchema,
+        doctor: Yup.object({ doctor: doctorSchema }),
+        assurance: assuranceSchema,
+        doctorIRI: doctorIRISchema,
+        assuranceIRI: assuranceIRISchema,
     }
 
-    return (
-        <Formik
-            enableReinitialize={true}
-            initialValues={initialValues}
-            validationSchema={validationSchema[action]}
-            onSubmit={async (values, { setSubmitting }) => {
-                setSubmitting(true);
-                event ? dispatch(updatePatient({ values: values, action: action })) : dispatch(addPatient(values))
-                setSubmitting(false)
-                handleCloseModal()
-            }}
+    const { register, handleSubmit, setValue, reset, watch, control, formState: { errors, isSubmitting } } = useForm({
+        resolver: yupResolver(validationSchema[modalAction]),
+        defaultValues: patient
+    })
+
+    // Case update
+    useEffect(() => {
+        if (iri && data) {
+            console.log('data', data)
+            reset(data)
+        }
+    }, [isLoading, data])
+
+    const onSubmit = form => {
+        if (!iri)
+            postData(form)
+        else {
+            putData(form)
+        }
+        handleCloseModal()
+    }
+
+    if (isLoading && iri) return <Loader />
+    else return (
+        <Form onSubmit={handleSubmit(onSubmit)}
+            isLoading={isSubmitting}
+            isDisabled={isSubmitting}
         >
-            {({ isSubmitting, values, setFieldValue, errors }) => (
-                <Form className='form-body'>
-                    <div className="form-content" style={{ paddingTop: 0 }}>
-                        {action === 'patient' && <PatientFields name="patient" className='pt-5' />}
-                        {action === 'addDoctor' && <DoctorFields name="doctor" className='pt-5' />}
-                        {action === 'doctorIRI' && <FormSelectDoctorIRI setField={setFieldValue} value={values.doctorIRI} />}
-                        {action === 'addAssurance' && <AssuranceFields name="assurance" className='pt-5' />}
-                        {action === 'assuranceIRI' && <FormSelectAssuranceIRI setField={setFieldValue} value={values.assuranceIRI} />}
+            {modalAction === 'patient' &&
+                <>
+                    <PatientFields errors={errors} register={register} />
+                </>
+            }
+            {modalAction === 'doctorIRI' &&
+                <>
+                    <div className='flex justify-between'>
+                        {searchbar}
+                        <AddButton onClick={() => setModalAction('doctor')} />
                     </div>
-                    <div className="form-footer">
-
-                        {action === 'doctorIRI' &&
-                            <div className='button-info' onClick={() => setAction('addDoctor')}>Nouveau médecin</div>
-                        }
-                        {action === 'addDoctor' &&
-                            <div className='button-info' onClick={() => setAction('doctorIRI')}>Chercher un médecin</div>
-                        }
-                        {action === 'assuranceIRI' &&
-                            <div className='button-info' onClick={() => setAction('addAssurance')}>Nouvelle assurance</div>
-                        }
-                        {action === 'addAssurance' &&
-                            <div className='button-info' onClick={() => setAction('assuranceIRI')}>Chercher une assurance</div>
-                        }
-
-                        {_.isEmpty(errors) ?
-                            <button type="submit" className='button-submit' disabled={isSubmitting}>Valider</button>
-                            :
-                            <button type="submit" className='button-error' disabled={isSubmitting}>Valider</button>
-                        }
+                    <FormSelectDoctorIRI watch={watch} setValue={setValue} searchValue={searchValue} />
+                </>
+            }
+            {modalAction === 'doctor' &&
+                <DoctorFields errors={errors} register={register} name="doctor" />
+            }
+            {modalAction === 'assuranceIRI' &&
+                <>
+                    <div className='flex justify-between'>
+                        {searchbar}
+                        <AddButton onClick={() => setModalAction('assurance')} />
                     </div>
-                </Form>
-            )}
-        </Formik>
+                    <FormSelectAssuranceIRI watch={watch} setValue={setValue} searchValue={searchValue} />
+                </>
+            }
+            {modalAction === 'assurance' &&
+                <AssuranceFields errors={errors} register={register} name="assurance" />
+            }
+        </Form>
     )
-
 }
 
-export default PatientForm
+export default DoctorForm

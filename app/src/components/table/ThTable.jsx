@@ -4,7 +4,7 @@ import { BsSortDown } from "react-icons/bs";
 
 const ThTable = ({ title, sort, handleSort, sortBy, className = null, children }) => {
     return (
-        <th className={`cursor-pointer hover:bg-slate-300 ${className && className}`} onClick={() => handleSort(sortBy)}>
+        <th className={`cursor-pointer bg-slate-100 hover:bg-slate-300 ${className && className}`} onClick={() => handleSort(sortBy)}>
             <div className='flex justify-between'>
                 <div>
                     {title}

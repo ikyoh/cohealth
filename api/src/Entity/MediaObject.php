@@ -26,7 +26,6 @@ use ApiPlatform\Metadata\GetCollection;
     operations: [
         new GetCollection(),
         new Get(),
-        new Put(),
         new Delete(),
         new Post(
             controller: CreateMediaObjectAction::class,
@@ -55,44 +54,44 @@ use ApiPlatform\Metadata\GetCollection;
 class MediaObject implements UserOwnedInterface
 {
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
-    #[Groups(['media_object:read', 'mission:read'])]
+    #[Groups(['media_object:read', 'users:read'])]
     private ?int $id = null;
 
     #[ApiProperty(types: ['https://schema.org/contentUrl'])]
-    #[Groups(['media_object:read', 'users:read', 'mission:read'])]
+    #[Groups(['media_object:read', 'users:read', 'user:read', 'mission:read'])]
     public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: "media_object", fileNameProperty: "filePath")]
-    #[Assert\NotNull(groups: ['media_object:write'])]
+    #[Assert\NotNull(groups: ['media_object_create'])]
     public ?File $file = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['media_object:write', 'media_object:read', 'mission:read', 'users:read'])]
+    #[Groups(['media_object:read', 'users:read', 'user:read', 'mission:read'])]
     public ?string $filePath = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['media_object:write', 'media_object:read', 'mission:read'])]
+    #[Groups(['media_object:read'])]
     private $type;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['media_object:write', 'media_object:read', 'mission:read'])]
+    #[Groups(['media_object:read'])]
     private $status;
 
     #[ORM\Column(type: 'datetime')]
-    #[Groups(['media_object:read', 'mission:read'])]
+    #[Groups(['media_object:read'])]
     private $createdAt;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['media_object:write', 'media_object:read', 'mission:read'])]
+    #[Groups(['media_object:read'])]
     private $comment;
 
     #[ORM\ManyToOne(targetEntity: Mission::class, inversedBy: 'documents')]
-    #[Groups(['media_object:write', 'media_object:read'])]
+    #[Groups(['media_object:read'])]
     private $mission;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'mediaObjects')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['media_object:write', 'media_object:read'])]
+    #[Groups(['media_object:read'])]
     private $user;
 
 

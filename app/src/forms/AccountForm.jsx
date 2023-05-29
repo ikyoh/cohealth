@@ -1,101 +1,47 @@
-import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from "react-redux";
-//import { addUser, updateUser } from "../../features/users/usersSlice";
-import { getAccount, updateAccount } from "../features/account/accountSlice";
-import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
-import FormInput from '../components/forms/FormInput';
-import FormCheckbox from '../components/forms/FormCheckbox';
-import FormFile from '../components/forms/FormFile';
+import React, { useEffect } from 'react'
+import { useGetCurrentAccount, usePutData } from '../queryHooks/useAccount';
+import { useForm } from "react-hook-form";
+import Form from "../components/form/form/Form";
+import * as Yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup';
+import AccountFields from '../fields/AccountFields';
+import { user } from '../utils/arrays';
+import { user as validationSchema } from '../utils/validationSchemas';
 
-const AccountForm = () => {
+const AccountForm = ({ iri, handleCloseModal }) => {
 
-    const dispatch = useDispatch()
+    const { isLoading: isLoadingData, data, isError, error } = useGetCurrentAccount()
+    const { mutate: putData } = usePutData()
 
-    const account = useSelector(getAccount);
-
-    const [initialValues, setInitialValues] = useState({
-        firstname: '',
-        lastname: '',
-        organization: '',
-        phone: '',
-        email: '',
-        fax: '',
-        mobile: '',
-        npa: '',
-        city: '',
-        address1: '',
-        address2: '',
-        gln: '',
-        rcc: '',
-        iban: '',
-        bic : '',
-        isActive: true,
+    const { register, handleSubmit, setValue, reset, control, formState: { errors, isSubmitting } } = useForm({
+        resolver: yupResolver(validationSchema),
+        defaultValues: user
     })
 
-
-
-    const validationSchema = Yup.object({
-        firstname: Yup.string().required('Champ obligatoire'),
-    })
-
+    // Case update
     useEffect(() => {
-        const values = {...account}
-        delete values.avatar
-        delete values.signature
-        delete values.password
-        delete values.partners
-        setInitialValues(values)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+        if (data) {
+            reset(data)
+        }
+    }, [isLoadingData, data])
+
+    const onSubmit = form => {
+        const data = {...form}
+        delete data.avatar
+        delete data.signature
+        delete data.password
+        delete data.partners
+        putData(data)
+    }
 
     return (
-        <Formik
-            enableReinitialize={true}
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={async (values, { setSubmitting }) => {
-                setSubmitting(true);
-                dispatch(updateAccount(values))
-                setSubmitting(false)
-            }}
+        <Form onSubmit={handleSubmit(onSubmit)}
+            isLoading={isSubmitting}
+            isDisabled={isSubmitting}
         >
-            {({ isSubmitting, values }) => (
-
-                <Form className='bg-white'>
-                    <div className="">
-                        <div className='grid gap-x-10 gap-y-5 grid-cols-1 md:grid-cols-2'>
-
-                            {account.roles.includes('ROLE_ORGANIZATION')
-                                &&
-                                <FormInput name="organization" label="Organisation" placeholder="Nom de l'organisation" className="col-span-2" />
-                            }
-                            <FormInput name="firstname" label="Prénom" placeholder="Prénom" />
-                            <FormInput name="lastname" label="Nom" placeholder="Nom" />
-                            <FormInput name="phone" label="Téléphone" placeholder="" />
-                            <FormInput name="mobile" label="Mobile" placeholder="" />
-                            <FormInput name="email" label="Email" placeholder="" />
-                            <FormInput name="fax" label="Fax" placeholder="" />
-                            <FormInput name="address1" label="Adresse" className="col-span-2" />
-                            <FormInput name="address2" label="Complément d'adresse" className="col-span-2" />
-                            <FormInput name="npa" label="Code postal" placeholder="" />
-                            <FormInput name="city" label="Ville" placeholder="" />
-                            <FormInput name="rcc" label="RCC" placeholder="" />
-                            <FormInput name="gln" label="GLN" placeholder="" />
-                            <FormInput name="iban" label="IBAN" />
-                            <FormInput name="bic" label="BIC" />
-                        </div>
-                    </div>
-                    {values  !== initialValues &&
-                    <div className="flex justify-center my-3">
-                        <button type="submit" className='button-submit' disabled={isSubmitting}>Enregistrer les modifications</button>
-                    </div>
-                    }
-                </Form>
-            )}
-        </Formik>
+            <AccountFields register={register} errors={errors} />
+        </Form>
     )
-
 }
-
 export default AccountForm
+

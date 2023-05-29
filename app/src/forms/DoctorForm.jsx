@@ -1,119 +1,52 @@
-import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from "react-redux"
-import { addDoctor, updateDoctor, fetchDoctor, selectAllDoctors } from "../features/doctors/doctorsSlice"
-import { fetchDoctorComment, selectDoctorComment, addComment, updateComment } from "../features/comments/commentsSlice"
-import { Formik, Form } from 'formik'
+import React, { useEffect } from 'react'
+import { useGetIRI, usePostData, usePutData } from '../queryHooks/useDoctor';
+import { useForm } from "react-hook-form";
+import Form from "../components/form/form/Form";
 import * as Yup from 'yup'
-import DoctorFields from './DoctorFields'
-import FormComment from '../components/forms/FormComment'
+import { yupResolver } from '@hookform/resolvers/yup';
+import { doctor } from '../utils/arrays';
+import DoctorFields from '../fields/DoctorFields';
+import CommentForm from './CommentForm';
+import { doctor as validationSchema } from '../utils/validationSchemas';
 
-const DoctorForm = ({ event = false, handleCloseModal }) => {
+const DoctorForm = ({ iri, handleCloseModal }) => {
 
-    const dispatch = useDispatch()
+    const { isLoading: isLoadingData, data, isError, error } = useGetIRI(iri)
+    const { mutate: postData, isLoading: isPosting, isSuccess } = usePostData()
+    const { mutate: putData } = usePutData()
 
-    const doctors = useSelector(selectAllDoctors)
 
-    const [doctor, setDoctor] = useState({
-        category: '',
-        fullname: '',
-        organization: '',
-        phone: '',
-        email: '',
-        fax: '',
-        mobile: '',
-        npa: '',
-        city: '',
-        canton: '',
-        address1: '',
-        address2: '',
-        gln: '',
-        rcc: '',
-        isActive: true,
+    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
+        resolver: yupResolver(validationSchema),
+        defaultValues: doctor
     })
 
-    const comment = useSelector(selectDoctorComment)
-
-    const validationSchema = Yup.object({
-        category: Yup.string().required('Champ obligatoire'),
-        fullname: Yup.string().required('Champ obligatoire')
-    })
-
+    // Case update
     useEffect(() => {
-
-        if (event && !doctor.fulfilled) {
-            dispatch(fetchDoctor(event.id))
+        if (iri && data) {
+            reset(data)
         }
+    }, [isLoadingData, data])
 
-        if (event) {
-            dispatch(fetchDoctorComment(event.id))
+    const onSubmit = form => {
+        if (!iri)
+            postData(form)
+        else {
+            putData(form)
         }
-
-    }, [])
-
-
-    useEffect(() => {
-        if (event) {
-            const index = doctors.findIndex(obj => (obj.id === Number(event.id)))
-            setDoctor(doctors[index])
-        }
-    }, [doctors])
+        handleCloseModal()
+    }
 
     return (
         <>
-
-            <div className="form-body">
-                <div className="p-5 overflow-y-scroll">
-
-                    <Formik
-                        enableReinitialize={true}
-                        initialValues={doctor}
-                        validationSchema={validationSchema}
-                        onSubmit={async (values, { setSubmitting }) => {
-                            console.log('first')
-                            setSubmitting(true)
-                            event ? dispatch(updateDoctor(values)) : dispatch(addDoctor(values))
-                            setSubmitting(false)
-                            handleCloseModal()
-                        }}
-                    >
-                        {({ isSubmitting }) => (
-                            <Form className=''>
-                                <div className="">
-                                    <DoctorFields />
-                                </div>
-                                <div className="form-footer">
-                                    <button type="submit" className='button-submit' disabled={isSubmitting}>Valider</button>
-                                </div>
-                            </Form>
-                        )}
-                    </Formik>
-                    {event &&
-                        <Formik
-                            enableReinitialize={true}
-                            initialValues={{ ...comment, doctor: doctor['@id'] }}
-                            onSubmit={async (values, { setSubmitting }) => {
-                                setSubmitting(true)
-                                comment['@id'] ? dispatch(updateComment(values)) : dispatch(addComment(values))
-                                setSubmitting(false)
-                            }}
-                        >
-                            {({ isSubmitting }) => (
-                                <Form className=''>
-                                    <div className="">
-                                        <FormComment name='content' />
-                                    </div>
-                                    <div className="form-footer">
-                                        <button type="submit" className='button-submit' disabled={isSubmitting}>Valider mon commentaire</button>
-                                    </div>
-                                </Form>
-                            )}
-                        </Formik>
-                    }
-                </div>
-            </div>
-
-
-
+            <Form onSubmit={handleSubmit(onSubmit)}
+                isLoading={isSubmitting}
+                isDisabled={isSubmitting}
+                className="p-5"
+            >
+                <DoctorFields register={register} errors={errors} />
+            </Form>
+            <CommentForm doctor={iri}/>
         </>
     )
 

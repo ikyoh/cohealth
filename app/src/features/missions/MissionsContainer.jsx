@@ -20,7 +20,7 @@ const MissionsContainer = ({ children, search = null, filters = { isActive: true
 
         if (filters.isActive) {
             return _.orderBy(datas.filter(f =>
-                f.status === 'current' && (
+                f.status === 'en cours' && (
                     f.patient.firstname.toLowerCase().includes(search.toLowerCase()) ||
                     f.patient.lastname.toLowerCase().includes(search.toLowerCase())
                 )
@@ -28,7 +28,7 @@ const MissionsContainer = ({ children, search = null, filters = { isActive: true
         }
         else {
             return _.orderBy(datas.filter(f =>
-                f.status !== 'current' && (
+                f.status !== 'en cours' && (
                     f.patient.firstname.toLowerCase().includes(search.toLowerCase()) ||
                     f.patient.lastname.toLowerCase().includes(search.toLowerCase())
                 )

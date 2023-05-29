@@ -2,11 +2,12 @@
 import React, { useEffect } from "react"
 import './assets/css/main.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { currentAccount } from "./features/account/accountSlice"
-import { getAuthenticationStatus, setupToken } from "./features/authentication/authenticationSlice"
-import { useDispatch, useSelector } from "react-redux"
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import AccountPage from './pages/AccountPage'
 import AssurancesPage from './pages/AssurancesPage'
+import AcknowledgementPage from './pages/AcknowledgementPage'
+import CollaborationsPage from './pages/CollaborationsPage'
 import DashboardPage from './pages/DashboardPage'
 import DoctorsPage from './pages/DoctorsPage'
 import Homepage from './pages/Homepage'
@@ -19,12 +20,16 @@ import PatientsPage from './pages/PatientsPage'
 import UsersPage from './pages/UsersPage'
 import ServicesPage from './pages/ServicesPage'
 import RegistrationPage from './pages/RegistrationPage'
+import ResetPasswordPage from "./pages/ResetPasswordPage"
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import ProtectedRoute from './components/ProtectedRoute'
-
+import Layout from './layouts/Layout'
+import FrontLayout from "./layouts/FrontLayout"
 
 import * as dayjs from 'dayjs'
+import Fr from "dayjs/locale/fr"
 require('dayjs/locale/fr')
 dayjs.locale('fr')
 
@@ -38,52 +43,74 @@ dayjs.extend(localizedFormat)
 
 const App = () => {
 
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(currentAccount())
-  }, [])
-
+  const queryClient = new QueryClient()
 
   return (
     <>
-      <Router>
-        <Routes>
-          <Route path='/' element={<Homepage />} />
-          <Route path='/account' element={
-            <ProtectedRoute>
-              <AccountPage />
-            </ProtectedRoute>
-          } />
-          <Route path='/assurances' element={<AssurancesPage />} />
-          <Route path='/dashboard' element={<DashboardPage />} />
-          <Route path='/doctors' element={<DoctorsPage />} />
-          <Route path='/login' element={<LoginPage />} />
-          <Route path='/users' element={<UsersPage />} />
-          <Route path='/missions/:id' element={<MissionPage />} />
-          <Route path='/missions' element={
-            <ProtectedRoute>
-              <MissionsPage />
-            </ProtectedRoute>
-          } />
-          <Route path='/partners' element={
-            <ProtectedRoute>
-              <PartnersPage />
-            </ProtectedRoute>
-          } />
-          <Route path='/patients/:id' element={<PatientPage />} />
-          <Route path='/patients' element={
-            <ProtectedRoute>
-              <PatientsPage />
-            </ProtectedRoute>
-          } />
-          <Route path='/services' element={<ServicesPage />} />
-          <Route path='/registration' element={<RegistrationPage />} />
-        </Routes>
-      </Router>
-      <ToastContainer
-        autoClose={1000}
-      />
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Routes>
+            <Route path='/' element={<FrontLayout><Homepage /></FrontLayout>} />
+            <Route path='/account' element={
+              <ProtectedRoute>
+                <Layout>
+                  <AccountPage />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path='/assurances' element={<Layout><AssurancesPage /></Layout>} />
+            <Route path='/dashboard' element={<DashboardPage />} />
+            <Route path='/doctors' element={<Layout><DoctorsPage /></Layout>} />
+            <Route path='/login' element={<FrontLayout><LoginPage /></FrontLayout>} />
+            <Route path='/users' element={<Layout><UsersPage /></Layout>} />
+            <Route path='/missions/:id' element={<Layout><MissionPage /></Layout>} />
+            <Route path='/missions' element={
+              <ProtectedRoute>
+                <Layout>
+                  <MissionsPage />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path='/collaborations' element={
+              <ProtectedRoute>
+                <Layout>
+                  <CollaborationsPage />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path='/partners' element={
+              <ProtectedRoute>
+                <Layout>
+                  <PartnersPage />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path='/patients/:id' element={
+              <ProtectedRoute>
+                <Layout>
+                  <PatientPage />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path='/patients' element={
+              <ProtectedRoute>
+                <Layout>
+                  <PatientsPage />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path='/services' element={<ServicesPage />} />
+            <Route path='/registration' element={<FrontLayout><RegistrationPage /></FrontLayout>} />
+            <Route path='/acknowledgement' element={<FrontLayout><AcknowledgementPage /></FrontLayout>} />
+            <Route path={'/reset-password/:token'} element={<FrontLayout><ResetPasswordPage /></FrontLayout>} />
+            <Route path={'/forgot-password'} element={<FrontLayout><ForgotPasswordPage /></FrontLayout>} />
+          </Routes>
+        </Router>
+        <ToastContainer
+          autoClose={1000}
+        />
+        <ReactQueryDevtools initialIsOpen={false} position='bottom-right' />
+      </QueryClientProvider>
     </>
   )
 }

@@ -31,7 +31,4 @@ class CurrentUserController extends AbstractController
         return $user;
     }
 
-
-
-    
 }

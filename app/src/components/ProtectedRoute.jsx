@@ -1,28 +1,20 @@
 
 import React from 'react'
 import { Navigate } from "react-router-dom"
-import { useSelector } from "react-redux"
-import { getAccountIsAuthenticated, getAccountStatus } from "../features/account/accountSlice";
+import { useGetCurrentAccount } from '../queryHooks/useAccount';
 
 
 const ProtectedRoute = ({ children }) => {
 
-    const isAuthenticated = useSelector(getAccountIsAuthenticated)
-    const accountStatus = useSelector(getAccountStatus)
+    const { data, isLoading, error } = useGetCurrentAccount()
 
-    const Loading = () => {
-        return (
-            <h3>LOADING</h3>
-        )
-    }
-
-    if (isAuthenticated)
+    if (data && !isLoading)
         return children
 
     else {
-        if (accountStatus === "failed")
+        if (!data && !isLoading)
             return <Navigate to="/login" replace />
-        else return <Loading />
+        else return null
     }
 
 

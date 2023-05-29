@@ -6,45 +6,18 @@ import { useLocation } from 'react-router-dom';
 import { NavLink } from 'react-router-dom'
 import ReactLogo from '../assets/logo-horizontal.svg'
 import ModalsMentions from '../modals/ModalsMentions';
+import { useModal } from '../hooks/useModal'
 
 const FrontLayout = ({ children }) => {
 
-    const location = useLocation();
-
-    const [modal, setModal] = useState({
-        title: '',
-        show: false,
-        content: false
-    })
-
-
-    const handleOpenModal = (event) => {
-        setModal({ ...modal, show: true, title: event.title, content: event.content })
-    }
-
-    const handleCloseModal = (e) => {
-        setModal({ ...modal, show: false })
-    }
-
-    const RenderModal = () => {
-
-        if (!modal.show) return null
-        else return (
-            <Modal>
-                <ModalTitle title={modal.title} handleCloseModal={handleCloseModal} />
-                <ModalBody>
-                    {modal.content}
-                </ModalBody>
-            </Modal>
-        )
-    }
+    const location = useLocation()
+    const { Modal, handleOpenModal, handleCloseModal } = useModal()
 
     return (
         <>
-            <RenderModal />
-
-            <div className="overflow-y-scroll flex flex-col place-content-between h-screen bg-gradient-to-b from-action via-white to-white">
-                <div className='flex-none bg-white sticky top-0'>
+            <Modal />
+            <div className="flex flex-col place-content-between h-screen bg-gradient-to-b from-action via-white to-white">
+                <div className='flex-none bg-white sticky top-0 z-50'>
                     <div className='container h-20 flex items-center justify-between px-3 md:px-O xl:px-32'>
                         <NavLink className="" to='/'>
                             <img src={ReactLogo} alt="React Logo" style={{ width: 150 }} />
@@ -69,7 +42,7 @@ const FrontLayout = ({ children }) => {
                 </div>
 
                 <div className='flex-grow md:mt-24'>
-                    {React.cloneElement(children, { handleCloseModal, handleOpenModal })}
+                    {children}
                 </div>
 
                 <div className="flex-none container md:max-w-4xl py-12 flex flex-col gap-3 md:flex-row justify-between">
@@ -77,7 +50,7 @@ const FrontLayout = ({ children }) => {
                         <img src={ReactLogo} alt="React Logo" style={{ width: 180 }} />
                     </div>
 
-                    <ul className='flex flex-col gap-3 px-[calc(100%/4)] md:px-0'>
+                    <ul className='flex flex-col gap-3 md:px-0 text-center md:text-left'>
                         <li className='cursor-pointer'
                             onClick={() => handleOpenModal({ title: 'Foires aux questions', content: <ModalsMentions handleCloseModal={handleCloseModal} /> })}>
                             FAQ
@@ -92,14 +65,14 @@ const FrontLayout = ({ children }) => {
                         </li>
                     </ul>
 
-                    <ul className='flex flex-col gap-3 px-[calc(100%/4)] md:px-0'>
+                    <ul className='flex flex-col gap-3 md:px-0 text-center md:text-left'>
                         <li className='cursor-pointer'
                             onClick={() => handleOpenModal({ title: 'Mentions légales', content: <ModalsMentions handleCloseModal={handleCloseModal} /> })}>
                             Mentions légales
                         </li>
                         <li className='cursor-pointer'
                             onClick={() => handleOpenModal({ title: 'Conditions générales de vente', content: <ModalsMentions handleCloseModal={handleCloseModal} /> })}>
-                            CGV
+                            GDPR
                         </li>
                         <li className='cursor-pointer'
                             onClick={() => handleOpenModal({ title: 'Confidentialité', content: <ModalsMentions handleCloseModal={handleCloseModal} /> })}>
@@ -107,7 +80,7 @@ const FrontLayout = ({ children }) => {
                         </li>
                     </ul>
 
-                    <ul className='flex flex-col gap-3 px-[calc(100%/4)] md:px-0'>
+                    <ul className='flex flex-col gap-3 md:px-0 text-center md:text-left'>
                         <li className='cursor-pointer'
                             onClick={() => handleOpenModal({ title: 'A propos', content: <ModalsMentions handleCloseModal={handleCloseModal} /> })}>
                             A propos

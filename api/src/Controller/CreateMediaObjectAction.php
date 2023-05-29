@@ -4,19 +4,22 @@
 namespace App\Controller;
 
 use App\Entity\MediaObject;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Attribute\AsController;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use App\Entity\Mission;
 use App\Repository\MissionRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use ApiPlatform\Api\IriConverterInterface;
 
 #[AsController]
 final class CreateMediaObjectAction extends AbstractController
 {
 
-    public function __construct(private Security $security)
+
+    
+    public function __construct(private Security $security, private MissionRepository $missionRepository, private IriConverterInterface $iriConverter)
     {
     }
 
@@ -26,6 +29,8 @@ final class CreateMediaObjectAction extends AbstractController
         $type = $request->request->get('type');
         $status = $request->request->get('status');
         $comment = $request->request->get('comment');
+        $missionID= $request->request->get('mission');
+        $mission = $this->missionRepository->findOneBy(['id' => $missionID]);
 
         if (!$uploadedFile) {
             throw new BadRequestHttpException('"file" is required');
@@ -42,6 +47,9 @@ final class CreateMediaObjectAction extends AbstractController
         }
         if ($comment) {
             $mediaObject->setComment($comment);
+        }
+        if ($missionID) {
+            $mediaObject->setMission($mission);
         }
 
         return $mediaObject;

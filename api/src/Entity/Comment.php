@@ -28,6 +28,7 @@ class Comment implements UserOwnedInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["comments:read", "comment:read"])]
     private $id;
 
 

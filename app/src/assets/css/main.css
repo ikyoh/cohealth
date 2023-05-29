@@ -7,7 +7,7 @@
 @layer base {
 
   body {
-    @apply bg-white;
+    @apply bg-white overflow-y-scroll;
   }
 
   html {
@@ -111,7 +111,6 @@
   @apply appearance-none cursor-pointer border bg-white h-10 w-10 p-1 rounded-sm before:block before:h-full before:bg-gray-100 before:rounded-sm checked:before:bg-action;
 }
 
-
 .input-group>textarea {
   @apply appearance-none border rounded-sm p-2 w-full mt-2 border-gray-200 leading-tight focus:outline-none focus:shadow-sm focus:shadow-gray-200;
 }
@@ -140,6 +139,10 @@
 }
 
 .hr_separator {
+  @apply h-2 bg-slate-300 w-[60px] my-2 border-0 rounded-full;
+}
+
+.hr_info {
   @apply h-2 bg-info w-[60px] my-2 border-0 rounded-full;
 }
 

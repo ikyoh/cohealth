@@ -1,114 +1,86 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from "react-redux";
-import { Formik, Form, useFormikContext } from 'formik'
-import FormInput from '../components/forms/FormInput'
-import axios from 'axios'
-import { API_USERS } from '../features/apiConfig'
-import { addPartner, selectAllPartners } from "../features/partners/partnersSlice";
+import { useGetPaginatedDatas as getUsers } from '../queryHooks/useUser';
+import { useGetAllDatas as getPartners, usePostData } from '../queryHooks/usePartner';
+import Form from "../components/form/form/Form";
+import uuid from "react-uuid"
+import Loader from '../components/Loader';
 
 const PartnerForm = ({ handleCloseModal }) => {
 
-    const dispatch = useDispatch()
+    const [filters, setFilters] = useState({ rcc: "" })
+    const [enabled, setEnabled] = useState(false)
+    const [partner, setPartner] = useState('')
+    const { isLoading: isLoadingUsers, data: dataUsers } = getUsers(1, "id", "asc", "", filters, enabled)
+    const { isLoading: isLoadingPartners, data: dataPartners } = getPartners()
+    const { mutate: post } = usePostData()
 
-    const Partners = useSelector(selectAllPartners)
 
-    let partners = Partners.reduce(function (acc, curr) {
-        return [...acc, curr.partner];
-    }, []);
-
-    const initialValues = {
-        rcc: '',
-        partner: false,
-        isFavorite: false
+    const handleChangeInput = (e) => {
+        setFilters({ ...filters, [e.target.name]: e.target.value })
     }
 
-    const [info, setInfo] = useState(false)
+    console.log('dataUsers', dataUsers)
+    console.log('dataPartners', dataPartners)
 
-    const SelectPartner = () => {
+    useEffect(() => {
+        if (filters.rcc.length === 7)
+            setEnabled(true)
+        else
+            setEnabled(false)
+    }, [filters.rcc])
 
+    const onSubmit = (event) => {
+        event.preventDefault()
+        post({ partner: dataUsers["hydra:member"][0]["@id"] })
+        handleCloseModal()
+    }
 
+    const isDisabled = () => {
 
-        const [partner, setPartner] = useState(false)
+        if (dataUsers && dataPartners) {
+            if (dataUsers["hydra:totalItems"] !== 1) return true
+            if (dataPartners.filter(f => f.partner["@id"] === dataUsers["hydra:member"][0]["@id"]).length === 1)
+                return true
+            else return false
+        }
 
-        const { setFieldValue, values } = useFormikContext()
+        return true
+    }
 
-        useEffect(() => {
-
-            if (values.rcc.length === 8) {
-
-                axios.get(API_USERS + "?rcc=" + values.rcc)
-                    .then(response => {
-                        // handle success
-                        if (response.data["hydra:member"].length > 0) {
-                            setPartner(response.data["hydra:member"][0])
-                        }
-                        else setInfo("Aucun résultat")
-                    })
-                    .catch(function (error) {
-                        // handle error
-                        console.log(error)
-                    })
-
-            } else {
-                setInfo(false)
-                setPartner(false)
-                setFieldValue("partner", false);
-            }
-
-        }, [values.rcc])
-
-        useEffect(() => {
-            let isPartner = partners.filter(f => f.rcc === partner.rcc)
-            if (isPartner.length > 0) setInfo( partner.lastname + " "+ partner.firstname + " fait déjà parti de vos partenaires")
-
-
-        }, [partner])
-
-
-        if (partner && !info) return (
-            <div className={`text-center p-3 rounded-sm cursor-pointer ${values.partner ? 'bg-action' : 'bg-gray-200'}`}
-                onClick={() => setFieldValue("partner", partner['@id'])}>
-                {partner.lastname.toUpperCase()} {partner.firstname}
+    if (isLoadingPartners) return <Loader />
+    else return (
+        <Form onSubmit={onSubmit} isDisabled={isDisabled()}>
+            <div className='bg-gray-100 p-2 rounded flex items-center'>
+                <div className='flex-1'>
+                    Numéro RCC
+                </div>
+                <input type="search"
+                    className='appearance-none h-10 p-2 border rounded-md focus:outline-action flex-1'
+                    name="rcc"
+                    value={filters.rcc}
+                    onChange={handleChangeInput}
+                    placeholder='C123456'
+                />
             </div>
-        )
-        else return null
-
-    }
-
-
-    return (
-        <Formik
-            initialValues={initialValues}
-            // validationSchema={validationSchema}
-            onSubmit={async (values, { setSubmitting }) => {
-                setSubmitting(true)
-                dispatch(addPartner(values))
-                setSubmitting(false)
-                handleCloseModal()
-            }}
-        >
-            {({ isSubmitting, setValues, values }) => (
-                <Form className='form-body'>
-                    <div className="form-content">
-                        <div className='grid gap-y-5 grid-cols-1'>
-
-                            <FormInput name="rcc" label="N° RCC" placeholder="" className="" />
-
-                            {info &&
-                                <div>{info}</div>
-                            }
-
-                            <SelectPartner />
-
-                        </div>
+            <div className='h-12'>
+                {dataUsers && dataUsers["hydra:member"]?.map(user =>
+                    <div key={uuid()}>
+                        {dataPartners.filter(f => f.partner["@id"] === user["@id"]).length === 1 ?
+                            <div>
+                                {user.firstname + ' ' + user.lastname} (Partenaire déjà présent dans la liste)
+                            </div>
+                            :
+                            <div>
+                                {user.firstname + ' ' + user.lastname}
+                            </div>
+                        }
                     </div>
-                    <div className="form-footer">
-                        <button type="submit" className='button-submit' disabled={isSubmitting || !values.partner}>Valider</button>
-                    </div>
-                </Form>
-            )}
-        </Formik>
+                )}
+                {enabled && dataUsers && dataUsers["hydra:totalItems"] === 0 && <div>Aucun résultat</div>}
+            </div>
+        </Form>
     )
+
 }
 
 export default PartnerForm

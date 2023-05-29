@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\GetCollection;
 
 
+
 #[ORM\Entity(repositoryClass: PartnerRepository::class)]
 #[ApiResource(
     paginationClientEnabled: true,
@@ -25,6 +26,7 @@ use ApiPlatform\Metadata\GetCollection;
         new Post()
     ]
 )]
+
 
 class Partner implements UserOwnedInterface
 {

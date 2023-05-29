@@ -29,8 +29,6 @@ export const registerAccount = createAsyncThunk('account/register', async (form,
 })
 
 
-
-
 export const currentAccount = createAsyncThunk('account/currentAccount', async () => {
     console.log('API_URL', API_URL)
     try {

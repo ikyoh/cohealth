@@ -11,7 +11,7 @@ import patientReducer from './patients/patientsSlice'
 import prescriptionReducer from './prescriptions/prescriptionsSlice'
 import missionReducer from './missions/missionsSlice'
 import serviceReducer from './services/servicesSlice'
-import userReducer from './users/usersSlice'
+
 
 //const combinedReducer = combineReducers({missionReducer, patientReducer})
 
@@ -28,7 +28,6 @@ export const store = configureStore({
     patients: patientReducer,
     prescriptions: prescriptionReducer,
     services: serviceReducer,
-    users: userReducer,
   },
 
 })

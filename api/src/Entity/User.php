@@ -13,14 +13,14 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use App\Filter\MultipleFieldsSearchFilter;
 
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -45,15 +45,26 @@ use ApiPlatform\Metadata\Put;
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['rcc' => 'exact'])]
+#[ApiFilter(OrderFilter::class, properties: ['id', 'email', 'rcc', 'lastname','organization','createdAt','isActive'])]
+#[ApiFilter(MultipleFieldsSearchFilter::class, properties: [
+    "id",
+    "lastname",
+    "firstname",
+    "rcc",
+    "email",
+    "organization",
+])]
 #[UniqueEntity(
     fields: ['email'],
     errorPath: 'email',
     message: "Email déjà présent dans notre base de données.",
+    ignoreNull:true
 )]
 #[UniqueEntity(
     fields: ['mobile'],
     errorPath: 'mobile',
     message: "Mobile déjà présent dans notre base de données.",
+    ignoreNull:true
 )]
 #[UniqueEntity(
     fields: ['rcc'],
@@ -64,61 +75,61 @@ use ApiPlatform\Metadata\Put;
     fields: ['gln'],
     errorPath: 'gln',
     message: "GLN déjà présent dans notre base de données.",
+    ignoreNull:true
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["users:read", "user:write", "partners:read", "mission:read", "missions:read"])]
+    #[Groups(["users:read", "user:read", "user:write", "partners:read", "missions:read","mission:read"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 180)]
-    #[Groups(["users:read", "user:write","partners:read", "mission:read"])]
+    #[Groups(["users:read", "user:read", "user:write","partners:read"])]
     #[Assert\Email(
         message: "L'Email {{ value }} n'est pas un Email valide.",
     )]
     private $email;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(["users:read", "user:write"])]
+    #[Groups(["users:read", "user:read", "user:write"])]
     private $roles = []; // ROLE_ADMIN / ROLE_ORGANIZATION / ROLE_NURSE / ROLE_EMPLOYEE
 
     #[ORM\Column(type: 'string')]
-    #[Groups(["users:read", "user:write"])]
+    #[Groups(["user:write"])]
     private $password;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:write", "missions:read", "mission:read", "partners:read"])]
-    private $firstname;
+    #[Groups(["users:read", "user:read", "user:write", "missions:read", "mission:read", "partners:read"])]
+    private $firstname = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:write", "missions:read", "mission:read", "partners:read"])]
-    private $lastname;
+    #[Groups(["users:read", "user:read", "user:write", "missions:read", "mission:read", "partners:read"])]
+    private $lastname = null;
 
     #[ORM\Column(type: 'boolean')]
-    #[Groups(["users:read", "user:write"])]
+    #[Groups(["users:read", "user:read", "user:write"])]
     private $isActive = false;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:write"])]
-    private $organization;
+    #[Groups(["users:read", "user:read", "user:write"])]
+    private $organization = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:write", "partners:read", "mission:read"])]
-    private $phone;
+    #[Groups(["users:read", "user:read", "user:write", "partners:read"])]
+    private $phone = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:write"])]
-    private $fax;
+    #[Groups(["users:read", "user:read", "user:write"])]
+    private $fax = null;
 
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
-    #[Groups(["users:read", "user:write", "partners:read", "mission:read"])]
-    #[Assert\NotBlank(message: "Le mot de passe est obligatoire")]
-    private $mobile;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(["users:read", "user:read", "user:write", "partners:read"])]
+    private $mobile = null;
 
     #[ORM\Column(type: 'datetime')]
-    #[Groups(["users:read", "user:write"])]
+    #[Groups(["users:read", "user:read", "user:write"])]
     private $createdAt;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
@@ -128,57 +139,58 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $secureKey = null;
 
     #[ORM\Column(type: 'boolean')]
-    #[Groups(["users:read", "user:write"])]
+    #[Groups(["users:read", "user:read", "user:write"])]
     private $isOptin = false;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
-    #[Groups(["users:read", "user:write", "missions:read", "mission:read", "partners:read"])]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(["users:read", "user:read", "user:write", "missions:read", "partners:read"])]
     private $rcc = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
-    #[Groups(["users:read", "user:write"])]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(["users:read", "user:read", "user:write"])]
     private $gln = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:write"])]
-    private $iban;
+    #[Groups(["users:read", "user:read", "user:write"])]
+    private $iban = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Partner::class)]
-    #[Groups(["users:read", "user:write"])]
+    #[Groups(["users:read", "user:read", "user:write"])]
     private $partners;
 
-    #[ORM\OneToOne(targetEntity: MediaObject::class, cascade: ['persist', 'remove'])]
-    #[Groups(["users:read", "user:write", "media_object:write"])]
+    #[ORM\OneToOne(targetEntity: MediaObject::class)]
+    #[Groups(["users:read", "user:read", "user:write", "mission:read"])]
     private $avatar;
 
-    #[ORM\OneToOne(targetEntity: MediaObject::class, cascade: ['persist', 'remove'])]
-    #[Groups(["users:read", "user:write", "media_object:write", "mission:read"])]
+    #[ORM\OneToOne(targetEntity: MediaObject::class)]
+    #[Groups(["users:read", "user:read", "user:write"])]
     private $signature;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:write", "partners:read", "mission:read"])]
-    private $address1;
+    #[Groups(["users:read", "user:read", "user:write", "partners:read"])]
+    private $address1 = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:write"])]
-    private $address2;
+    #[Groups(["users:read", "user:read", "user:write"])]
+    private $address2 = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:write"])]
-    private $bic;
+    #[Groups(["users:read", "user:read", "user:write"])]
+    private $bic = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:write", "partners:read", "mission:read"])]
-    private $city;
+    #[Groups(["users:read", "user:read", "user:write", "partners:read"])]
+    private $city = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:write", "partners:read", "mission:read"])]
-    private $npa;
+    #[Groups(["users:read", "user:read", "user:write", "partners:read"])]
+    private $npa = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: MediaObject::class)]
     private $mediaObjects;
 
     #[ORM\Column(type: 'boolean')]
+    #[Groups(["users:read", "user:read", "user:write"])]
     private $isApproved = false;
 
 

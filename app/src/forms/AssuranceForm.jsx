@@ -1,116 +1,51 @@
-import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from "react-redux"
-import { addAssurance, updateAssurance, selectAllAssurances, fetchAssurance } from "../features/assurances/assurancesSlice"
-import { fetchAssuranceComment, selectAssuranceComment, addComment, updateComment } from "../features/comments/commentsSlice"
-import { Formik, Form } from 'formik'
+import React, { useEffect } from 'react'
+import { useGetIRI, usePostData, usePutData } from '../queryHooks/useAssurance';
+import { useForm } from "react-hook-form";
+import Form from "../components/form/form/Form";
 import * as Yup from 'yup'
-import AssuranceFields from './AssuranceFields'
-import FormComment from '../components/forms/FormComment'
+import { yupResolver } from '@hookform/resolvers/yup';
+import { assurance } from '../utils/arrays';
+import AssuranceFields from '../fields/AssuranceFields';
+import CommentForm from './CommentForm';
+import { assurance as validationSchema } from '../utils/validationSchemas';
 
-const AssuranceForm = ({ event = false, handleCloseModal }) => {
+const AssuranceForm = ({ iri, handleCloseModal }) => {
 
-    const dispatch = useDispatch()
+    const { isLoading: isLoadingData, data, isError, error } = useGetIRI(iri)
+    const { mutate: postData, isLoading: isPosting, isSuccess } = usePostData()
+    const { mutate: putData } = usePutData()
 
-    const assurances = useSelector(selectAllAssurances)
-
-    const [assurance, setAssurance] = useState({
-        isActive: true,
-        company: '',
-        organization: '',
-        type: '',
-        address1: '',
-        address2: '',
-        npa: '',
-        city: '',
-        phone: '',
-        email: '',
-        www: '',
-        gln: ''
+    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
+        resolver: yupResolver(validationSchema),
+        defaultValues: assurance
     })
 
-    const comment = useSelector(selectAssuranceComment)
-
-    const validationSchema = Yup.object({
-        company: Yup.string().required('Champ obligatoire'),
-        type: Yup.string().required('Champ obligatoire'),
-    })
-
+    // Case update
     useEffect(() => {
-
-        if (event && !assurance.fulfilled) {
-            dispatch(fetchAssurance(event.id))
+        if (iri && data) {
+            reset(data)
         }
+    }, [isLoadingData, data])
 
-        if (event) {
-            dispatch(fetchAssuranceComment(event.id))
+    const onSubmit = form => {
+        if (!iri)
+            postData(form)
+        else {
+            putData(form)
         }
-
-    }, [])
-
-
-    useEffect(() => {
-        if (event) {
-            const index = assurances.findIndex(obj => (obj.id === Number(event.id)))
-            setAssurance(assurances[index])
-        }
-    }, [assurances])
+        handleCloseModal()
+    }
 
     return (
         <>
-            <div className="form-body">
-                <div className="p-5 overflow-y-scroll">
-                    <Formik
-                        enableReinitialize={true}
-                        initialValues={assurance}
-                        validationSchema={validationSchema}
-                        onSubmit={async (values, { setSubmitting }) => {
-                            setSubmitting(true)
-                            event ? dispatch(updateAssurance(values)) : dispatch(addAssurance(values))
-                            setSubmitting(false)
-                            handleCloseModal()
-                        }}
-                    >
-                        {({ isSubmitting }) => (
-                            <Form>
-                                <div>
-                                    <AssuranceFields />
-                                </div>
-                                <div className="form-footer">
-                                    <button type="submit" className='button-submit' disabled={isSubmitting}>Valider</button>
-                                </div>
-                            </Form>
-                        )}
-                    </Formik>
-                    {event &&
-                        <Formik
-                            enableReinitialize={true}
-                            initialValues={{ ...comment, assurance: assurance['@id'] }}
-                            // validationSchema={validationSchema}
-                            onSubmit={async (values, { setSubmitting }) => {
-                                setSubmitting(true)
-                                console.log('values', values)
-                                comment['@id'] ? dispatch(updateComment(values)) : dispatch(addComment(values))
-                                setSubmitting(false)
-                                // handleCloseModal()
-                            }}
-                        >
-                            {({ isSubmitting }) => (
-                                <Form className=''>
-                                    <div className="">
-                                        <FormComment name='content' />
-                                    </div>
-                                    <div className="form-footer">
-                                        <button type="submit" className='button-submit' disabled={isSubmitting}>Valider mon commentaire</button>
-                                    </div>
-                                </Form>
-                            )}
-                        </Formik>
-                    }
-                </div>
-            </div>
-
-
-
+            <Form onSubmit={handleSubmit(onSubmit)}
+                isLoading={isSubmitting}
+                isDisabled={isSubmitting}
+                className='p-5'
+            >
+                <AssuranceFields register={register} errors={errors} />
+            </Form>
+            <CommentForm assurance={iri} />
         </>
     )
 

@@ -8,6 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\AssuranceRepository;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use App\Filter\CustomSearchFilter;
 
 #[ORM\Entity(repositoryClass: AssuranceRepository::class)]
 #[ApiResource(
@@ -15,6 +18,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ['groups' => ['assurances:read']],
     denormalizationContext: ['groups' => ['assurance:write']],
 )]
+#[ApiFilter(OrderFilter::class, properties: ['id', 'company', 'organization', 'phone', 'email', 'gln'])]
+#[ApiFilter(CustomSearchFilter::class)]
+
 class Assurance
 {
     #[ORM\Id]
@@ -28,7 +34,7 @@ class Assurance
     private $isActive = true;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write", "mission:read", "missions:read", "patients:read", "patient:read"])]
+    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write", "missions:read", "patients:read"])]
     private $company;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -36,31 +42,31 @@ class Assurance
     private $organization;
 
     #[ORM\Column(type: 'string', length: 20)]
-    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write", "patient:read", "patients:read", "mission:read", "missions:read"])]
+    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write", "patients:read", "missions:read"])]
     private $type;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write", "mission:read"])]
+    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write"])]
     private $address1;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write", "mission:read"])]
+    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write"])]
     private $address2;
 
     #[ORM\Column(type: 'string', length: 10)]
-    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write", "mission:read"])]
+    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write"])]
     private $npa;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write", "mission:read"])]
+    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write"])]
     private $city;
 
     #[ORM\Column(type: 'string', length: 15, nullable: true)]
-    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write", "mission:read"])]
+    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write"])]
     private $phone;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write", "mission:read"])]
+    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write"])]
     private $email;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -68,7 +74,7 @@ class Assurance
     private $www;
 
     #[ORM\Column(type: 'string', length: 13, nullable: true)]
-    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write", "patient:read", "patients:read", "mission:read", "missions:read"])]
+    #[Groups(["assurances:read", "assurance:write", "mission:write", "patient:write", "patients:read", "missions:read"])]
     private $gln;
 
     #[ORM\OneToMany(mappedBy: 'assurance', targetEntity: Patient::class)]
