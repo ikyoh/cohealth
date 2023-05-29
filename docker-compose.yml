@@ -1,10 +1,11 @@
 services:
 
   caddy:
+    image: caddy:2.5.2-alpine
     container_name: ${APP_NAME}-caddy
-    build:
-      context: ./caddy
-      target: caddy
+    # build:
+    #   context: ./caddy
+    #   target: caddy
     restart: unless-stopped
     ports:
       - "80:80"
@@ -14,11 +15,12 @@ services:
       DOMAIN_NAME: ${DOMAIN_NAME}
       APP_UPSTREAM: app:3000
     volumes:
-      - php_socket:/var/run/php 
+      - php_socket:/var/run/php
       - ./api:/srv/api
       - ./app/build:/srv/app
       - caddy_data:/data
       - caddy_config:/config
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
     depends_on:
       - api
     networks:
@@ -39,7 +41,6 @@ services:
       - "3000:3000"
     networks:
       appnetwork: {}
-
 
   api:
     container_name: ${APP_NAME}-api
@@ -92,12 +93,10 @@ services:
     networks:
       appnetwork: {}
 
-
 networks:
   appnetwork:
     name: ${APP_NAME}
     driver: bridge
-
 
 volumes:
   php_socket:
