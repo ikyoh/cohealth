@@ -12,7 +12,7 @@ FROM caddy:2-builder-alpine AS caddy_builder
 FROM caddy:2-alpine AS caddy
 
 WORKDIR /srv/app
-COPY --from=caddy_builder /usr/bin/caddy /usr/bin/caddy
+#COPY --from=caddy_builder /usr/bin/caddy /usr/bin/caddy
 COPY ./Caddyfile /etc/caddy/Caddyfile
 
 
@@ -20,5 +20,5 @@ COPY ./Caddyfile /etc/caddy/Caddyfile
 FROM caddy:2-alpine AS caddydev
 
 WORKDIR /srv/app
-COPY --from=caddy_builder /usr/bin/caddy /usr/bin/caddy
+#COPY --from=caddy_builder /usr/bin/caddy /usr/bin/caddy
 COPY ./Caddyfile.dev /etc/caddy/Caddyfile
