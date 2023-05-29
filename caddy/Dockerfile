@@ -17,8 +17,8 @@ FROM caddy:2-builder-alpine AS caddy_builder
 
 
 # Caddy image Dev
-# FROM caddy:2-alpine AS caddydev
+FROM caddy:2-alpine AS caddydev
 
-# WORKDIR /srv/app
-# COPY --from=caddy_builder /usr/bin/caddy /usr/bin/caddy
-# COPY ./Caddyfile.dev /etc/caddy/Caddyfile
+WORKDIR /srv/app
+#COPY --from=caddy_builder /usr/bin/caddy /usr/bin/caddy
+COPY ./Caddyfile.dev /etc/caddy/Caddyfile
