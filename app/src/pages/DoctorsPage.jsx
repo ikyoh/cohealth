@@ -81,15 +81,15 @@ const DoctorsPage = () => {
                         handleSort={handleSort}
                     />
                     <Table.Th
-                        label="N° GLN"
-                        sortBy='gln'
+                        label="N° RCC"
+                        sortBy='rcc'
                         sortValue={sortValue}
                         sortDirection={sortDirection}
                         handleSort={handleSort}
                     />
                     <Table.Th
-                        label="N° RCC"
-                        sortBy='rcc'
+                        label="N° GLN"
+                        sortBy='gln'
                         sortValue={sortValue}
                         sortDirection={sortDirection}
                         handleSort={handleSort}
@@ -108,8 +108,8 @@ const DoctorsPage = () => {
                             <Table.Td label="Category" text={data.category} />
                             <Table.Td label="Organisation" text={data.organization} />
                             <Table.Td label="Canton" text={data.canton} />
-                            <Table.Td label="GLN" text={data.gln} />
                             <Table.Td label="RCC" text={data.rcc} />
+                            <Table.Td label="GLN" text={data.gln} />
                         </Table.Tr>
                     )}
                 </Table.Tbody>

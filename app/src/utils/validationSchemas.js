@@ -15,12 +15,13 @@ const npa = () => Yup.string().matches(/^\d{4}$/, "Numéro incorrect")
 const npaRequired = () => Yup.string().matches(/^\d{4}$/, "Numéro incorrect").required("Champ obligatoire")
 
 
-
 const roleSingle = () => Yup.string().when('roles', {
     is: (roles) => roles.includes("ROLE_NURSE") || roles.includes("ROLE_DOCTOR"),
     then: Yup.string().required('Champ obligatoire'),
     otherwise: Yup.string().nullable()
 })
+
+
 const roleOrganization = () => Yup.string().when('roles', {
     is: (roles) => roles.includes("ROLE_ORGANIZATION_BENEFIT") || roles.includes("ROLE_ORGANIZATION_MANDATOR"),
     then: Yup.string().required('Champ obligatoire'),
@@ -89,6 +90,17 @@ export const password = {
         .required("Champ obligatoire")
         .oneOf([Yup.ref('password')], 'Le mot de passe ne correspond pas'),
 }
+
+export const service = Yup.object({
+    family: string('Choix obligatoire'),
+    category: string('Choix obligatoire'),
+    opas: string('Choix obligatoire'),
+    title: string('Choix obligatoire'),
+    act: Yup.number().required(),
+    time: Yup.number().required().min(0).integer(),
+    opas: string('Champ obligatoire'),
+})
+
 
 export const doctor = Yup.object({
     fullname: string('Choix obligatoire'),

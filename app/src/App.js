@@ -99,7 +99,13 @@ const App = () => {
                 </Layout>
               </ProtectedRoute>
             } />
-            <Route path='/services' element={<ServicesPage />} />
+            <Route path='/services' element={
+              <ProtectedRoute>
+                <Layout>
+                  <ServicesPage />
+                </Layout>
+              </ProtectedRoute>
+            } />
             <Route path='/registration' element={<FrontLayout><RegistrationPage /></FrontLayout>} />
             <Route path='/acknowledgement' element={<FrontLayout><AcknowledgementPage /></FrontLayout>} />
             <Route path={'/reset-password/:token'} element={<FrontLayout><ResetPasswordPage /></FrontLayout>} />

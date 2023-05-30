@@ -27,6 +27,17 @@ export const user = {
     bic: '',
 }
 
+export const service = {
+    family: '',
+    category: '',
+    opas: '',
+    title: '',
+    act: '',
+    time: 0,
+    description: '',
+    isActive: true,
+}
+
 export const doctor = {
     category: 'Médecine générale',
     fullname: '',

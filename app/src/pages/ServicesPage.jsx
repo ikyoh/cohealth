@@ -1,89 +1,121 @@
-import React, { useState } from 'react'
-import Layout from '../layouts/Layout'
-import { AiFillPlusCircle } from "react-icons/ai";
-import { BsCheck2Circle } from "react-icons/bs";
-import ServiceForm from '../forms/ServiceForm';
-import ServicesContainer from '../features/services/ServicesContainer';
-import SearchFilter from '../components/SearchFilter';
-import ThTable from '../components/table/ThTable';
-import PageTitle from '../layouts/PageTitle';
-
+import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
+import { GiHealthNormal } from "react-icons/gi";
+import ServiceForm from '../forms/ServiceForm'
+import PageTitle from '../layouts/PageTitle'
+import { useGetPaginatedDatas } from '../queryHooks/useService'
+import { useSearch } from '../hooks/useSearch'
+import { useSortBy } from '../hooks/useSortBy'
+import { useModal } from '../hooks/useModal'
+import * as Table from '../components/table/Table'
+import Pagination from '../components/pagination/Pagination'
+import AddButton from '../components/buttons/AddButton'
+import Loader from '../components/Loader'
 
 const ServicesPage = () => {
 
-    const PageContent = ({ handleOpenModal, handleCloseModal }) => {
+    const { state: initialPageState } = useLocation()
+    const { Modal, handleOpenModal, handleCloseModal } = useModal()
 
-        const [search, setSearch] = useState('')
-        const [filters, setFilters] = useState({
-            isActive: true
-        })
-        const [sort, setSort] = useState({ by: 'id', direction: 'asc' })
+    const { searchValue, searchbar } = useSearch(initialPageState ? initialPageState.searchValue : "")
+    const [page, setPage] = useState(initialPageState ? initialPageState.page : 1)
+    const { sortValue, sortDirection, handleSort } = useSortBy(initialPageState ? { value: initialPageState.sortValue, direction: initialPageState.sortDirection } : "")
+    const { data, isLoading, error } = useGetPaginatedDatas(page, sortValue, sortDirection, searchValue)
 
-        const Row = ({ item }) => {
-            return (
-                <tr onClick={() => handleOpenModal({ title: 'Edition de la prestation', content: <ServiceForm event={item} handleCloseModal={handleCloseModal} /> })}>
-                    <td>{item.id}</td>
-                    <td>{item.family}</td>
-                    <td>{item.category}</td>
-                    <td>{item.title}</td>
-                    <td>{item.act}</td>
-                    <td>{item.opas}</td>
-                    <td>{item.time}</td>
-                </tr>
-            )
+    useEffect(() => {
+        if (searchValue && !initialPageState) {
+            setPage(1)
         }
-
-        const handleSort = (event) => {
-            const checkDirection = () => {
-                if (sort.direction === "asc") return "desc"
-                if (sort.direction === "desc") return "asc"
-            }
-            if (event === sort.by) setSort({ by: event, direction: checkDirection() })
-            else setSort({ by: event, direction: "asc" })
+        if (sortValue && !initialPageState) {
+            setPage(1)
         }
+        if (sortDirection && !initialPageState) {
+            setPage(1)
+        }
+    }, [searchValue, sortValue])
 
+    if (isLoading) return <Loader />
+    else return (
+        <>
+            <Modal />
+            <PageTitle title="Liste des prestations" icon={<GiHealthNormal size={40} />}>
+                {searchbar}
+                <AddButton onClick={() => handleOpenModal({ title: 'Nouvelle prestation', content: <ServiceForm handleCloseModal={handleCloseModal} /> })} />
+            </PageTitle>
 
-        return (
-            <>
-                <PageTitle title="Gestion des prestations">
-                    <SearchFilter value={search} handleSearch={({ currentTarget }) => setSearch(currentTarget.value)}>
-                        <div onClick={() => setFilters({ ...filters, isActive: !filters.isActive })}>
-                            <BsCheck2Circle size={30} className={`cursor-pointer ${filters.isActive ? "text-primary" : "text-error"}`} />
-                        </div>
-                    </SearchFilter>
-
-                    <div onClick={() => handleOpenModal({ title: 'Nouvelle prestation', content: <ServiceForm handleCloseModal={handleCloseModal} /> })}>
-                        <AiFillPlusCircle size={52} className="text-action rounded-full hover:text-primary" />
-                    </div>
-                </PageTitle>
-
-                <table className="responsive-table">
-                    <thead>
-                        <tr>
-                            <ThTable handleSort={handleSort} title="#" sort={sort} sortBy='id' className='w-24' />
-                            <ThTable handleSort={handleSort} title="Famille" sort={sort} sortBy='family' />
-                            <ThTable handleSort={handleSort} title="Catégorie" sort={sort} sortBy='category' />
-                            <ThTable handleSort={handleSort} title="Intitulé" sort={sort} sortBy='title' className='w-96' />
-                            <ThTable handleSort={handleSort} title="N° Acte" sort={sort} sortBy='act' />
-                            <ThTable handleSort={handleSort} title="OPAS" sort={sort} sortBy='opas' />
-                            <ThTable handleSort={handleSort} title="Durée" sort={sort} sortBy='time' />
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <ServicesContainer search={search} sort={sort} filters={filters}>
-                            <Row />
-                        </ServicesContainer>
-                    </tbody>
-                </table>
-
-            </>
-        )
-    }
-
-    return (
-        <Layout>
-            <PageContent />
-        </Layout>
+            <Table.Table>
+                <Table.Thead>
+                    <Table.Th
+                        label="#"
+                        sortBy='id'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="Famille"
+                        sortBy='family'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="Catégorie"
+                        sortBy='category'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="Intitulé"
+                        sortBy='title'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="N° Acte"
+                        sortBy='act'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="OPAS"
+                        sortBy='opas'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                    <Table.Th
+                        label="Durée"
+                        sortBy='time'
+                        sortValue={sortValue}
+                        sortDirection={sortDirection}
+                        handleSort={handleSort}
+                    />
+                </Table.Thead>
+                <Table.Tbody>
+                    {!isLoading && data['hydra:member'].map(data =>
+                        <Table.Tr key={data.id}
+                            onClick={() => handleOpenModal({
+                                title: "Edition",
+                                content: <ServiceForm iri={data['@id']} handleCloseModal={handleCloseModal} />
+                            })}
+                        >
+                            <Table.Td text={data.id} />
+                            <Table.Td label="Famille" text={data.family} />
+                            <Table.Td label="Catégorie" text={data.category} />
+                            <Table.Td label="Intitulé" text={data.title} />
+                            <Table.Td label="N° Acte" text={data.act} />
+                            <Table.Td label="OPAS" text={data.opas} />
+                            <Table.Td label="Durée" text={data.time} />
+                        </Table.Tr>
+                    )}
+                </Table.Tbody>
+            </Table.Table>
+            <Pagination totalItems={data['hydra:totalItems']} page={page} setPage={setPage} />
+        </>
     )
 }
 

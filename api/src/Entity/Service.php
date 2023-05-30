@@ -5,9 +5,20 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ServiceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use App\Filter\MultipleFieldsSearchFilter;
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 #[ApiResource(paginationClientEnabled: true)]
+#[ApiFilter(OrderFilter::class, properties: ['id', 'title', 'family', 'act', 'category', 'time', 'opas'])]
+#[ApiFilter(MultipleFieldsSearchFilter::class, properties: [
+    "id",
+    "title",
+    "family",
+    "title",
+    "act"
+])]
 class Service
 {
     #[ORM\Id]
@@ -26,16 +37,16 @@ class Service
 
     #[ORM\Column(type: 'string', length: 255)]
     private $category;
-    
+
     #[ORM\Column(type: 'integer')]
     private $time;
-    
+
     #[ORM\Column(type: 'boolean')]
     private $isActive;
-    
+
     #[ORM\Column(type: 'string', length: 1000, nullable: true)]
     private $description;
-    
+
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $opas;
 
@@ -139,6 +150,4 @@ class Service
 
         return $this;
     }
-
-
 }

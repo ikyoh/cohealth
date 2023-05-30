@@ -1,94 +1,50 @@
-import React, { useState, useEffect } from 'react'
-import { useDispatch } from "react-redux"
-import { addService, updateService } from "../features/services/servicesSlice"
-import { Formik, Form } from 'formik'
-import * as Yup from 'yup'
-import FormInput from '../components/forms/FormInput'
-import FormTextarea from '../components/forms/FormTextarea'
-import FormCheckbox from '../components/forms/FormCheckbox'
-import FormSelect from '../components/forms/FormSelect'
-import { services_family } from '../utils/arrays'
-import { nanoid } from "@reduxjs/toolkit"
-import { legalCares } from '../utils/arrays'
+import React, { useEffect } from 'react'
+import { useGetIRI, usePostData, usePutData } from '../queryHooks/useService';
+import { useForm } from "react-hook-form";
+import Form from "../components/form/form/Form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import ServiceFields from '../fields/ServiceFields';
+import { service as defaultValues } from '../utils/arrays';
+import { service as validationSchema } from '../utils/validationSchemas';
 
-const ServiceForm = ({ event = false, handleCloseModal }) => {
+const ServiceForm = ({ iri, handleCloseModal }) => {
 
-    const dispatch = useDispatch()
+    const { isLoading: isLoadingData, data, isError, error } = useGetIRI(iri)
+    const { mutate: postData, isLoading: isPosting, isSuccess } = usePostData()
+    const { mutate: putData } = usePutData()
 
-    const [initialValues, setInitialValues] = useState({
-        title: '',
-        family: '',
-        act: false,
-        category: '',
-        time: false,
-        description: '',
-        isActive: true,
+
+    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
+        resolver: yupResolver(validationSchema),
+        defaultValues: defaultValues
     })
 
-    const validationSchema = Yup.object({
-        title: Yup.string().required('Champ obligatoire'),
-        family: Yup.string().required('Champ obligatoire'),
-        act: Yup.number().required('Champ obligatoire'),
-        category: Yup.string().required('Champ obligatoire'),
-        time: Yup.number().required('Champ obligatoire'),
-    })
-
-    console.log('render')
-
+    // Case update
     useEffect(() => {
-        if (event) setInitialValues(event)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+        if (iri && data) {
+            reset(data)
+        }
+    }, [isLoadingData, data])
+
+    const onSubmit = form => {
+        if (!iri)
+            postData(form)
+        else {
+            putData(form)
+        }
+        handleCloseModal()
+    }
 
     return (
-        <Formik
-            enableReinitialize={true}
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-
-            onSubmit={async (values, { setSubmitting }) => {
-                setSubmitting(true)
-                event ? dispatch(updateService(values)) : dispatch(addService(values))
-                setSubmitting(false)
-                handleCloseModal()
-            }}
-        >
-            {({ isSubmitting }) => (
-                <Form className='form-body'>
-                    <div className="form-content">
-                        <div className='grid gap-x-10 gap-y-5 grid-cols-1 md:grid-cols-2'>
-                            <FormSelect name="family" label="Famille" required={true}>
-                                <option value="">Choisir une famille</option>
-                                {services_family.map(item =>
-                                    <option key={nanoid()} value={item}>{item}</option>
-                                )}
-                            </FormSelect>
-                            <FormSelect name="category" label="Catégorie" placeholder="" required={true}>
-                                <option value="">Choisir une catégorie</option>
-                                <option value="A">A</option>
-                                <option value="B">B</option>
-                                <option value="C">C</option>
-                                <option value="N">N</option>
-                            </FormSelect>
-                            <FormSelect name="opas" label="Article 7 OPAS" placeholder="" required={true}>
-                                <option value="">Choisir un article</option>
-                                {legalCares.map((l) =>
-                                    <option value={l}>{l}</option>
-                                )}
-                            </FormSelect>
-                            <FormInput name="title" label="Intitulé" placeholder="" required={true} />
-                            <FormInput name="act" type="number" label="Numéro d'acte" placeholder="" required={true} />
-                            <FormInput name="time" type="number" label="Durée" placeholder="" required={true} />
-                            <FormTextarea name="description" label="Description" placeholder="" className="col-span-2" />
-                            <FormCheckbox name="isActive" label="Actif" />
-                        </div>
-                    </div>
-                    <div className="form-footer">
-                        <button type="submit" className='button-submit' disabled={isSubmitting}>Valider</button>
-                    </div>
-                </Form>
-            )}
-        </Formik>
+        <>
+            <Form onSubmit={handleSubmit(onSubmit)}
+                isLoading={isSubmitting}
+                isDisabled={isSubmitting}
+                className="p-5"
+            >
+                <ServiceFields register={register} errors={errors} />
+            </Form>
+        </>
     )
 
 }

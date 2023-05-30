@@ -17,8 +17,12 @@ const fetchFilteredDatas = (sortValue, sortDirection, searchValue) => {
 }
 
 const fetchPaginatedDatas = (page, sortValue, sortDirection, searchValue) => {
-    return request({ url: API + "?page=" + page + "&itemsPerPage=" + itemsPerPage + "&order[" + sortValue + "]=" + sortDirection + "&search[id,fullname,organization,email,rcc,gln]=" + searchValue, method: 'get' })
+    if (searchValue)
+        return request({ url: API + "?page=" + page + "&itemsPerPage=" + itemsPerPage + "&order[" + sortValue + "]=" + sortDirection + "&search=" + searchValue, method: 'get' })
+    else
+        return request({ url: API + "?page=" + page + "&itemsPerPage=" + itemsPerPage + "&order[" + sortValue + "]=" + sortDirection, method: 'get' })
 }
+
 
 const fetchOneData = ({ queryKey }) => {
     const id = queryKey[1]

@@ -6,8 +6,13 @@
     @apply appearance-none h-10 p-2 border rounded-md focus:outline-action;
 }
 
-.form-input input[type="password"] {
+
+.form-input input[type="number"] {
     @apply appearance-none h-10 p-2 border rounded-md focus:outline-action;
+}
+
+.form-input textarea {
+    @apply appearance-none p-2 border rounded-md focus:outline-action;
 }
 
 .form-input input[type="checkbox"] {

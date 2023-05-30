@@ -94,12 +94,12 @@ class Doctor
     private $address2;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write"])]
-    private $gln;
-
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write", "missions:read"])]
     private $rcc;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write"])]
+    private $gln;
 
     #[ORM\OneToMany(mappedBy: 'doctor', targetEntity: Patient::class)]
     private $patients;

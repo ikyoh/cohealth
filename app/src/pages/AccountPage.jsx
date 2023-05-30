@@ -22,7 +22,7 @@ const AccountPage = () => {
             <div className='bg-white p-5'>
                 <div className='flex justify-center mb-5'>
                     <div className='cursor-pointer'
-                        onClick={() => handleOpenModal({ title: 'Mon portrait', content: <AccountMediaForm id={account.avatar.id} type="avatar" handleCloseModal={handleCloseModal} /> })}>
+                        onClick={() => handleOpenModal({ title: 'Mon portrait', content: <AccountMediaForm id={account.avatar ? account.avatar.id : false} type="avatar" handleCloseModal={handleCloseModal} /> })}>
                         {account && account.avatar
                             ? <img src={URL + account.avatar.contentUrl} className='rounded-full object-cover h-14 w-14' alt="profil" />
                             : <div className='rounded-full flex items-center justify-center h-14 w-14 bg-info'>
@@ -37,7 +37,7 @@ const AccountPage = () => {
 
                 <div className='flex justify-center mt-5'>
                     <div className='cursor-pointer'
-                        onClick={() => handleOpenModal({ title: 'Ma signature', content: <AccountMediaForm id={account.signature.id} type="signature" handleCloseModal={handleCloseModal} /> })}>
+                        onClick={() => handleOpenModal({ title: 'Ma signature', content: <AccountMediaForm id={account.signature ? account.signature.id : false} type="signature" handleCloseModal={handleCloseModal} /> })}>
                         {account && account.signature
                             ? <img src={URL + account.signature.contentUrl} className='object-cover max-w-xs' alt="profil" />
                             : <div className='flex items-center justify-center rounded-full px-3 py-2 bg-action'>
