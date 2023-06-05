@@ -39,7 +39,7 @@ const AccountForm = ({ iri, handleCloseModal }) => {
             isLoading={isSubmitting}
             isDisabled={isSubmitting}
         >
-            <AccountFields register={register} errors={errors} />
+            <AccountFields register={register} errors={errors} registration={false} />
         </Form>
     )
 }

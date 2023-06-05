@@ -345,7 +345,7 @@ const OpasPDF = ({ data }) => {
         nurseField += "\n"
         nurseField += 'Email : ' + nurse.email
         nurseField += "\n"
-        nurseField += 'Adresse : ' + nurse.address1
+        nurseField += nurse.address1
         nurseField += "\n"
         nurseField += nurse.npa + ' ' + nurse.city
 
