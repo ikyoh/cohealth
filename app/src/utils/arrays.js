@@ -1,3 +1,5 @@
+import dayjs from "dayjs"
+
 export const account = {
     roles: ['ROLE_NURSE'],
     isOptin: false,
@@ -96,8 +98,8 @@ export const mission = {
     patient: patient,
     doctor: null,
     assurance: null,
-    beginAt: '',
-    endAt: '',
+    beginAt: dayjs().format("YYYY-MM-DD"),
+    endAt: dayjs().format("YYYY-MM-DD"),
     status: 'en cours',
     coworkers: []
 }

@@ -42,7 +42,10 @@ const CollaborationsPage = () => {
     if (isLoading) return <Loader />
     return (
         <>
-            <PageTitle title={"Liste des collaborations" + " - " + data["hydra:totalItems"]} icon={<MdPendingActions size={40} />}>
+            <PageTitle
+            title={"Liste des collaborations"}
+            subtitle={data["hydra:totalItems"]}
+            icon={<MdPendingActions size={40} />}>
                 {searchbar}
                 {filter}
             </PageTitle>

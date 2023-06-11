@@ -94,7 +94,7 @@ const AccountFields = ({ name, errors, register, registration = true }) => {
                 type="text"
                 name={name ? name + ".rcc" : "rcc"}
                 label="Numéro RCC"
-                placeholder="Registre des codes créanciers"
+                placeholder="C123456"
                 error={name && errors[name] ? errors[name]['rcc'] : errors['rcc']}
                 register={register}
                 required={false}

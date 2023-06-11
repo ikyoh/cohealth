@@ -38,7 +38,11 @@ const ServicesPage = () => {
     else return (
         <>
             <Modal />
-            <PageTitle title="Liste des prestations" icon={<GiHealthNormal size={40} />}>
+            <PageTitle
+            title="Liste des prestations"
+            subtitle={data["hydra:totalItems"]}
+            icon={<GiHealthNormal size={40} />}
+            >
                 {searchbar}
                 <AddButton onClick={() => handleOpenModal({ title: 'Nouvelle prestation', content: <ServiceForm handleCloseModal={handleCloseModal} /> })} />
             </PageTitle>

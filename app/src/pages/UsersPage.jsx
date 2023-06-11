@@ -51,7 +51,11 @@ const UsersPage = () => {
     return (
         <>
             <Modal />
-            <PageTitle title="Gestion des utilisateurs" icon={<IoPersonCircleOutline size={40} />}>
+            <PageTitle 
+            title="Gestion des utilisateurs"
+            subtitle={data["hydra:totalItems"]}
+            icon={<IoPersonCircleOutline size={40} />}
+            >
                 {searchbar}
             </PageTitle>
             <Table.Table>

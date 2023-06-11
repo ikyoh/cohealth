@@ -42,7 +42,11 @@ const PatientsPage = () => {
     return (
         <>
             <Modal />
-            <PageTitle title="Liste des patients" icon={<IoPersonCircleOutline size={40} />}>
+            <PageTitle
+            title="Liste des patients"
+            subtitle={data["hydra:totalItems"]}
+            icon={<IoPersonCircleOutline size={40} />}
+            >
                 {searchbar}
                 <AddButton onClick={() => handleOpenModal({ title: 'Nouveau patient', content: <PatientForm handleCloseModal={handleCloseModal} /> })} />
             </PageTitle>

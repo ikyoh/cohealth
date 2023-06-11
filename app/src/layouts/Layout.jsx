@@ -17,7 +17,7 @@ const Layout = ({ children }) => {
 
     else return (
         <>
-            <div className='flex'>
+            <div className='md:flex'>
                 <Menu />
                 <div className='w-full md:flex flex-col md:relative absolute mt-16 md:mt-0 bg-slate-100'>
                     <div className='hidden md:block bg-slate-100 md:sticky md:top-0 px-10 z-10'>

@@ -24,7 +24,7 @@ import { useQueryClient } from '@tanstack/react-query'
 const MissionsPage = () => {
 
 
-    
+
 
 
     const { state: initialPageState } = useLocation()
@@ -52,7 +52,11 @@ const MissionsPage = () => {
     return (
         <>
             <Modal />
-            <PageTitle title={"Liste des missions" + " - " + data["hydra:totalItems"]} icon={<MdPendingActions size={40} />}>
+            <PageTitle
+                title={"Liste des missions"}
+                subtitle={data["hydra:totalItems"]}
+                icon={<MdPendingActions size={40} />}
+            >
                 {searchbar}
                 {filter}
                 <AddButton onClick={() => handleOpenModal({ title: 'Nouvelle mission', content: <MissionForm handleCloseModal={handleCloseModal} /> })} />
@@ -127,7 +131,7 @@ const MissionsPage = () => {
                                         Voir la fiche mission
                                     </button>
                                     <button
-                                        onClick={() => handleOpenModal({ title: "Édition de la mission", content: <MissionForm iri={data['@id']} /> })}>
+                                        onClick={() => handleOpenModal({ title: "Édition de la mission", content: <MissionForm iri={data['@id']} action='mission' /> })}>
                                         Modifier la mission
                                     </button>
                                 </Dropdown>

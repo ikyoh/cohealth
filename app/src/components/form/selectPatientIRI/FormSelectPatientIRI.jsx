@@ -1,11 +1,19 @@
-import React from 'react'
-import { useGetAllDatas } from '../../../queryHooks/usePatient'
+import { useEffect } from 'react'
+import { useGetAllDatas, useGetIRI } from '../../../queryHooks/usePatient'
 import classNames from 'classnames';
 import Loader from '../../Loader';
 
 export const FormSelectPatientIRI = ({ watch, setValue, searchValue }) => {
 
     const { isLoading, data } = useGetAllDatas(searchValue || '', 'firstname', 'asc', true)
+    const { isLoading: isLoadingPatient, data: patient } = useGetIRI(watch('patient') ? watch('patient') : "")
+
+    useEffect(() => {
+        if (patient) {
+            if (patient.doctor) setValue("doctor", patient.doctor)
+            if (patient.assurance) setValue("assurance", patient.assurance)
+        }
+    }, [watch('patient')])
 
     const Button = ({ data }) => {
 
@@ -20,7 +28,7 @@ export const FormSelectPatientIRI = ({ watch, setValue, searchValue }) => {
                 onClick={() => setValue("patient", data['@id'])}
             >
                 <div>
-                {data.firstname} {data.lastname}
+                    {data.firstname} {data.lastname}
                 </div>
                 <div>
                 </div>

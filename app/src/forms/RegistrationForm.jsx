@@ -5,7 +5,7 @@ import Form from "../components/form/form/Form";
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { account, password } from '../utils/arrays';
-import { registration as registationValidation, password as passwordValidation } from '../utils/validationSchemas';
+import { registration as registrationValidation, password as passwordValidation } from '../utils/validationSchemas';
 import { FormSelect } from '../components/form/select/FormSelect'
 import { FormCheckbox } from '../components/form/checkbox/FormCheckbox'
 import AccountFields from '../fields/AccountFields';
@@ -18,7 +18,7 @@ const RegistrationForm = () => {
     const { mutate: postData, isLoading: isPosting, isSuccess, error: mutateError } = usePostData()
 
     const { register, handleSubmit, watch, reset, formState: { errors, isSubmitting } } = useForm({
-        resolver: yupResolver(Yup.object({ ...registationValidation, ...passwordValidation })),
+        resolver: yupResolver(Yup.object({ ...registrationValidation, ...passwordValidation })),
         defaultValues: { ...account, ...password }
     })
 

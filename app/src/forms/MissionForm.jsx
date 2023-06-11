@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useGetIRI, usePostData, usePutData } from '../queryHooks/useMission'
-import { useGetAllDatas as useDoctors } from '../queryHooks/useDoctor'
 import { useGetCurrentAccount as useAccount } from '../queryHooks/useAccount'
 import { FormProvider, useForm } from "react-hook-form"
 import Form from "../components/form/form/Form"
@@ -28,11 +27,10 @@ import {
 import Loader from '../components/Loader'
 import { API_URL, API_USERS } from '../config/api.config'
 
-const MissionForm = ({ iri, handleCloseModal, action = "mission" }) => {
+const MissionForm = ({ iri, handleCloseModal, action = "patientIRI" }) => {
 
     const [modalAction, setModalAction] = useState(action)
     const { isLoading, data, isError, error } = useGetIRI(iri)
-    const { isLoading: isLoadingDoctors, data: doctors } = useDoctors('', 'fullname', 'asc', action === 'doctorIRI' ? true : false)
     const { data: user } = useAccount()
     const { mutate: postData, isLoading: isPosting, isSuccess } = usePostData()
     const { mutate: putData } = usePutData(iri)
@@ -46,16 +44,15 @@ const MissionForm = ({ iri, handleCloseModal, action = "mission" }) => {
         const isStepValid = await trigger();
         if (isStepValid) {
             setCurrentStep(cur => cur + 1)
-            setModalAction("patientIRI")
+            setModalAction("mission")
         }
     }
 
 
     const handlePrevStep = () => {
         setCurrentStep(cur => cur - 1)
-        setModalAction("mission")
+        setModalAction("patientIRI")
     }
-
 
     const validationSchema = {
         mission: missionSchema,
@@ -66,11 +63,6 @@ const MissionForm = ({ iri, handleCloseModal, action = "mission" }) => {
         doctorIRI: doctorIRISchema,
         assuranceIRI: assuranceIRISchema,
     }
-
-    // const { register, handleSubmit, setValue, reset, watch, trigger, control, formState: { errors, isSubmitting } } = useForm({
-    //     resolver: yupResolver(validationSchema[modalAction]),
-    //     defaultValues: mission
-    // })
 
     const methods = useForm({
         shouldUnregister: false,
@@ -100,7 +92,6 @@ const MissionForm = ({ iri, handleCloseModal, action = "mission" }) => {
         else {
             const datas = {...form}
             delete datas.documents
-            console.log('datas', datas)
             putData(datas)
         }
         handleCloseModal()
@@ -109,11 +100,10 @@ const MissionForm = ({ iri, handleCloseModal, action = "mission" }) => {
     return (
         <>
 
-
             {steps &&
                 <ul className="steps w-full">
-                    <li data-content="✓" className="step step-primary w-full">Dates - Synthèse</li>
-                    <li data-content="✕" className="step w-full">Patient</li>
+                    <li data-content="●" className="step step-primary w-full">Patient</li>
+                    <li data-content="●" className={`step w-full ${currentStep === 2 ? "step-primary" : "step-neutral"}`}>Dates - Synthèse</li>
                 </ul>
             }
 

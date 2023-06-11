@@ -38,7 +38,11 @@ const DoctorsPage = () => {
     else return (
         <>
             <Modal />
-            <PageTitle title="Liste des médecins" icon={<RiStethoscopeFill size={40} />}>
+            <PageTitle
+            title="Liste des médecins"
+            subtitle={data["hydra:totalItems"]}
+            icon={<RiStethoscopeFill size={40} />}
+            >
                 {searchbar}
                 <AddButton onClick={() => handleOpenModal({ title: 'Nouveau médecin', content: <DoctorForm handleCloseModal={handleCloseModal} /> })} />
             </PageTitle>

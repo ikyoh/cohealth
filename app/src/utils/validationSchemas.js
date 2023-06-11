@@ -43,7 +43,7 @@ export const account = Yup.object({
         .oneOf([true], "Doit être accepter."),
     rcc: Yup.string().ensure().when('roles', {
         is: (roles) => roles.includes("ROLE_NURSE") || roles.includes("ROLE_DOCTOR"),
-        then: Yup.string().required('Champ obligatoire')
+        then: rcc()
     }),
 })
 
@@ -66,7 +66,7 @@ export const registration = {
     }),
     rcc: Yup.string().when('roles', {
         is: (roles) => roles.includes("ROLE_NURSE") || roles.includes("ROLE_DOCTOR"),
-        then: Yup.string().required('Champ obligatoire'),
+        then: rcc(),
         otherwise: Yup.string().nullable(),
     }),
     gln: Yup.string().when('roles', {
@@ -138,7 +138,8 @@ export const user = Yup.object({
     firstname: string(),
     lastname: string(),
     mobile: phoneRequired(),
-    email: emailRequired()
+    email: emailRequired(),
+    rcc: rcc()
 })
 
 export const mission = Yup.object({
