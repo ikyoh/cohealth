@@ -7,7 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import AccountFields from '../fields/AccountFields';
 import { user } from '../utils/arrays';
 import { user as validationSchema } from '../utils/validationSchemas';
-import InputMask from 'react-input-mask';
+
 
 const AccountForm = ({ iri, handleCloseModal }) => {
 

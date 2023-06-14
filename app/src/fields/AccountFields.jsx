@@ -1,10 +1,6 @@
 import React from "react"
 import { Controller } from "react-hook-form";
 import { FormInput } from '../components/form/input/FormInput'
-import { FormSelect } from '../components/form/select/FormSelect'
-import { FormTextarea } from '../components/form/textarea/FormTextarea'
-import { FormCheckBox } from '../components/form/checkbox/FormCheckbox'
-import { cantons } from '../utils/arrays';
 import InputMask from 'react-input-mask';
 
 const AccountFields = ({ name, errors, register, registration = true, control }) => {
