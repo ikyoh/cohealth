@@ -43,7 +43,7 @@ export const account = Yup.object({
         .required("Doit être accepter.")
         .oneOf([true], "Doit être accepter."),
     rcc: Yup.string().ensure().when('roles', {
-        is: (roleDoctors) => roles.includes("ROLE_NURSE") || roles.includes("ROLE_DOCTOR"),
+        is: (roles) => roles.includes("ROLE_NURSE") || roles.includes("ROLE_DOCTOR"),
         then: rcc()
     }),
 })
