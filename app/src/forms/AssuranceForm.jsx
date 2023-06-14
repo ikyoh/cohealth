@@ -15,10 +15,12 @@ const AssuranceForm = ({ iri, handleCloseModal }) => {
     const { mutate: postData, isLoading: isPosting, isSuccess } = usePostData()
     const { mutate: putData } = usePutData()
 
-    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
+    const { register, handleSubmit, reset, watch, formState: { errors, isSubmitting } } = useForm({
         resolver: yupResolver(validationSchema),
         defaultValues: assurance
     })
+
+console.log('errors', errors)
 
     // Case update
     useEffect(() => {
@@ -43,9 +45,11 @@ const AssuranceForm = ({ iri, handleCloseModal }) => {
                 isDisabled={isSubmitting}
                 className='p-5'
             >
-                <AssuranceFields register={register} errors={errors} />
+                <AssuranceFields register={register} errors={errors} watch={watch} />
             </Form>
-            <CommentForm assurance={iri} />
+            {iri &&
+                <CommentForm assurance={iri} />
+            }
         </>
     )
 

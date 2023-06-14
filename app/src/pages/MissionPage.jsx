@@ -61,7 +61,7 @@ const MissionPage = () => {
                     {isMine &&
                         <Dropdown type='card'>
                             <button
-                                onClick={() => handleOpenModal({ title: "Edition de la mission", content: <MissionForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
+                                onClick={() => handleOpenModal({ title: "Edition de la mission", content: <MissionForm action="mission" iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
                                 Editer la mission
                             </button>
                             <button

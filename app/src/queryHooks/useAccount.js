@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from "react-router-dom";
 import { request, requestIRI } from '../utils/axios.utils'
 import { API_USERS as API, API_LOGIN, API_LOGOUT, API_CURRENT_USER } from '../config/api.config'
-import { usePostData as usePostDocument } from './useDocument';
 
 
 import _ from 'lodash'
@@ -28,7 +27,6 @@ const postData = form => {
 }
 
 const putData = form => {
-    console.log('form', form)
     return request({ url: API + "/" + form.id, method: 'put', data: form })
 }
 

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { usePostData } from '../queryHooks/useAccount';
-import { useForm } from "react-hook-form";
+import { useForm ,useRegis } from "react-hook-form";
 import Form from "../components/form/form/Form";
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -17,12 +17,14 @@ const RegistrationForm = () => {
 
     const { mutate: postData, isLoading: isPosting, isSuccess, error: mutateError } = usePostData()
 
-    const { register, handleSubmit, watch, reset, formState: { errors, isSubmitting } } = useForm({
+    const { register, handleSubmit, watch, reset, control, formState: { errors, isSubmitting } } = useForm({
         resolver: yupResolver(Yup.object({ ...registrationValidation, ...passwordValidation })),
         defaultValues: { ...account, ...password }
     })
 
     const watchRole = watch(['roles[0]'])
+
+    console.log('watch()', watch())
 
     const handleReset = (e) => {
         console.log('reset')
@@ -32,6 +34,8 @@ const RegistrationForm = () => {
     const onSubmit = form => {
         postData(form)
     }
+
+    console.log('errors', errors)
 
     return (
 
@@ -54,10 +58,10 @@ const RegistrationForm = () => {
             </FormSelect>
 
             {watchRole[0] === 'ROLE_NURSE' &&
-                <AccountFields register={register} errors={errors} />
+                <AccountFields register={register} errors={errors} control={control} />
             }
             {watchRole[0] === 'ROLE_DOCTOR' &&
-                <AccountFields register={register} errors={errors} />
+                <AccountFields register={register} errors={errors} control={control} />
             }
             {watchRole[0] === 'ROLE_ORGANIZATION_BENEFIT' &&
                 <OrganizationFields register={register} errors={errors} />

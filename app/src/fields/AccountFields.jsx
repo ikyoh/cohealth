@@ -1,12 +1,14 @@
-import React from 'react'
+import React from "react"
+import { Controller } from "react-hook-form";
 import { FormInput } from '../components/form/input/FormInput'
 import { FormSelect } from '../components/form/select/FormSelect'
 import { FormTextarea } from '../components/form/textarea/FormTextarea'
 import { FormCheckBox } from '../components/form/checkbox/FormCheckbox'
 import { cantons } from '../utils/arrays';
+import InputMask from 'react-input-mask';
 
+const AccountFields = ({ name, errors, register, registration = true, control }) => {
 
-const AccountFields = ({ name, errors, register, registration = true }) => {
 
     return (
         <>
@@ -90,15 +92,26 @@ const AccountFields = ({ name, errors, register, registration = true }) => {
                     />
                 </>
             }
-            <FormInput
-                type="text"
-                name={name ? name + ".rcc" : "rcc"}
-                label="Numéro RCC"
-                placeholder="C123456"
-                error={name && errors[name] ? errors[name]['rcc'] : errors['rcc']}
-                register={register}
-                required={false}
+
+            <Controller
+                name="rcc"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                    <InputMask mask="a9999.99" value={value} onChange={onChange} maskChar={null}>
+                        {(props) => (
+                            <FormInput
+                                {...props}
+                                type="text"
+                                label="RCC"
+                                error={errors['rcc']}
+                                register={register}
+                                required={true}
+                            />
+                        )}
+                    </InputMask>
+                )}
             />
+
         </>
     )
 }

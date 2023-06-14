@@ -4,6 +4,7 @@ import { request, requestIRI } from '../utils/axios.utils'
 import { API_MISSIONS as API, IRI, itemsPerPage } from '../config/api.config'
 import _ from 'lodash'
 import { useGetCurrentAccount } from './useAccount';
+import dayjs from 'dayjs';
 
 /* CONFIG */
 const queryKey = 'missions'
@@ -43,11 +44,17 @@ const fetchIRI = ({ queryKey }) => {
 }
 
 const postData = form => {
-    return request({ url: API, method: 'post', data: form })
+    const datas = {...form}
+    datas.beginAt = dayjs.utc(form.beginAt).local().format()
+    datas.endAt = dayjs.utc(form.endAt).local().format()
+    return request({ url: API, method: 'post', data: datas })
 }
 
 const putData = form => {
-    return request({ url: API + "/" + form.id, method: 'put', data: form })
+    const datas = {...form}
+    datas.beginAt = dayjs.utc(form.beginAt).local().format()
+    datas.endAt = dayjs.utc(form.endAt).local().format()
+    return request({ url: API + "/" + form.id, method: 'put', data: datas })
 }
 
 /* HOOKS */
@@ -139,30 +146,15 @@ export const usePostData = () => {
     })
 }
 
-export const usePutData = (iri) => {
+export const usePutData = () => {
     const queryClient = useQueryClient()
     return useMutation(putData, {
-        onMutate: async updateData => {
-            // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-            await queryClient.cancelQueries([queryKey, iri])
-
-            // Snapshot the previous value
-            const previousData = queryClient.getQueryData([queryKey, iri])
-
-            // Optimistically update to the new value
-            queryClient.setQueryData([queryKey, iri], {...previousData, ...updateData})
-
-            // Return a context object with the snapshotted value
-            return { previousData, updateData }
-        },
-        onError: (err, updateData, context) => {
-            queryClient.setQueryData(
-                [[queryKey, iri], context.iri],
-                context.previousData
-            )
+        onError: (error, _, context) => {
+            console.log('error', error)
+            queryClient.setQueryData([queryKey], context.previousDatas)
         },
         onSettled: () => {
-            //queryClient.invalidateQueries()
+            queryClient.invalidateQueries()
         }
     })
 }

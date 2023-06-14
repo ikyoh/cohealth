@@ -50,7 +50,8 @@ export const useGetAllDatas = (search = '', sortValue, sortDirection, enabled) =
         select: data => {
             if (search === '') return _.orderBy(data['hydra:member'], sortValue, sortDirection)
             else return _.orderBy(data['hydra:member'].filter(f =>
-                f.title.toLowerCase().includes(search.toLowerCase())
+                f.lastname.toLowerCase().includes(search.toLowerCase()) ||
+                f.firstname.toLowerCase().includes(search.toLowerCase())
             ), sortValue, sortDirection)
         }
     })

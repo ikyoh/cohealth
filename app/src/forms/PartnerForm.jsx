@@ -23,7 +23,7 @@ const PartnerForm = ({ handleCloseModal }) => {
     console.log('dataPartners', dataPartners)
 
     useEffect(() => {
-        if (filters.rcc.length === 7)
+        if (filters.rcc.length === 8)
             setEnabled(true)
         else
             setEnabled(false)

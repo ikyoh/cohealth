@@ -3,7 +3,10 @@ import { FormInput } from "../components/form/input/FormInput";
 import { FormSelect } from '../components/form/select/FormSelect';
 import { assuranceCategories } from '../utils/arrays';
 
-const AssuranceFields = ({ name, errors, register }) => {
+
+const AssuranceFields = ({ name, errors, register, watch }) => {
+
+    const type = watch("type")
 
     return (
         <>
@@ -25,6 +28,7 @@ const AssuranceFields = ({ name, errors, register }) => {
                 register={register}
                 required={false}
             />
+
             <FormSelect
                 type="text"
                 name={name ? name + ".type" : "type"}
@@ -33,11 +37,12 @@ const AssuranceFields = ({ name, errors, register }) => {
                 register={register}
                 required={true}
             >
-                <option value="">Choisir un catégorie</option>
+                <option value="">Choisir une catégorie</option>
                 {assuranceCategories.map(category =>
                     <option key={category} value={category}>{category}</option>
                 )}
             </FormSelect>
+
             <FormInput
                 type="text"
                 name={name ? name + ".address1" : "address1"}
@@ -94,14 +99,18 @@ const AssuranceFields = ({ name, errors, register }) => {
                 register={register}
                 required={false}
             />
-            <FormInput
-                type="text"
-                name={name ? name + ".gln" : "gln"}
-                label="N° GLN"
-                error={name && errors[name] ? errors[name]['gln'] : errors['gln']}
-                register={register}
-                required={false}
-            />
+
+            {type !== "Internationale" &&
+                <FormInput
+                    type="text"
+                    name={name ? name + ".gln" : "gln"}
+                    label="N° GLN"
+                    error={name && errors[name] ? errors[name]['gln'] : errors['gln']}
+                    register={register}
+                    required={false}
+                />
+            }
+
         </>
     )
 }

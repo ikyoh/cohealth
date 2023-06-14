@@ -5,7 +5,7 @@ import Loader from '../../Loader';
 
 export const FormSelectPatientIRI = ({ watch, setValue, searchValue }) => {
 
-    const { isLoading, data } = useGetAllDatas(searchValue || '', 'firstname', 'asc', true)
+    const { isLoading, data } = useGetAllDatas(searchValue ? searchValue : '', 'lastname', 'asc', true)
     const { isLoading: isLoadingPatient, data: patient } = useGetIRI(watch('patient') ? watch('patient') : "")
 
     useEffect(() => {

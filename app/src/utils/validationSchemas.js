@@ -8,8 +8,8 @@ const bool = () => Yup.boolean().required("Doit être accepter.").oneOf([true], 
 const phone = () => Yup.string().matches(/^0[0-9]{9}/, "Numéro incorrect")
 const phoneRequired = () => Yup.string().matches(/^0[0-9]{9}/, "Numéro incorrect").required("Champ obligatoire")
 const gln = () => Yup.string().matches(/^\d{13}$/, "Numéro incorrect").required("Champ obligatoire")
-const rcc = () => Yup.string().matches(/^[a-zA-Z]\d{6}$/, "Numéro incorrect").required("Champ obligatoire")
-//const assuranceNumber = () => Yup.string().matches(/^\d{20}$/, "Numéro incorrect").required("Champ obligatoire")
+const rccDoctor = () => Yup.string().matches(/^[a-zA-Z]\d{6}$/, "Numéro incorrect").required("Champ obligatoire")
+const rcc = () => Yup.string().matches(/^[a-zA-Z]\d{4}\.\d{2}$/, "Numéro incorrect").required("Champ obligatoire")
 const assuranceNumber = () => Yup.string().required("Champ obligatoire")
 const avsNumber = () => Yup.string().matches(/^\d{13}$/, "Numéro incorrect").required("Champ obligatoire")
 const npa = () => Yup.string().matches(/^\d{4}$/, "Numéro incorrect")
@@ -43,7 +43,7 @@ export const account = Yup.object({
         .required("Doit être accepter.")
         .oneOf([true], "Doit être accepter."),
     rcc: Yup.string().ensure().when('roles', {
-        is: (roles) => roles.includes("ROLE_NURSE") || roles.includes("ROLE_DOCTOR"),
+        is: (roleDoctors) => roles.includes("ROLE_NURSE") || roles.includes("ROLE_DOCTOR"),
         then: rcc()
     }),
 })
@@ -107,16 +107,19 @@ export const doctor = Yup.object({
     fullname: string('Choix obligatoire'),
     category: string('Choix obligatoire'),
     email: email(),
-    rcc: rcc(),
+    rcc: rccDoctor(),
     gln: gln(),
-    canton : string(),
+    canton: string(),
 })
 
 export const assurance = Yup.object({
     company: string(),
     type: string(),
-    gln: gln(),
     email: email(),
+    gln: Yup.string().ensure().when('type', {
+        is: (type) => type !== "Internationale",
+        then: gln()
+    })
 })
 
 export const patient = Yup.object({
@@ -128,9 +131,9 @@ export const patient = Yup.object({
     address1: string(),
     birthdate: date(),
     email: email(),
-    assuranceNumber: assuranceNumber(), 
-    avsNumber : avsNumber(),
-    npa : npaRequired()
+    assuranceNumber: assuranceNumber(),
+    avsNumber: avsNumber(),
+    npa: npaRequired()
     // phone: Yup.string().matches(/^0[0-9]{9}/, "Numéro incorrect"),
     // mobile: Yup.string().matches(/^0[0-9]{9}/, "Numéro incorrect"),
 })

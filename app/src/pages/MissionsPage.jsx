@@ -131,7 +131,7 @@ const MissionsPage = () => {
                                         Voir la fiche mission
                                     </button>
                                     <button
-                                        onClick={() => handleOpenModal({ title: "Édition de la mission", content: <MissionForm iri={data['@id']} action='mission' /> })}>
+                                        onClick={() => handleOpenModal({ title: "Édition de la mission", content: <MissionForm iri={data['@id']} action='mission' handleCloseModal={handleCloseModal} /> })}>
                                         Modifier la mission
                                     </button>
                                 </Dropdown>

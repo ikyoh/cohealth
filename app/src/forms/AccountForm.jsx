@@ -1,19 +1,20 @@
 import React, { useEffect } from 'react'
 import { useGetCurrentAccount, usePutData } from '../queryHooks/useAccount';
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import Form from "../components/form/form/Form";
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
 import AccountFields from '../fields/AccountFields';
 import { user } from '../utils/arrays';
 import { user as validationSchema } from '../utils/validationSchemas';
+import InputMask from 'react-input-mask';
 
 const AccountForm = ({ iri, handleCloseModal }) => {
 
     const { isLoading: isLoadingData, data, isError, error } = useGetCurrentAccount()
     const { mutate: putData } = usePutData()
 
-    const { register, handleSubmit, setValue, reset, control, formState: { errors, isSubmitting } } = useForm({
+    const { register, handleSubmit, reset, watch, control, formState: { errors, isSubmitting } } = useForm({
         resolver: yupResolver(validationSchema),
         defaultValues: user
     })
@@ -26,7 +27,7 @@ const AccountForm = ({ iri, handleCloseModal }) => {
     }, [isLoadingData, data])
 
     const onSubmit = form => {
-        const data = {...form}
+        const data = { ...form }
         delete data.avatar
         delete data.signature
         delete data.password
@@ -34,12 +35,14 @@ const AccountForm = ({ iri, handleCloseModal }) => {
         putData(data)
     }
 
+
+
     return (
         <Form onSubmit={handleSubmit(onSubmit)}
             isLoading={isSubmitting}
             isDisabled={isSubmitting}
         >
-            <AccountFields register={register} errors={errors} registration={false} />
+            <AccountFields register={register} errors={errors} registration={false} control={control} />
         </Form>
     )
 }

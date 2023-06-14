@@ -29,7 +29,7 @@ import Layout from './layouts/Layout'
 import FrontLayout from "./layouts/FrontLayout"
 
 import * as dayjs from 'dayjs'
-import Fr from "dayjs/locale/fr"
+//import Fr from "dayjs/locale/fr"
 require('dayjs/locale/fr')
 dayjs.locale('fr')
 
@@ -39,6 +39,8 @@ let isBetween = require('dayjs/plugin/isBetween')
 dayjs.extend(isBetween)
 let localizedFormat = require('dayjs/plugin/localizedFormat')
 dayjs.extend(localizedFormat)
+let utc = require('dayjs/plugin/utc')
+dayjs.extend(utc)
 
 
 const App = () => {
