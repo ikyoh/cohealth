@@ -1,6 +1,7 @@
 import React from "react"
 import { Controller } from "react-hook-form";
 import { FormInput } from '../components/form/input/FormInput'
+import { FormMaskInput } from '../components/form/maskInput/FormMaskInput'
 import InputMask from 'react-input-mask';
 
 const AccountFields = ({ name, errors, register, registration = true, control }) => {
@@ -86,10 +87,37 @@ const AccountFields = ({ name, errors, register, registration = true, control })
                         register={register}
                         required={false}
                     />
+                    <FormMaskInput
+                        control={control}
+                        name={name ? name + ".rcc" : "rcc"}
+                        mask="a9999.99"
+                        label="Numéro RCC"
+                        error={name && errors[name] ? errors[name]['rcc'] : errors['rcc']}
+                        register={register}
+                        required={true}
+                    />
                 </>
             }
 
-            <Controller
+
+            {/* <div>
+                <label htmlFor="rcc">rcc Number</label>
+                <InputMask
+                    id="rcc"
+                    mask="a9999.99"
+                    {...register("rcc", {
+                        required: "rcc number is required",
+                        pattern: {
+                            value: /^\(\d{3}\) \d{3}-\d{4}$/,
+                            message: "Invalid rcc number",
+                        },
+                    })}
+                />
+                {errors.rcc && <span>{errors.rcc.message}</span>}
+            </div> */}
+
+
+            {/* <Controller
                 name="rcc"
                 control={control}
                 render={({ field: { onChange, value } }) => (
@@ -106,7 +134,7 @@ const AccountFields = ({ name, errors, register, registration = true, control })
                         )}
                     </InputMask>
                 )}
-            />
+            /> */}
 
         </>
     )

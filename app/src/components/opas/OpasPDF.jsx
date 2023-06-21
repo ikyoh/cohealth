@@ -318,9 +318,10 @@ const OpasPDF = ({ data }) => {
         if (assurance.city)
             assuranceField += assurance.city + ', '
         assuranceField += "\n"
-        assuranceField += 'GLN : ' + assurance.gln
-        assuranceField += "\n"
-        assuranceField += 'Catégorie : ' + assurance.type
+        if (assurance.gln) {
+            assuranceField += 'GLN : ' + assurance.gln
+            assuranceField += "\n"
+        }
 
         let doctorField = ''
         doctorField += doctor.fullname + "\n" + 'RCC : ' + doctor.rcc
@@ -341,7 +342,7 @@ const OpasPDF = ({ data }) => {
         nurseField += "\n"
         nurseField += 'RCC : ' + nurse.rcc
         nurseField += "\n"
-        nurseField += 'Tél. : ' + nurse.phone || nurse.mobile
+        nurseField += 'Tél. : ' + nurse.mobile
         nurseField += "\n"
         nurseField += 'Email : ' + nurse.email
         nurseField += "\n"
