@@ -14,10 +14,12 @@ const AccountForm = ({ iri, handleCloseModal }) => {
     const { isLoading: isLoadingData, data, isError, error } = useGetCurrentAccount()
     const { mutate: putData } = usePutData()
 
-    const { register, handleSubmit, reset, watch, control, formState: { errors, isSubmitting } } = useForm({
+    const { register, handleSubmit, reset, watch, control, formState: { errors, isSubmitting,  } } = useForm({
         resolver: yupResolver(validationSchema),
         defaultValues: user
     })
+
+    console.log('errors', errors)
 
     // Case update
     useEffect(() => {
@@ -39,8 +41,8 @@ const AccountForm = ({ iri, handleCloseModal }) => {
 
     return (
         <Form onSubmit={handleSubmit(onSubmit)}
-            isLoading={isSubmitting}
-            isDisabled={isSubmitting}
+            // isLoading={isSubmitting}
+            // isDisabled={isSubmitting}
         >
             <AccountFields register={register} errors={errors} registration={false} control={control} />
         </Form>

@@ -42,9 +42,10 @@ export const account = Yup.object({
     isApproved: Yup.boolean()
         .required("Doit être accepter.")
         .oneOf([true], "Doit être accepter."),
-    rcc: Yup.string().ensure().when('roles', {
+    rcc: Yup.string().when('roles', {
         is: (roles) => roles.includes("ROLE_NURSE") || roles.includes("ROLE_DOCTOR"),
-        then: rcc()
+        then: rcc(),
+        otherwise: Yup.string().nullable(),
     }),
 })
 

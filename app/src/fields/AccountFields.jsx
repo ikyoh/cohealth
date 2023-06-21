@@ -45,6 +45,15 @@ const AccountFields = ({ name, errors, register, registration = true, control })
                 register={register}
                 required={true}
             />
+            <FormMaskInput
+                control={control}
+                name={name ? name + ".rcc" : "rcc"}
+                mask="a9999.99"
+                label="Numéro RCC"
+                error={name && errors[name] ? errors[name]['rcc'] : errors['rcc']}
+                register={register}
+                required={true}
+            />
             {!registration &&
                 <>
                     <FormInput
@@ -86,15 +95,6 @@ const AccountFields = ({ name, errors, register, registration = true, control })
                         error={name && errors[name] ? errors[name]['city'] : errors['city']}
                         register={register}
                         required={false}
-                    />
-                    <FormMaskInput
-                        control={control}
-                        name={name ? name + ".rcc" : "rcc"}
-                        mask="a9999.99"
-                        label="Numéro RCC"
-                        error={name && errors[name] ? errors[name]['rcc'] : errors['rcc']}
-                        register={register}
-                        required={true}
                     />
                 </>
             }
