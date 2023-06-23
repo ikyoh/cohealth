@@ -22,7 +22,7 @@ export const useFilterMission = (props) => {
             <div className="dropdown dropdown-left">
                 <label
                     tabIndex={0}
-                    className="hover:cursor-pointer scaledown rounded-full h-12 w-12 flex items-center justify-center bg-transparent hover:bg-slate-200 border mr-5"
+                    className="hover:cursor-pointer scaledown rounded-full h-12 w-12 flex items-center justify-center bg-transparent hover:bg-slate-200 border"
                     onClick={(e) => { e.stopPropagation() }}
                 >
                     <GoSettings size={30} className="text-primary" />

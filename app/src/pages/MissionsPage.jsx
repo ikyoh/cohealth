@@ -56,10 +56,10 @@ const MissionsPage = () => {
                 title={"Liste des missions"}
                 subtitle={data["hydra:totalItems"]}
                 icon={<MdPendingActions size={40} />}
+                mainButton={<AddButton onClick={() => handleOpenModal({ title: 'Nouvelle mission', content: <MissionForm handleCloseModal={handleCloseModal} /> })} />}
             >
                 {searchbar}
                 {filter}
-                <AddButton onClick={() => handleOpenModal({ title: 'Nouvelle mission', content: <MissionForm handleCloseModal={handleCloseModal} /> })} />
             </PageTitle>
 
             <Table.Table>

@@ -6,7 +6,7 @@ const Dropdown = ({ type = "card", children }) => {
 
     const className = classNames({
             "top-1 right-1 absolute": type === "card",
-            "top-0 right-1": type === "table",
+            "top-4 md:top-auto right-2 absolute": type === "table",
         })
 
     const classNameContent = classNames("border border-primary pr-2",{

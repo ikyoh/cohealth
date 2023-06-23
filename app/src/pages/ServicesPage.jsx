@@ -39,12 +39,13 @@ const ServicesPage = () => {
         <>
             <Modal />
             <PageTitle
-            title="Liste des prestations"
-            subtitle={data["hydra:totalItems"]}
-            icon={<GiHealthNormal size={40} />}
+                title="Liste des prestations"
+                subtitle={data["hydra:totalItems"]}
+                icon={<GiHealthNormal size={40} />}
+                mainButton={<AddButton onClick={() => handleOpenModal({ title: 'Nouvelle prestation', content: <ServiceForm handleCloseModal={handleCloseModal} /> })} />
+                }
             >
                 {searchbar}
-                <AddButton onClick={() => handleOpenModal({ title: 'Nouvelle prestation', content: <ServiceForm handleCloseModal={handleCloseModal} /> })} />
             </PageTitle>
 
             <Table.Table>

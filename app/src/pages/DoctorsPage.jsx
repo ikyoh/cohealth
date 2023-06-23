@@ -42,9 +42,9 @@ const DoctorsPage = () => {
             title="Liste des médecins"
             subtitle={data["hydra:totalItems"]}
             icon={<RiStethoscopeFill size={40} />}
+            mainButton={<AddButton onClick={() => handleOpenModal({ title: 'Nouveau médecin', content: <DoctorForm handleCloseModal={handleCloseModal} /> })} />}
             >
                 {searchbar}
-                <AddButton onClick={() => handleOpenModal({ title: 'Nouveau médecin', content: <DoctorForm handleCloseModal={handleCloseModal} /> })} />
             </PageTitle>
 
             <Table.Table>

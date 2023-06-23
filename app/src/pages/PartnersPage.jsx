@@ -39,9 +39,13 @@ const PartnersPage = () => {
     else return (
         <>
             <Modal />
-            <PageTitle title="Liste des partenaires" icon={<FaHandshake size={40} />}>
+            <PageTitle
+            title="Liste des partenaires"
+            icon={<FaHandshake size={40} />}
+            mainButton={<AddButton onClick={() => handleOpenModal({ title: 'Nouveau partenaire', content: <PartnerForm handleCloseModal={handleCloseModal} /> })} />
+        }
+            >
                 {searchbar}
-                <AddButton onClick={() => handleOpenModal({ title: 'Nouveau partenaire', content: <PartnerForm handleCloseModal={handleCloseModal} /> })} />
             </PageTitle>
             <Modal />
             <Table.Table>

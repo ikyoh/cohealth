@@ -13,7 +13,7 @@ const Form = ({ children, onSubmit, isLoading, isDisabled, steps = null, current
 
     return (
         <form className="relative" onSubmit={onSubmit}>
-            <div className={`flex flex-col gap-3 md:p-5 relative ${className && className}`}>
+            <div className={`flex flex-col gap-3 p-5 relative ${className && className}`}>
                 {children}
             </div>
             <div className="sticky bottom-0 p-3 border-t bg-white">

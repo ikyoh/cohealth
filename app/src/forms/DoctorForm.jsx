@@ -46,7 +46,9 @@ const DoctorForm = ({ iri, handleCloseModal }) => {
             >
                 <DoctorFields register={register} errors={errors} />
             </Form>
-            <CommentForm doctor={iri}/>
+            {iri &&
+                <CommentForm doctor={iri} />
+            }
         </>
     )
 

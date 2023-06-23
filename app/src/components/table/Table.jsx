@@ -74,7 +74,7 @@ export const Th = ({ label, sortBy, sortValue, sortDirection, handleSort}) => {
 
 export const Tr = ({ onClick, children }) => {
 
-    const ClassNames = classNames("flex flex-col md:table-row border-t border-slate-500/20 md:leading-[1em] even:bg-slate-100 md:even:bg-white",
+    const ClassNames = classNames("flex flex-col md:table-row border-t border-slate-500/20 md:leading-[1em] even:bg-slate-100 md:even:bg-white relative",
         {
             "hover:bg-slate-50 cursor-pointer modal-open": onClick,
         })
@@ -91,7 +91,7 @@ export const Tr = ({ onClick, children }) => {
 
 export const Td = ({ label, text, children }) => {
     return (
-        <td className='px-3 pb-1 md:py-4'>
+        <td className='px-3 pb-1 md:py-4 first:pt-5 md:first:pt-auto'>
             <div className='flex flex-col md:flex-row md:items-center'>
                 {label ?
                     <div className="block md:hidden text-sm text-primary/50">

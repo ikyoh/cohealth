@@ -4,7 +4,6 @@ import { useGetOneData } from '../queryHooks/usePatient'
 import { useGetIRI as Doctor } from '../queryHooks/useDoctor'
 import { useGetIRI as Assurance } from '../queryHooks/useAssurance'
 import { useModal } from '../hooks/useModal'
-import PatientTitle from '../layouts/PatientTitle'
 import PatientForm from '../forms/PatientForm'
 import dayjs from 'dayjs'
 import Loader from '../components/Loader'
@@ -27,8 +26,6 @@ const PatientPage = () => {
     const { Modal, handleOpenModal, handleCloseModal } = useModal()
     const [tab, setTab] = useState("infos")
 
-
-    console.log('data', data)
 
     const DoctorCard = ({ iri }) => {
 
@@ -58,6 +55,7 @@ const PatientPage = () => {
             </>
         )
     }
+
     const AssuranceCard = ({ iri }) => {
 
         const { data, isLoading, error } = Assurance(iri ? iri : null)
@@ -82,9 +80,9 @@ const PatientPage = () => {
 
     const PatientInfos = () => {
         return (
-            <div className="flex flex-row gap-5">
-                <div className="basis-9/12 relative">
-                    <div className="grid grid-cols-2 bg-white border rounded-sm p-5 pt-20 relative">
+            <div className="grid md:grid-cols-12 gap-5">
+                <div className="md:col-span-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 bg-white border rounded-sm p-5 pt-20 relative">
                         <div className='bg-slate-200 rounded-br-full px-3 flex items-center gap-1 absolute top-0 left-0 h-11 w-44 font-bold uppercase'>
                             <IoPersonCircleOutline size={36} />
                             Patient
@@ -96,7 +94,7 @@ const PatientPage = () => {
                                 Modifier le patient
                             </button>
                         </Dropdown>
-                        <div className='flex flex-col gap-5 p-3 relative'>
+                        <div className='flex flex-col gap-5 p-3 relative order-last md:order-first'>
                             <div className='font-semibold'>
                                 Coordonnées
                                 <hr className='hr_separator inset-0' />
@@ -169,7 +167,7 @@ const PatientPage = () => {
                     </div>
                 </div>
 
-                <div className="basis-3/12 flex flex-col gap-3">
+                <div className="md:col-span-4 flex flex-col gap-3">
 
                     <div className='bg-white border rounded-sm p-5 pt-16 relative'>
                         <Dropdown type='card'>
@@ -240,8 +238,8 @@ const PatientPage = () => {
                 <Modal />
                 <PageTitle
                     title={data.gender === "homme" ? "Mr " : "Mme " + data.firstname + " " + data.lastname}
-                    icon={<MdPendingActions size={40} />}>
-                    {_.isEmpty(previousPageState)
+                    icon={<MdPendingActions size={40} />}
+                    mainButton={_.isEmpty(previousPageState)
                         ?
                         <Button
                             onClick={() => navigate(-1)}
@@ -255,17 +253,20 @@ const PatientPage = () => {
                             <MdArrowBack />
                         </Button>
                     }
+                >
                 </PageTitle>
-                <div className='bg-slate-200  flex border rounded-sm col-span-3 mb-5'>
-                    <div className={`px-8 py-3 text-center ${tab === "infos" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("infos")}>Informations</div>
-                    <div className={`px-8 py-3 text-center ${tab === "stats" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("stats")}>Documents</div>
-                    <div className={`px-8 py-3 text-center ${tab === "invoices" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("invoices")}>Facturation</div>
-                    <div className="w-full"></div>
-                </div>
 
-                {tab === "infos" && <PatientInfos />}
-                {tab === "stats" && <PatientStats />}
-                {tab === "invoices" && <PatientInvoices />}
+                <div className='px-5 pb-5 md:px-0 md:pb-0'>
+                    <div className='bg-slate-200 flex border rounded-sm mb-5'>
+                        <div className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "infos" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("infos")}>Informations</div>
+                        <div className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "stats" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("stats")}>Documents</div>
+                        <div className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "invoices" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("invoices")}>Facturation</div>
+                    </div>
+
+                    {tab === "infos" && <PatientInfos />}
+                    {tab === "stats" && <PatientStats />}
+                    {tab === "invoices" && <PatientInvoices />}
+                </div>
             </>
         )
 

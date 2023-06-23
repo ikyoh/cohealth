@@ -38,9 +38,13 @@ const AssurancesPage = () => {
     else return (
         <>
             <Modal />
-            <PageTitle title="Liste des assurances" icon={<MdOutlineHealthAndSafety size={40} />}>
+            <PageTitle
+            title="Liste des assurances"
+            icon={<MdOutlineHealthAndSafety size={40}/>}
+            mainButton={<AddButton onClick={() => handleOpenModal({ title: 'Nouvelle assurance', content: <AssuranceForm handleCloseModal={handleCloseModal} /> })} />
+        }
+            >
                 {searchbar}
-                <AddButton onClick={() => handleOpenModal({ title: 'Nouvelle assurance', content: <AssuranceForm handleCloseModal={handleCloseModal} /> })} />
             </PageTitle>
 
             <Table.Table>

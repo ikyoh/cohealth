@@ -5,7 +5,7 @@ import '../style.css'
 
 export const FormInput = ({ name, label, register, error, required, type, placeholder, validationSchema, className }) => (
   <div className={`form-input ${className ? className : ''}`}>
-    <div className="md:grid md:grid-cols-2 gap-3">
+    <div className="grid grid-rows-1 md:grid-cols-2 gap-3">
       <Label name={name} label={label} required={required} />
       <input
         id={name}

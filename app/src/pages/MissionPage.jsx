@@ -56,8 +56,8 @@ const MissionPage = () => {
 
         if (!data) return null
         else return (
-            <div className="flex flex-row gap-3">
-                <div className="basis-5/12 relative bg-white border p-5 pt-20 flex flex-col gap-5">
+            <div className="grid md:grid-cols-12 gap-5">
+                <div className="md:col-span-4 relative bg-white border p-5 pt-20 flex flex-col gap-5">
                     {isMine &&
                         <Dropdown type='card'>
                             <button
@@ -158,7 +158,7 @@ const MissionPage = () => {
                 </div>
 
 
-                <div className="basis-5/12 relative bg-white border p-5 pt-20 flex flex-col gap-5">
+                <div className="md:col-span-4 relative bg-white border p-5 pt-20 flex flex-col gap-5">
                     {isMine &&
                         <Dropdown type='card'>
                             <button
@@ -254,7 +254,7 @@ const MissionPage = () => {
                     }
 
                 </div>
-                <div className="basis-3/12 flex flex-col gap-3">
+                <div className="md:col-span-4 flex flex-col gap-3">
 
                     <div className='bg-white border rounded-sm p-5 pt-16 relative'>
                         <div className='bg-slate-200 rounded-br-full px-3 flex items-center gap-1 absolute top-0 left-0 h-11 w-44 font-bold uppercase'>
@@ -321,7 +321,6 @@ const MissionPage = () => {
                             Documents
                         </div>
 
-
                         {data.documents.length === 0 && "Aucun document"}
                         {data.documents.map(document =>
                             <MissionDocument key={document["@id"]} iri={document["@id"]} />
@@ -351,8 +350,9 @@ const MissionPage = () => {
     else return (
         <>
             <Modal />
-            <PageTitle title="Mission" icon={<IoPersonCircleOutline size={40} />}>
-                {_.isEmpty(previousPageState)
+            <PageTitle title="Mission"
+                icon={<IoPersonCircleOutline size={40} />}
+                mainButton={_.isEmpty(previousPageState)
                     ?
                     <Button
                         onClick={() => navigate(-1)}
@@ -366,13 +366,14 @@ const MissionPage = () => {
                         <MdArrowBack />
                     </Button>
                 }
+            >
             </PageTitle>
-            <div className=''>
-                <div className='bg-white flex rounded-sm col-span-3 mb-5'>
-                    <div className={`px-8 py-3 text-center ${tab === "infos" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("infos")}>Informations</div>
-                    <div className={`px-8 py-3 text-center ${tab === "schedules" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("schedules")}>Planning</div>
-                    <div className={`px-8 py-3 text-center ${tab === "invoices" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("invoices")}>Facturation</div>
-                    <div className="w-full"></div>
+
+            <div className='px-5 pb-5 md:px-0 md:pb-0'>
+                <div className='bg-slate-200 flex border rounded-sm mb-5'>
+                    <div className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "infos" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("infos")}>Informations</div>
+                    <div className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "schedules" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("schedules")}>Planning</div>
+                    <div className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "invoices" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("invoices")}>Facturation</div>
                 </div>
                 <div>
                     {tab === "infos" && <MissionInfos />}
