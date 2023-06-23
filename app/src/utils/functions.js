@@ -62,7 +62,7 @@ export const calcNumberOfMonths = (beginAt, endAt) => {
 // category = "A" || "B" || "C" || "N"
 export const calcABCN = (category, services, beginAt, endAt) => {
 
-	console.log('Number(calcNumberOfDays(beginAt, endAt))', Number(calcNumberOfDays(beginAt, endAt)))
+	//console.log('Number(calcNumberOfDays(beginAt, endAt))', Number(calcNumberOfDays(beginAt, endAt)))
 
 	let filteredServices = services.filter(service => service.category === category)
 

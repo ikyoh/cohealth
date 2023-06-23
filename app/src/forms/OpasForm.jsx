@@ -97,8 +97,6 @@ const OpasForm = ({ iri, missionIRI, handleCloseModal, action = "infos" }) => {
 
 
     const onSubmit = form => {
-        console.log('form', form)
-        console.log('errors', errors)
         if (!iri)
             postData(form)
         else {
@@ -118,7 +116,7 @@ const OpasForm = ({ iri, missionIRI, handleCloseModal, action = "infos" }) => {
                     isLoading={isSubmitting}
                     isDisabled={isSubmitting}
                     errors={errors}
-                    className="h-screen"
+                    className=""
                 >
                     {steps &&
                         <div>

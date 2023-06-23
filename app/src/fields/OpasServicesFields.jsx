@@ -56,9 +56,6 @@ const OpasServicesFields = ({ errors, register, totalAHours, totalBHours, totalC
 		)
 	}
 
-
-
-
 	return (
 		<>
 			<div className='flex border-b items-center pb-2'>
@@ -83,7 +80,7 @@ const OpasServicesFields = ({ errors, register, totalAHours, totalBHours, totalC
 					</div>
 				</div>
 			</div>
-			<div className='grow grid grid-cols-3'>
+			<div className='grid grid-cols-3 relative h-full'>
 				<div className='px-5'>
 					<div className='font-semibold mb-3'>
 						Catégorie
@@ -169,7 +166,7 @@ const OpasServicesFields = ({ errors, register, totalAHours, totalBHours, totalC
 						</div>
 					)}
 				</div>
-			</div >
+			</div>
 		</>
 	)
 }
