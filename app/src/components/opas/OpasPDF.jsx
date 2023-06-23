@@ -364,11 +364,6 @@ const OpasPDF = ({ data }) => {
         const totalC = calcABCN("C", data.content.services, mission.beginAt, mission.endAt)
         const totalCHours = calcMinutestoHours(totalC)
         
-
-        console.log('totalA', totalA)
-        console.log('totalB', totalB)
-        console.log('totalc', totalc)
-
         return (
 
             <Document >
