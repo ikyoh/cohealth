@@ -74,6 +74,8 @@ const MissionForm = ({ iri, handleCloseModal, action = "patientIRI" }) => {
     const { register, handleSubmit, reset, watch, setValue, trigger, formState: { errors, isSubmitting } } = methods;
 
 
+    console.log('watch', watch())
+
     // Case update
     useEffect(() => {
         if (iri && data) {
@@ -94,6 +96,7 @@ const MissionForm = ({ iri, handleCloseModal, action = "patientIRI" }) => {
             delete datas.documents
             putData(datas)
         }
+        console.log('form', form)
         handleCloseModal()
     }
 

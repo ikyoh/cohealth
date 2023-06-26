@@ -13,7 +13,8 @@ export const FormSelectPatientIRI = ({ watch, setValue, searchValue }) => {
             if (patient.doctor) setValue("doctor", patient.doctor)
             if (patient.assurance) setValue("assurance", patient.assurance)
         }
-    }, [watch('patient')])
+    }, [patient])
+
 
     const Button = ({ data }) => {
 
