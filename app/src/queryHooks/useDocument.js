@@ -39,12 +39,7 @@ const postData = form => {
 }
 
 const putData = form => {
-    const formData = new FormData()
-    formData.append('file', form.file[0])
-    formData.append('type', form.type)
-    if (form.comment) formData.append('comment', form.comment)
-    if (form.mission) formData.append('mission', form.mission)
-    return request({ url: API + "/" + form.id, method: 'put', data: formData })
+    return request({ url: API + "/" + form.id, method: 'put', data: form })
 }
 
 const deleteIRI = iri => {

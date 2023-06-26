@@ -27,6 +27,7 @@ use ApiPlatform\Metadata\GetCollection;
         new GetCollection(),
         new Get(),
         new Delete(),
+        new Put(),
         new Post(
             controller: CreateMediaObjectAction::class,
             deserialize: false,

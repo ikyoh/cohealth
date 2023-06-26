@@ -21,8 +21,12 @@ const DocumentForm = ({ iri, missionID, handleCloseModal }) => {
         file: Yup.mixed().required('Fichier obligatoire'),
     })
 
+    const updateValidationSchema = Yup.object({
+        type: Yup.string().required('Champ obligatoire'),
+    })
+
     const { register, handleSubmit, reset, formState: { errors, isPostingisSubmitting } } = useForm({
-        resolver: yupResolver(validationSchema),
+        resolver: yupResolver(!iri ? validationSchema : updateValidationSchema),
         defaultValues: {
             file: null,
             mission: missionID
@@ -37,15 +41,20 @@ const DocumentForm = ({ iri, missionID, handleCloseModal }) => {
     }, [isLoadingData, data])
 
     const onSubmit = async form => {
-        if (!iri)
+        if (!iri) {
             await postData(form)
+        }
         else {
-            await putData(form)
+            const _form = { ...form }
+            delete _form.mission
+            delete _form.user
+            delete _form.contentUrl
+            delete _form.filePath
+            delete _form.createdAt
+            await putData(_form)
         }
         handleCloseModal()
     }
-
-    console.log('errors', errors)
 
     return (
         <Form onSubmit={handleSubmit(onSubmit)}
@@ -66,14 +75,16 @@ const DocumentForm = ({ iri, missionID, handleCloseModal }) => {
                     <option key={cat} value={cat}>{cat}</option>
                 )}
             </FormSelect>
-            <FormFile
-                type="text"
-                name="file"
-                label="Catégorie"
-                error={errors['file']}
-                register={register}
-                required={true}
-            />
+            {!iri &&
+                <FormFile
+                    type="text"
+                    name="file"
+                    label="Catégorie"
+                    error={errors['file']}
+                    register={register}
+                    required={true}
+                />
+            }
             <FormTextarea
                 name="comment"
                 label="Commentaire"

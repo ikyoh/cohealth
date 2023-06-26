@@ -1,4 +1,4 @@
-import * as Yup from 'yup';
+    import * as Yup from 'yup';
 
 const string = (error) => Yup.string().required(error ? error : 'Champ obligatoire')
 const date = (error) => Yup.date().typeError(error ? error : 'Date obligatoire')

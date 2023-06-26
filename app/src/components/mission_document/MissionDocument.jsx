@@ -5,25 +5,31 @@ import { downloadFile } from '../../utils/functions'
 import { HiDownload } from 'react-icons/hi'
 import { TiDelete } from 'react-icons/ti'
 import { useQueryClient } from '@tanstack/react-query'
+import { BsThreeDotsVertical } from 'react-icons/bs'
+import { useModal } from '../../hooks/useModal'
+import DocumentForm from '../../forms/DocumentForm'
 
 const MissionDocument = ({ iri }) => {
 
     const { data, isLoading, error } = useGetIRI(iri)
-    const { mutate } = useDeleteIRI()
+    const { mutate: deleteDocument } = useDeleteIRI()
 
     const queryClient = useQueryClient()
     const account = queryClient.getQueryData(['account'])
 
-    const handleDelete = (event) => {
-        event.preventDefault()
-        mutate(iri)
+    const handleDelete = () => {
+        //event.preventDefault()
+        deleteDocument(iri)
     }
+
+    const { Modal, handleOpenModal, handleCloseModal } = useModal()
 
     return (
         isLoading ?
             <Loader isSmall={true} />
             :
             <>
+                <Modal />
                 <input type="checkbox" id="confirm-modal" className="modal-toggle" />
                 <div className="modal">
                     <div className="modal-box relative">
@@ -47,7 +53,7 @@ const MissionDocument = ({ iri }) => {
                             </div>
                         }
                     </div>
-                    <div className='flex flex-row gap-2'>
+                    <div className='flex flex-col gap-2'>
                         {account.id === data.user.id &&
                             <label htmlFor="confirm-modal" className="btn btn-sm btn-circle btn-error p-0">
                                 <TiDelete size={20} />
@@ -56,6 +62,33 @@ const MissionDocument = ({ iri }) => {
                         <button className='btn btn-sm btn-circle btn-primary' onClick={() => downloadFile(data)}>
                             <HiDownload />
                         </button>
+                        <div className="dropdown dropdown-left">
+                            <label
+                                tabIndex={0}
+                                className="btn btn-circle btn-sm bg-slate-200 border-none hover:bg-slate-400"
+                                onClick={(e) => { e.stopPropagation() }}
+                            >
+                                <BsThreeDotsVertical className='text-primary text-1xl' />
+                            </label>
+                            <ul tabIndex={0} className="dropdown-content z-[1] menu p-1 border border-primary bg-slate-100 rounded">
+                                <li>
+                                    <button
+                                        className='hover:bg-action hover:text-white !rounded-sm h-10 p-2 w-full'
+                                        onClick={() => handleOpenModal({ title: 'Modifier le document', content: <DocumentForm iri={iri} handleCloseModal={handleCloseModal} /> })}
+                                    >
+                                        Modifier
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        className='hover:bg-error hover:text-white !rounded-sm h-10 p-2 w-full'
+                                        onClick={() => handleDelete()}
+                                    >
+                                        Supprimer
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </>
