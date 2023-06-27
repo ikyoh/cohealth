@@ -41,6 +41,7 @@ const PartnersPage = () => {
             <Modal />
             <PageTitle
             title="Liste des partenaires"
+            subtitle={data["hydra:totalItems"]}
             icon={<FaHandshake size={40} />}
             mainButton={<AddButton onClick={() => handleOpenModal({ title: 'Nouveau partenaire', content: <PartnerForm handleCloseModal={handleCloseModal} /> })} />
         }

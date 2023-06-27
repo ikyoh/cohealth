@@ -1,4 +1,4 @@
-    import * as Yup from 'yup';
+import * as Yup from 'yup';
 
 const string = (error) => Yup.string().required(error ? error : 'Champ obligatoire')
 const date = (error) => Yup.date().typeError(error ? error : 'Date obligatoire')
@@ -132,7 +132,7 @@ export const patient = Yup.object({
     address1: string(),
     birthdate: date(),
     email: email(),
-    assuranceNumber: assuranceNumber(),
+    //assuranceNumber: assuranceNumber(),
     avsNumber: avsNumber(),
     npa: npaRequired()
     // phone: Yup.string().matches(/^0[0-9]{9}/, "Numéro incorrect"),

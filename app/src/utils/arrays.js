@@ -123,19 +123,19 @@ export const opas = {
 }
 
 export const services_family = [
+    "Evaluation - Conseil - Coordination",
+    "Mesures - Diagnostics",
+    "Thérapies sur prescription médicale",
+    "Respiration",
+    "Pansement",
     "Alimentation et diètes",
     "Elimination",
-    "Evaluation - Conseil - Coordination",
     "Hygiène - Confort",
-    "Mesures - Diagnostics",
     "Mobilisation",
-    "Pansement",
-    "Respiration",
-    "Thérapies sur prescription médicale",
-    "Accompagnement - Aide pratique",
-    "Entretien du domicile",
+    "Psychiatrie",
     "Suppléance parentale",
-    "Psychiatrie"
+    "Accompagnement - Aide pratique",
+    "Entretien du domicile"
 ]
 
 export const assuranceCategories = [

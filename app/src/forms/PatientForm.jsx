@@ -16,7 +16,7 @@ import AddButton from '../components/buttons/AddButton'
 import { patient as patientSchema, doctorIRI as doctorIRISchema, doctor as doctorSchema, assuranceIRI as assuranceIRISchema, assurance as assuranceSchema } from '../utils/validationSchemas'
 import Loader from '../components/Loader'
 
-const DoctorForm = ({ iri, handleCloseModal, action = "patient" }) => {
+const PatientForm = ({ iri, handleCloseModal, action = "patient" }) => {
 
     const [modalAction, setModalAction] = useState(action)
     const { isLoading, data, isError, error } = useGetIRI(iri)
@@ -95,4 +95,4 @@ const DoctorForm = ({ iri, handleCloseModal, action = "patient" }) => {
     )
 }
 
-export default DoctorForm
+export default PatientForm
