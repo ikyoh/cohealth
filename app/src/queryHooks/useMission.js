@@ -44,16 +44,16 @@ const fetchIRI = ({ queryKey }) => {
 }
 
 const postData = form => {
-    const datas = {...form}
+    const datas = { ...form }
     datas.beginAt = dayjs.utc(form.beginAt).local().format()
     datas.endAt = dayjs.utc(form.endAt).local().format()
     return request({ url: API, method: 'post', data: datas })
 }
 
 const putData = form => {
-    const datas = {...form}
-    datas.beginAt = dayjs.utc(form.beginAt).local().format()
-    datas.endAt = dayjs.utc(form.endAt).local().format()
+    const datas = { ...form }
+    if (form.beginAt) datas.beginAt = dayjs.utc(form.beginAt).local().format()
+    if (form.endAt) datas.endAt = dayjs.utc(form.endAt).local().format()
     return request({ url: API + "/" + form.id, method: 'put', data: datas })
 }
 

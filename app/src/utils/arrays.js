@@ -242,13 +242,13 @@ export const opasStatus = {
 }
 
 export const missionStatus = {
-    "programmé": 'bg-waiting',
+    "programmé": 'bg-slate-400',
     "en cours": 'bg-mention',
     "suspendu": 'bg-waiting',
-    "terminé": 'bg-info',
+    "terminé": 'bg-pink-500',
     "archivé": 'bg-info',
     "facturé": 'bg-success',
-    "annulé": 'bg-black text-white',
+    "annulé": 'bg-error',
 }
 
 export const serviceCategoryColor = {

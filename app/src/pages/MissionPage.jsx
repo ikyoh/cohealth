@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useLocation, useParams } from 'react-router-dom'
-import { useGetOneData } from '../queryHooks/useMission'
+import { useGetOneData, usePutData } from '../queryHooks/useMission'
 import { useGetIRI as Patient } from '../queryHooks/usePatient'
 import { useGetIRI as Doctor } from '../queryHooks/useDoctor'
 import { useGetIRI as Assurance } from '../queryHooks/useAssurance'
@@ -26,6 +26,7 @@ import MissionPartner from '../components/mission_partner/MissionPartner'
 import MissionPartnerForm from '../forms/MissionPartnerForm'
 import { useQueryClient } from '@tanstack/react-query'
 import { URL } from '../features/apiConfig';
+import { missionStatus } from '../utils/arrays'
 import _ from 'lodash'
 
 const MissionPage = () => {
@@ -39,6 +40,7 @@ const MissionPage = () => {
     const { data: assurance, isLoading: isLoadingAssurance, error: errorAssurance } = Assurance(data && data.assurance ? data.assurance : null)
     const { Modal, handleOpenModal, handleCloseModal } = useModal()
     const [tab, setTab] = useState("infos")
+    const { mutate } = usePutData()
 
     const queryClient = useQueryClient()
     const account = queryClient.getQueryData(['account'])
@@ -51,6 +53,11 @@ const MissionPage = () => {
             if (account.id === data.user.id) setIsMine(true)
         }
     }, [data])
+
+    const handleChangeStatus = (status) => {
+        mutate({ id: data.id, status: status })
+    }
+
 
     const MissionInfos = () => {
 
@@ -71,6 +78,30 @@ const MissionPage = () => {
                             <button
                                 onClick={() => handleOpenModal({ title: "Edition de l'assurance'", content: <MissionForm action="assuranceIRI" iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
                                 Editer l'assurance
+                            </button>
+                            <span>
+                                Statut de la mission
+                            </span>
+                            <button
+                                className='flex items-center gap-2'
+                                onClick={() => handleChangeStatus("en cours")}>
+                                <div className={`rounded-full w-4 h-4 ${missionStatus["en cours"]}`}>
+                                </div>
+                                En cours
+                            </button>
+                            <button
+                                className='flex items-center gap-2'
+                                onClick={() => handleChangeStatus("annulé")}>
+                                <div className={`rounded-full w-4 h-4 ${missionStatus["annulé"]}`}>
+                                </div>
+                                Annulé
+                            </button>
+                            <button
+                                className='flex items-center gap-2'
+                                onClick={() => handleChangeStatus("archivé")}>
+                                <div className={`rounded-full w-4 h-4 ${missionStatus["archivé"]}`}>
+                                </div>
+                                Archivé
                             </button>
                         </Dropdown>
                     }
@@ -259,11 +290,32 @@ const MissionPage = () => {
                     <div className='bg-white border rounded-sm p-5 pt-16 relative'>
                         <div className='bg-slate-200 rounded-br-full px-3 flex items-center gap-1 absolute top-0 left-0 h-11 w-44 font-bold uppercase'>
                             <HiOutlinePaperClip size={30} />
-                            Status
+                            Statut
                         </div>
-                        <div className='flex'>
-                            <MissionStatus mission={data} />
-                        </div>
+                        <MissionStatus mission={data} />
+                        <Dropdown type='card'>
+                            <button
+                                className='flex items-center gap-2'
+                                onClick={() => handleChangeStatus("en cours")}>
+                                <div className={`rounded-full w-4 h-4 ${missionStatus["en cours"]}`}>
+                                </div>
+                                En cours
+                            </button>
+                            <button
+                                className='flex items-center gap-2'
+                                onClick={() => handleChangeStatus("annulé")}>
+                                <div className={`rounded-full w-4 h-4 ${missionStatus["annulé"]}`}>
+                                </div>
+                                Annulé
+                            </button>
+                            <button
+                                className='flex items-center gap-2'
+                                onClick={() => handleChangeStatus("archivé")}>
+                                <div className={`rounded-full w-4 h-4 ${missionStatus["archivé"]}`}>
+                                </div>
+                                Archivé
+                            </button>
+                        </Dropdown>
                     </div>
                     {!isMine &&
                         <div className='bg-white border rounded-sm p-5 pt-16 relative'>

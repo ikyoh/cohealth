@@ -53,7 +53,7 @@ class Mission implements UserOwnedInterface
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(["missions:read", "mission:read", "mission:write"])]
-    // suspendu, archivé, annulé, facturé
+    // en cours, annulé, archivé, facturé
     private $status = 'en cours';
 
     #[ORM\Column(type: 'string', length: 2047, nullable: true)]

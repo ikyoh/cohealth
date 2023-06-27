@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { MdPendingActions } from "react-icons/md";
 import MissionForm from '../forms/MissionForm'
 import PageTitle from '../layouts/PageTitle'
-import { useGetPaginatedDatas } from '../queryHooks/useMission'
+import { useGetPaginatedDatas, usePutData } from '../queryHooks/useMission'
 import { useSearch } from '../hooks/useSearch'
 import { useSortBy } from '../hooks/useSortBy'
 import { useModal } from '../hooks/useModal'
@@ -11,21 +11,17 @@ import * as Table from '../components/table/Table'
 import Pagination from '../components/pagination/Pagination'
 import AddButton from '../components/buttons/AddButton'
 import Dropdown from '../components/dropdown/Dropdown'
-import { API_PATIENTS, API_MISSIONS } from '../config/api.config'
+import { API_MISSIONS } from '../config/api.config'
 import { calcNumberOfDays } from '../utils/functions'
 import dayjs from 'dayjs'
 import OpasStatus from '../components/opas/OpasStatus'
 import MissionStatus from '../components/mission_status/MissionsStatus'
+import { missionStatus } from '../utils/arrays'
 import Loader from '../components/Loader'
 import { useFilterMission } from '../hooks/useFilterMissions';
-import { useQueryClient } from '@tanstack/react-query'
-
+import { FaCircle } from 'react-icons/fa';
 
 const MissionsPage = () => {
-
-
-
-
 
     const { state: initialPageState } = useLocation()
     const navigate = useNavigate()
@@ -35,6 +31,7 @@ const MissionsPage = () => {
     const [page, setPage] = useState(initialPageState ? initialPageState.page : 1)
     const { sortValue, sortDirection, handleSort } = useSortBy(initialPageState ? { value: initialPageState.sortValue, direction: initialPageState.sortDirection } : "")
     const { data, isLoading, error } = useGetPaginatedDatas(page, sortValue, sortDirection, searchValue, filters)
+    const { mutate } = usePutData()
 
     useEffect(() => {
         if (searchValue && !initialPageState) {
@@ -47,6 +44,11 @@ const MissionsPage = () => {
             setPage(1)
         }
     }, [searchValue, sortValue])
+
+    const handleChangeStatus = (id, status) => {
+        mutate({ id: id, status: status })
+    }
+
 
     if (isLoading) return <Loader />
     return (
@@ -133,6 +135,30 @@ const MissionsPage = () => {
                                     <button
                                         onClick={() => handleOpenModal({ title: "Édition de la mission", content: <MissionForm iri={data['@id']} action='mission' handleCloseModal={handleCloseModal} /> })}>
                                         Modifier la mission
+                                    </button>
+                                    <span>
+                                        Statut de la mission
+                                    </span>
+                                    <button
+                                        className='flex items-center gap-2'
+                                        onClick={() => handleChangeStatus(data.id, "en cours")}>
+                                        <div className={`rounded-full w-4 h-4 ${missionStatus["en cours"]}`}>
+                                        </div>
+                                        En cours
+                                    </button>
+                                    <button
+                                        className='flex items-center gap-2'
+                                        onClick={() => handleChangeStatus(data.id, "annulé")}>
+                                        <div className={`rounded-full w-4 h-4 ${missionStatus["annulé"]}`}>
+                                        </div>
+                                        Annulé
+                                    </button>
+                                    <button
+                                        className='flex items-center gap-2'
+                                        onClick={() => handleChangeStatus(data.id, "archivé")}>
+                                        <div className={`rounded-full w-4 h-4 ${missionStatus["archivé"]}`}>
+                                        </div>
+                                        Archivé
                                     </button>
                                 </Dropdown>
                             </Table.Td>

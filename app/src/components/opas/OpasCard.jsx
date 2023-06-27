@@ -84,17 +84,19 @@ const OpasCard = ({ iri, missionIRI, isMine = false }) => {
                     :
                     <div className='mt-3 flex items-center justify-between'>
                         {
-                            data ?
-                                <>
-                                    <div className={`px-3 py-1 uppercase text-xs rounded-full text-white ${opasStatus[data.status]}`}>
-                                        {data.status}
+                            data &&
+                            <>
+                                <div className="flex flex-wrap items-center gap-3 text-black">
+                                    <div className={`h-5 w-5 rounded-full ${!data.status ? 'bg-error' : opasStatus[data.status]}`}>
                                     </div>
-                                    <OpasPDF data={data} />
-                                </>
-                                :
-                                <div className="px-3 py-1 uppercase text-xs rounded-full text-white bg-error">
-                                    OPAS à créer
+                                    <div>
+                                        {!data.status
+                                            ? 'OPAS à créer'
+                                            : data.status.charAt(0).toUpperCase() + data.status.slice(1)}
+                                    </div>
                                 </div>
+                                <OpasPDF data={data} />
+                            </>
                         }
                     </div>
                 }
