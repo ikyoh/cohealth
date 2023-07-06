@@ -11,7 +11,7 @@ const MissionPartnerForm = ({ iri, partners, handleCloseModal }) => {
 
     const { data: allPartners, isLoading: isLoadingPartners } = getPartners()
     const { data, isLoading: isLoadingMission } = getMission(iri)
-    const { mutate } = usePutData(iri)
+    const { mutate } = usePutData()
     const [selected, setSelected] = useState(partners)
 
     const Button = ({ partner }) => {
@@ -46,7 +46,7 @@ const MissionPartnerForm = ({ iri, partners, handleCloseModal }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        mutate({ ...data, coworkers: selected })
+        mutate({ id: data.id, coworkers: selected })
         handleCloseModal()
     }
 
