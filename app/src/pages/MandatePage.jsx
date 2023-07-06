@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import { useGetOneData, usePutData } from '../queryHooks/useMission'
-//import { useGetIRI as Patient } from '../queryHooks/usePatient'
+import { useGetIRI as Patient } from '../queryHooks/usePatient'
 import { useGetIRI as Doctor } from '../queryHooks/useDoctor'
 import { useGetIRI as Assurance } from '../queryHooks/useAssurance'
 import { IoPersonCircleOutline } from "react-icons/io5"
@@ -29,13 +29,13 @@ import { URL } from '../features/apiConfig';
 import { missionStatus } from '../utils/arrays'
 import _ from 'lodash'
 
-const MissionPage = () => {
+const MandatePage = () => {
 
     const navigate = useNavigate();
     const { state: previousPageState } = useLocation();
     const { id } = useParams()
     const { data, isLoading, error } = useGetOneData(id)
-    //const { data: patient, isLoading: isLoadingPatient, error: errorPatient } = Patient(data && data.patient ? data.patient : null)
+    const { data: patient, isLoading: isLoadingPatient, error: errorPatient } = Patient(data && data.patient ? data.patient : null)
     const { data: doctor, isLoading: isLoadingDoctor, error: errorDoctor } = Doctor(data && data.doctor ? data.doctor : null)
     const { data: assurance, isLoading: isLoadingAssurance, error: errorAssurance } = Assurance(data && data.assurance ? data.assurance : null)
     const { Modal, handleOpenModal, handleCloseModal } = useModal()
@@ -193,7 +193,7 @@ const MissionPage = () => {
                     {isMine &&
                         <Dropdown type='card'>
                             <button
-                                onClick={() => handleOpenModal({ title: "édition du patient", content: <PatientForm iri={data.patient['@id']} handleCloseModal={handleCloseModal} /> })}>
+                                onClick={() => handleOpenModal({ title: "édition du patient", content: <PatientForm iri={patient['@id']} handleCloseModal={handleCloseModal} /> })}>
                                 Editer le patient
                             </button>
                         </Dropdown>
@@ -203,82 +203,85 @@ const MissionPage = () => {
                         Patient
                     </div>
 
-
-                    <div className='font-bold first-letter flex items-center gap-5'>
-                        <div>
-                            {data.patient.gender === "homme" ? " Mr " : " Mme "}
-                            {data.patient.firstname + " " + data.patient.lastname + " "}
-                            ({dayjs().diff(data.patient.birthdate, 'years')} ans)
-                        </div>
-                    </div>
-                    <hr className='hr_info' />
-                    <div>
-                        <div className='font-bold flex items-center gap-3 mb-2'>
-                            Infos assuré
-                            <hr className='hr_separator' />
-                        </div>
-                        <div className="grid grid-cols-1 gap-2">
-                            {data.patient.birthdate &&
+                    {
+                        patient &&
+                        <>
+                            <div className='font-bold first-letter flex items-center gap-5'>
                                 <div>
-                                    {data.patient.gender === 'hommme' ? "Né le : " : "Née le : "}
-                                    {dayjs(data.patient.birthdate).format('DD/MM/YYYY')}
+                                    {patient.gender === "homme" ? " Mr " : " Mme "}
+                                    {patient.firstname + " " + patient.lastname + " "}
+                                    ({dayjs().diff(patient.birthdate, 'years')} ans)
                                 </div>
-                            }
+                            </div>
+                            <hr className='hr_info' />
                             <div>
-                                Numéro d'assuré : {data.patient.assuranceNumber}
+                                <div className='font-bold flex items-center gap-3 mb-2'>
+                                    Infos assuré
+                                    <hr className='hr_separator' />
+                                </div>
+                                <div className="grid grid-cols-1 gap-2">
+                                    {patient.birthdate &&
+                                        <div>
+                                            {patient.gender === 'hommme' ? "Né le : " : "Née le : "}
+                                            {dayjs(patient.birthdate).format('DD/MM/YYYY')}
+                                        </div>
+                                    }
+                                    <div>
+                                        Numéro d'assuré : {patient.assuranceNumber}
+                                    </div>
+                                    <div>
+                                        Numéro AVS : {patient.avsNumber}
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                Numéro AVS : {data.patient.avsNumber}
-                            </div>
-                        </div>
-                    </div>
 
-                    <div>
-                        <div className='font-bold flex items-center gap-3 mb-2'>
-                            Coordonnées
-                            <hr className='hr_separator' />
-                        </div>
-                        <div className="grid grid-cols-1 gap-2">
                             <div>
-                                Adresse : {data.patient.address1}
+                                <div className='font-bold flex items-center gap-3 mb-2'>
+                                    Coordonnées
+                                    <hr className='hr_separator' />
+                                </div>
+                                <div className="grid grid-cols-1 gap-2">
+                                    <div>
+                                        Adresse : {patient.address1}
+                                    </div>
+                                    {patient.address2 &&
+                                        <div>
+                                            Complèment d'adresse : {patient.address2}
+                                        </div>
+                                    }
+                                    <div>
+                                        Ville : {patient.city}
+                                    </div>
+                                    {patient.phone &&
+                                        <div>
+                                            Téléphone : {patient.phone}
+                                        </div>
+                                    }
+                                    {patient.mobile &&
+                                        <div>
+                                            Mobile : {patient.mobile}
+                                        </div>
+                                    }
+                                    {patient.email &&
+                                        <div>
+                                            Email : {patient.email}
+                                        </div>
+                                    }
+                                </div>
                             </div>
-                            {data.patient.address2 &&
-                                <div>
-                                    Complèment d'adresse : {data.patient.address2}
-                                </div>
-                            }
-                            <div>
-                                Ville : {data.patient.city}
-                            </div>
-                            {data.patient.phone &&
-                                <div>
-                                    Téléphone : {data.patient.phone}
-                                </div>
-                            }
-                            {data.patient.mobile &&
-                                <div>
-                                    Mobile : {data.patient.mobile}
-                                </div>
-                            }
-                            {data.patient.email &&
-                                <div>
-                                    Email : {data.patient.email}
-                                </div>
-                            }
-                        </div>
-                    </div>
 
-                    {data.patient.furtherInfos &&
-                        <div className='col-span-2'>
-                            <div className='font-bold flex items-center gap-3 mb-2'>
-                                Informations complémentaires
-                                <hr className='hr_separator' />
-                            </div>
-                            <div className='whitespace-pre-line'>
-                                {data.patient.furtherInfos}
-                            </div>
-                        </div>
-
+                            {patient.furtherInfos &&
+                                <div className='col-span-2'>
+                                    <div className='font-bold flex items-center gap-3 mb-2'>
+                                        Informations complémentaires
+                                        <hr className='hr_separator' />
+                                    </div>
+                                    <div className='whitespace-pre-line'>
+                                        {patient.furtherInfos}
+                                    </div>
+                                </div>
+                            }
+                        </>
                     }
 
                 </div>
@@ -374,7 +377,7 @@ const MissionPage = () => {
 
                         {data.documents.length === 0 && "Aucun document"}
                         {data.documents.map(document =>
-                            <MissionDocument key={document["@id"]} iri={document["@id"]} isMine={isMine} />
+                            <MissionDocument key={document["@id"]} iri={document["@id"]} />
                         )}
 
                     </div>
@@ -397,7 +400,7 @@ const MissionPage = () => {
         )
     }
 
-    if (!data) return <Loader />
+    if (!data && !patient) return <Loader />
     else return (
         <>
             <Modal />
@@ -437,4 +440,4 @@ const MissionPage = () => {
 
 }
 
-export default MissionPage
+export default MandatePage

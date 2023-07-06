@@ -9,7 +9,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs'
 import { useModal } from '../../hooks/useModal'
 import DocumentForm from '../../forms/DocumentForm'
 
-const MissionDocument = ({ iri }) => {
+const MissionDocument = ({ iri, isMine }) => {
 
     const { data, isLoading, error } = useGetIRI(iri)
     const { mutate: deleteDocument } = useDeleteIRI()
@@ -62,33 +62,35 @@ const MissionDocument = ({ iri }) => {
                         <button className='btn btn-sm btn-circle btn-primary' onClick={() => downloadFile(data)}>
                             <HiDownload />
                         </button>
-                        <div className="dropdown dropdown-left">
-                            <label
-                                tabIndex={0}
-                                className="btn btn-circle btn-sm bg-slate-200 border-none hover:bg-slate-400"
-                                onClick={(e) => { e.stopPropagation() }}
-                            >
-                                <BsThreeDotsVertical className='text-primary text-1xl' />
-                            </label>
-                            <ul tabIndex={0} className="dropdown-content z-[1] menu p-1 border border-primary bg-slate-100 rounded">
-                                <li>
-                                    <button
-                                        className='hover:bg-action hover:text-white !rounded-sm h-10 p-2 w-full'
-                                        onClick={() => handleOpenModal({ title: 'Modifier le document', content: <DocumentForm iri={iri} handleCloseModal={handleCloseModal} /> })}
-                                    >
-                                        Modifier
-                                    </button>
-                                </li>
-                                <li>
-                                    <button
-                                        className='hover:bg-error hover:text-white !rounded-sm h-10 p-2 w-full'
-                                        onClick={() => handleDelete()}
-                                    >
-                                        Supprimer
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
+                        {isMine &&
+                            <div className="dropdown dropdown-left">
+                                <label
+                                    tabIndex={0}
+                                    className="btn btn-circle btn-sm bg-slate-200 border-none hover:bg-slate-400"
+                                    onClick={(e) => { e.stopPropagation() }}
+                                >
+                                    <BsThreeDotsVertical className='text-primary text-1xl' />
+                                </label>
+                                <ul tabIndex={0} className="dropdown-content z-[1] menu p-1 border border-primary bg-slate-100 rounded">
+                                    <li>
+                                        <button
+                                            className='hover:bg-action hover:text-white !rounded-sm h-10 p-2 w-full'
+                                            onClick={() => handleOpenModal({ title: 'Modifier le document', content: <DocumentForm iri={iri} handleCloseModal={handleCloseModal} /> })}
+                                        >
+                                            Modifier
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            className='hover:bg-error hover:text-white !rounded-sm h-10 p-2 w-full'
+                                            onClick={() => handleDelete()}
+                                        >
+                                            Supprimer
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
                     </div>
                 </div>
             </>

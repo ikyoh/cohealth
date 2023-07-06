@@ -292,19 +292,19 @@ const OpasPDF = ({ data }) => {
 
 
         let patientField = ''
-        if (patient.gender === 'homme') patientField += 'Mr '
+        if (mission.patient.gender === 'homme') patientField += 'Mr '
         else patientField += 'Mme '
-        patientField += patient.lastname.toUpperCase() + ' ' + patient.firstname
-        if (patient.gender === 'homme') patientField += ' né le '
+        patientField += mission.patient.lastname.toUpperCase() + ' ' + mission.patient.firstname
+        if (mission.patient.gender === 'homme') patientField += ' né le '
         else patientField += ' née le '
-        patientField += dayjs(patient.birthdate).format('DD/MM/YYYY') + ' (' + dayjs().diff(patient.birthdate, 'years') + ' ans)'
+        patientField += dayjs(mission.patient.birthdate).format('DD/MM/YYYY') + ' (' + dayjs().diff(mission.patient.birthdate, 'years') + ' ans)'
         patientField += "\n"
-        patientField += (patient.address1) + ', ' + patient.npa + ' ' + patient.city + ', ' + patient.canton
+        patientField += (mission.patient.address1) + ', ' + mission.patient.npa + ' ' + mission.patient.city + ', ' + mission.patient.canton
         patientField += "\n"
-        patientField += "N° AVS : " + patient.avsNumber
-        if (patient.assuranceNumber) {
+        patientField += "N° AVS : " + mission.patient.avsNumber
+        if (mission.patient.assuranceNumber) {
             patientField += "\n"
-            patientField += "N° Assuré : " + patient.assuranceNumber
+            patientField += "N° Assuré : " + mission.patient.assuranceNumber
         }
 
 
@@ -387,7 +387,7 @@ const OpasPDF = ({ data }) => {
                         <View style={styles.column}>
                             <View style={[styles.row, { alignItems: 'center', marginBottom: 5, marginTop: 8 }]}>
                                 <Text style={styles.title}>
-                                    {patient.gender === "homme" ? 'Patient' : 'Patiente'}
+                                    {mission.patient.gender === "homme" ? 'Patient' : 'Patiente'}
                                 </Text>
                                 <Separator />
                             </View>
@@ -568,7 +568,7 @@ const OpasPDF = ({ data }) => {
                         <View style={styles.column}>
                             <View style={[styles.row, { alignItems: 'center', marginBottom: 5, marginTop: 8 }]}>
                                 <Text style={styles.title}>
-                                    {patient.gender === "homme" ? 'Patient' : 'Patiente'}
+                                    {mission.patient.gender === "homme" ? 'Patient' : 'Patiente'}
                                 </Text>
                                 <Separator />
                             </View>
@@ -786,10 +786,10 @@ const OpasPDF = ({ data }) => {
 
     }
 
-    //const fileName = "Opas_" + patient.lastname.toUpperCase() + '_' + patient.firstname.toUpperCase() + '_' + dayjs().format('DD-MM-YYYY')
+    //const fileName = "Opas_" + mission.patient.lastname.toUpperCase() + '_' + mission.patient.firstname.toUpperCase() + '_' + dayjs().format('DD-MM-YYYY')
     const fileName = "Opas_" + dayjs().format('DD-MM-YYYY')
 
-    if (data && patient && mission && doctor && assurance && nurse)
+    if (data && mission && doctor && assurance && nurse)
         return (
             <PDFDownloadLink document={<MyDoc />} fileName={fileName} className='btn btn-sm btn-circle btn-primary'>
                 {({ blob, loading, error }) => (

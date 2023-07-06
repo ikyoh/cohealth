@@ -102,6 +102,9 @@ class Mission implements UserOwnedInterface
     #[Groups(["missions:read", "mission:read", "mission:write", "patient:read"])]
     private $coworkersDetailed = [];
 
+    #[ORM\ManyToOne(inversedBy: 'mission')]
+    private ?Mandate $mandate = null;
+
     public function __construct()
     {
         $this->prescriptions = new ArrayCollection();
@@ -292,6 +295,18 @@ class Mission implements UserOwnedInterface
     public function setCoworkersDetailed(?array $coworkersDetailed): self
     {
         $this->coworkersDetailed = $coworkersDetailed;
+
+        return $this;
+    }
+
+    public function getMandate(): ?Mandate
+    {
+        return $this->mandate;
+    }
+
+    public function setMandate(?Mandate $mandate): self
+    {
+        $this->mandate = $mandate;
 
         return $this;
     }

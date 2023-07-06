@@ -139,6 +139,13 @@ export const patient = Yup.object({
     // mobile: Yup.string().matches(/^0[0-9]{9}/, "Numéro incorrect"),
 })
 
+export const mandatePatient = Yup.object({
+    firstname: string(),
+    lastname: string(),
+    gender: string(),
+    canton: string()
+})
+
 export const user = Yup.object({
     firstname: string(),
     lastname: string(),

@@ -76,7 +76,7 @@ const Menu = () => {
 						<MenuButton onClick={() => setShow(!show)} disabled={true} title="Statistiques" roles={['ROLE_NURSE']}>
 							<AiOutlineBarChart size={25} />
 						</MenuButton>
-						<MenuButton onClick={() => setShow(!show)} disabled={true} title="Mandats" roles={['ROLE_DOCTOR']}>
+						<MenuButton onClick={() => setShow(!show)} link='/mandats' title="Mandats" roles={['ROLE_DOCTOR', 'ROLE_COORDINATOR', 'ROLE_NURSE']}>
 							<MdEventNote size={25} />
 						</MenuButton>
 						<div className='text-zinc-400 font-light uppercase mt-5 pl-2 pb-2'>
@@ -85,10 +85,10 @@ const Menu = () => {
 						<MenuButton onClick={() => setShow(!show)} link='/patients' title="Patients" roles={['ROLE_NURSE', 'ROLE_ORGANIZATION']}>
 							<IoPersonCircleOutline size={25} />
 						</MenuButton>
-						<MenuButton onClick={() => setShow(!show)} link='/doctors' title="Médecins" roles={['ROLE_USER']}>
+						<MenuButton onClick={() => setShow(!show)} link='/doctors' title="Médecins" roles={['ROLE_USER', 'ROLE_COORDINATOR']}>
 							<RiStethoscopeFill size={25} />
 						</MenuButton>
-						<MenuButton onClick={() => setShow(!show)} link='/assurances' title="Assurances" roles={['ROLE_USER']}>
+						<MenuButton onClick={() => setShow(!show)} link='/assurances' title="Assurances" roles={['ROLE_USER', 'ROLE_COORDINATOR']}>
 							<MdOutlineHealthAndSafety size={25} />
 						</MenuButton>
 						<MenuButton onClick={() => setShow(!show)} link='/partners' title="Partenaires" roles={['ROLE_NURSE', 'ROLE_ORGANIZATION']}>
@@ -106,7 +106,7 @@ const Menu = () => {
 						<MenuButton onClick={() => setShow(!show)} link='/users' title="Utilisateurs" roles={['ROLE_ADMIN']}>
 							<MdSupervisedUserCircle size={25} />
 						</MenuButton>
-						<MenuButton onClick={() => logout()} title="Déconnexion" roles={['ROLE_ADMIN', 'ROLE_NURSE', 'ROLE_DOCTOR', 'ROLE_ORGANIZATION']}>
+						<MenuButton onClick={() => logout()} title="Déconnexion" roles={['ROLE_USER']}>
 							<HiLogout size={25} />
 						</MenuButton>
 					</div>

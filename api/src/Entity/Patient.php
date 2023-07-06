@@ -46,7 +46,7 @@ class Patient implements UserOwnedInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["patients:read", "patient:read"])]
+    #[Groups(["patients:read", "patient:read", "mission:read"])]
     private $id;
 
     #[ORM\Column(type: 'datetime')]
@@ -58,51 +58,51 @@ class Patient implements UserOwnedInterface
     private $updatedAt;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["patients:read", "patient:read", "patient:write", "mission:write"])]
+    #[Groups(["patients:read", "patient:read", "mission:read", "patient:write", "mission:write"])]
     private $status;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["patients:read", "patient:read", "patient:write", "mission:write"])]
+    #[Groups(["patients:read", "patient:read", "mission:read", "patient:write", "mission:write"])]
     private $gender;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["patients:read", "patient:read", "patient:write", "mission:write", "missions:read"])]
+    #[Groups(["patients:read", "patient:read", "mission:read", "patient:write", "mission:write", "missions:read"])]
     private $firstname;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["patients:read", "patient:read", "patient:write", "mission:write", "missions:read"])]
+    #[Groups(["patients:read", "patient:read", "mission:read", "patient:write", "mission:write", "missions:read"])]
     private $lastname;
 
     #[ORM\Column(type: 'date', nullable: true)]
-    #[Groups(["patients:read", "patient:read", "patient:write", "mission:write"])]
+    #[Groups(["patients:read", "patient:read", "mission:read", "patient:write", "mission:write"])]
     private $birthdate;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["patients:read", "patient:read", "patient:write", "mission:write"])]
+    #[Groups(["patients:read", "patient:read", "mission:read", "patient:write", "mission:write"])]
     private $phone;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["patients:read", "patient:read", "patient:write", "mission:write"])]
+    #[Groups(["patients:read", "patient:read", "mission:read", "patient:write", "mission:write"])]
     private $mobile;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["patients:read", "patient:read", "patient:write", "mission:write"])]
+    #[Groups(["patients:read", "patient:read", "mission:read", "patient:write", "mission:write"])]
     private $canton;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["patients:read", "patient:read", "patient:write", "mission:write"])]
+    #[Groups(["patients:read", "patient:read", "mission:read", "patient:write", "mission:write"])]
     private $npa;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["patients:read", "patient:read", "patient:write", "mission:write"])]
+    #[Groups(["patients:read", "patient:read", "mission:read", "patient:write", "mission:write"])]
     private $city;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["patients:read", "patient:read", "patient:write", "mission:write"])]
+    #[Groups(["patients:read", "patient:read", "mission:read", "patient:write", "mission:write"])]
     private $address1;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["patients:read", "patient:read", "patient:write", "mission:write"])]
+    #[Groups(["patients:read", "patient:read", "mission:read", "patient:write", "mission:write"])]
     private $address2;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -111,15 +111,15 @@ class Patient implements UserOwnedInterface
     private $user;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["patients:read", "patient:read", "patient:write", "mission:write"])]
+    #[Groups(["patients:read", "patient:read", "mission:read", "patient:write", "mission:write"])]
     private $email;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["patients:read", "patient:read", "patient:write", "mission:write"])]
+    #[Groups(["patients:read", "patient:read", "mission:read", "patient:write", "mission:write"])]
     private $avsNumber;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["patients:read", "patient:read", "patient:write", "mission:write"])]
+    #[Groups(["patients:read", "patient:read", "mission:read", "patient:write", "mission:write"])]
     private $assuranceNumber;
 
     #[ORM\ManyToOne(targetEntity: Doctor::class, inversedBy: 'patients', cascade: ['persist', 'remove'])]
@@ -131,11 +131,11 @@ class Patient implements UserOwnedInterface
     private $assurance;
 
     #[ORM\OneToMany(mappedBy: 'patient', targetEntity: Contact::class, orphanRemoval: true)]
-    #[Groups(["patient:write", "patient:read"])]
+    #[Groups(["patient:write", "patient:read", "mission:read"] )]
     private $contacts;
 
     #[ORM\Column(type: 'string', length: 1020, nullable: true)]
-    #[Groups(["patient:write", "mission:write", "patient:read", "patients:read"])]
+    #[Groups(["patient:write", "mission:write", "patient:read", "mission:read", "patients:read"])]
     private $furtherInfos;
 
     #[ORM\OneToMany(mappedBy: 'patient', targetEntity: Mission::class, orphanRemoval: true)]

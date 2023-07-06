@@ -94,18 +94,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'json')]
     #[Groups(["users:read", "user:read", "user:write"])]
-    private $roles = []; // ROLE_ADMIN / ROLE_ORGANIZATION / ROLE_NURSE / ROLE_EMPLOYEE
+    private $roles = []; // ROLE_ADMIN / ROLE_COORDINATOR / ROLE_NURSE / ROLE_DOCTOR / ROLE_EMPLOYEE / ROLE_ORGANIZATION_MANDATOR / ROLE_ORGANIZATION_BENEFIT
 
     #[ORM\Column(type: 'string')]
     #[Groups(["user:write"])]
     private $password;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:read", "user:write", "missions:read", "mission:read", "partners:read"])]
+    #[Groups(["users:read", "user:read", "user:write", "missions:read", "mission:read", "partners:read", "mandates:read","mandate:read"])]
     private $firstname = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:read", "user:write", "missions:read", "mission:read", "partners:read"])]
+    #[Groups(["users:read", "user:read", "user:write", "missions:read", "mission:read", "partners:read", "mandates:read","mandate:read"])]
     private $lastname = null;
 
     #[ORM\Column(type: 'boolean')]
@@ -193,12 +193,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["users:read", "user:read", "user:write"])]
     private $isApproved = false;
 
+    #[ORM\OneToMany(mappedBy: 'mandateUser', targetEntity: Mandate::class)]
+    private Collection $mandates;
+
 
     public function __construct()
     {
         $this->createdAt = new \DateTime();
         $this->partners = new ArrayCollection();
         $this->mediaObjects = new ArrayCollection();
+        $this->mandates = new ArrayCollection();
     }
         
     // Issue for Can't get a way to read the property "username" in class "App\Entity\User" from authentication
@@ -601,5 +605,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Mandate>
+     */
+    public function getMandates(): Collection
+    {
+        return $this->mandates;
+    }
+
+    public function addMandate(Mandate $mandate): self
+    {
+        if (!$this->mandates->contains($mandate)) {
+            $this->mandates->add($mandate);
+            $mandate->setMandateUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMandate(Mandate $mandate): self
+    {
+        if ($this->mandates->removeElement($mandate)) {
+            // set the owning side to null (unless already changed)
+            if ($mandate->getMandateUser() === $this) {
+                $mandate->setMandateUser(null);
+            }
+        }
+
+        return $this;
+    }
+
 
 }

@@ -163,6 +163,14 @@ export const doctorCategories = [
     "Autre"
 ]
 
+
+export const mandateCategories = [
+    "Soins infirmiers",
+    "Physiothérapie",
+    "Aide à la personne",
+    "Matériel"
+]
+
 export const cantons = {
     "Zurich": "Zurich (1)",
     "Berne": "Berne (2)",
@@ -208,7 +216,6 @@ export const documentCategories = [
     "Lettre de sortie",
     "Feuille de transfert",
     "Autre"
-
 ]
 
 export const legalCares = [

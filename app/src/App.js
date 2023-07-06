@@ -12,6 +12,8 @@ import DashboardPage from './pages/DashboardPage'
 import DoctorsPage from './pages/DoctorsPage'
 import Homepage from './pages/Homepage'
 import LoginPage from './pages/LoginPage'
+import MandatePage from './pages/MandatePage'
+import MandatesPage from './pages/MandatesPage'
 import MissionPage from './pages/MissionPage'
 import MissionsPage from './pages/MissionsPage'
 import PartnersPage from './pages/PartnersPage'
@@ -29,7 +31,6 @@ import Layout from './layouts/Layout'
 import FrontLayout from "./layouts/FrontLayout"
 
 import * as dayjs from 'dayjs'
-//import Fr from "dayjs/locale/fr"
 require('dayjs/locale/fr')
 dayjs.locale('fr')
 
@@ -53,61 +54,21 @@ const App = () => {
         <Router>
           <Routes>
             <Route path='/' element={<FrontLayout><Homepage /></FrontLayout>} />
-            <Route path='/account' element={
-              <ProtectedRoute>
-                <Layout>
-                  <AccountPage />
-                </Layout>
-              </ProtectedRoute>
-            } />
+            <Route path='/account' element={<ProtectedRoute><Layout><AccountPage /></Layout></ProtectedRoute>} />
             <Route path='/assurances' element={<Layout><AssurancesPage /></Layout>} />
             <Route path='/dashboard' element={<DashboardPage />} />
             <Route path='/doctors' element={<Layout><DoctorsPage /></Layout>} />
             <Route path='/login' element={<FrontLayout><LoginPage /></FrontLayout>} />
             <Route path='/users' element={<Layout><UsersPage /></Layout>} />
-            <Route path='/missions/:id' element={<Layout><MissionPage /></Layout>} />
-            <Route path='/missions' element={
-              <ProtectedRoute>
-                <Layout>
-                  <MissionsPage />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            <Route path='/collaborations' element={
-              <ProtectedRoute>
-                <Layout>
-                  <CollaborationsPage />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            <Route path='/partners' element={
-              <ProtectedRoute>
-                <Layout>
-                  <PartnersPage />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            <Route path='/patients/:id' element={
-              <ProtectedRoute>
-                <Layout>
-                  <PatientPage />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            <Route path='/patients' element={
-              <ProtectedRoute>
-                <Layout>
-                  <PatientsPage />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            <Route path='/services' element={
-              <ProtectedRoute>
-                <Layout>
-                  <ServicesPage />
-                </Layout>
-              </ProtectedRoute>
-            } />
+            <Route path='/mandats/:id' element={<ProtectedRoute><Layout><MandatePage /></Layout></ProtectedRoute>} />
+            <Route path='/mandats' element={<ProtectedRoute><Layout><MandatesPage /></Layout></ProtectedRoute>} />
+            <Route path='/missions/:id' element={<ProtectedRoute><Layout><MissionPage /></Layout></ProtectedRoute>} />
+            <Route path='/missions' element={<ProtectedRoute><Layout><MissionsPage /></Layout></ProtectedRoute>} />
+            <Route path='/collaborations' element={<ProtectedRoute><Layout><CollaborationsPage /></Layout></ProtectedRoute>} />
+            <Route path='/partners' element={<ProtectedRoute><Layout><PartnersPage /></Layout></ProtectedRoute>} />
+            <Route path='/patients/:id' element={<ProtectedRoute><Layout><PatientPage /></Layout></ProtectedRoute>} />
+            <Route path='/patients' element={<ProtectedRoute><Layout><PatientsPage /></Layout></ProtectedRoute>} />
+            <Route path='/services' element={<ProtectedRoute><Layout><ServicesPage /></Layout></ProtectedRoute>} />
             <Route path='/registration' element={<FrontLayout><RegistrationPage /></FrontLayout>} />
             <Route path='/acknowledgement' element={<FrontLayout><AcknowledgementPage /></FrontLayout>} />
             <Route path={'/reset-password/:token'} element={<FrontLayout><ResetPasswordPage /></FrontLayout>} />

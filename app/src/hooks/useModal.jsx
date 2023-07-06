@@ -26,7 +26,7 @@ export const useModal = () => {
     });
 
     const boxClassName = classNames({
-        "modal-box rounded-none md:rounded-md p-0 w-screen md:w-auto !h-screen md:!h-auto max-h-screen": true,
+        "modal-box rounded-none md:rounded-md p-0 w-screen !h-screen md:!h-auto max-h-screen": true,
         "max-w-4xl": modal.size==="medium",
         "max-w-screen-2xl": modal.size==="full",
     });

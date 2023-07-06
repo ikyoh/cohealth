@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use App\Entity\Mandate;
 use App\Entity\UserOwnedInterface;
 use App\Entity\MediaObject;
 use App\Entity\Mission;
@@ -31,20 +32,46 @@ final class CurrentUserExtension implements QueryCollectionExtensionInterface, Q
         $reflexionClass = new \ReflectionClass($resourceClass);
 
         $user = $this->security->getUser();
+        $userRoles = $user->getRoles();
+
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
 
-        // if ($reflexionClass->implementsInterface(UserOwnedInterface::class)) {
-        //     $queryBuilder->andWhere("$rootAlias.user = :user");
-        //     $queryBuilder->setParameter("user", $user);
-        // }
+        if ($reflexionClass->implementsInterface(UserOwnedInterface::class) && $resourceClass === Mandate::class) {
+            if (in_array("ROLE_COORDINATOR", $userRoles))
+                return;
+            $queryBuilder->andWhere("$rootAlias.user = :user OR $rootAlias.mandateUser = :user");
+            $queryBuilder->setParameter("user", $user);
+            return;
+        }
+
         if ($reflexionClass->implementsInterface(UserOwnedInterface::class) && $resourceClass === Mission::class) {
             $queryBuilder->andWhere("$rootAlias.user = :user OR $rootAlias.coworkers LIKE :userId");
             $queryBuilder->setParameter("user", $user);
             $queryBuilder->setParameter('userId', '%' . $user->getId() . '%');
-        } elseif ($reflexionClass->implementsInterface(UserOwnedInterface::class)) {
+            return;
+        }
+
+        if ($reflexionClass->implementsInterface(UserOwnedInterface::class) && $resourceClass === Prescription::class) {
+            $queryBuilder->andWhere("$rootAlias.user = :user OR mission.coworkers LIKE :userId");
+            $queryBuilder->setParameter("user", $user);
+            $queryBuilder->setParameter('userId', '%' . $user->getId() . '%');
+            $queryBuilder->leftJoin("$rootAlias.mission", 'mission');
+            return;
+        }
+
+        if ($reflexionClass->implementsInterface(UserOwnedInterface::class) && $resourceClass === MediaObject::class) {
+            $queryBuilder->andWhere("$rootAlias.user = :user OR mission.coworkers LIKE :userId");
+            $queryBuilder->setParameter("user", $user);
+            $queryBuilder->setParameter('userId', '%' . $user->getId() . '%');
+            $queryBuilder->leftJoin("$rootAlias.mission", 'mission');
+            return;
+        }
+
+        if ($reflexionClass->implementsInterface(UserOwnedInterface::class)) {
             $queryBuilder->andWhere("$rootAlias.user = :user");
             $queryBuilder->setParameter("user", $user);
+            return;
         }
     }
 

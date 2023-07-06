@@ -43,10 +43,10 @@ const PatientsPage = () => {
         <>
             <Modal />
             <PageTitle
-            title="Liste des patients"
-            subtitle={data["hydra:totalItems"]}
-            icon={<IoPersonCircleOutline size={40} />}
-            mainButton={ <AddButton onClick={() => handleOpenModal({ title: 'Nouveau patient', content: <PatientForm handleCloseModal={handleCloseModal} /> })} />}
+                title="Liste des patients"
+                subtitle={data["hydra:totalItems"]}
+                icon={<IoPersonCircleOutline size={40} />}
+                mainButton={<AddButton onClick={() => handleOpenModal({ title: 'Nouveau patient', content: <PatientForm handleCloseModal={handleCloseModal} /> })} />}
             >
                 {searchbar}
             </PageTitle>
@@ -100,10 +100,20 @@ const PatientsPage = () => {
                             <Table.Td label="Médecin" text={data.doctor ? data.doctor.fullname : ''} />
                             <Table.Td label="Assurance" text={data.assurance ? data.assurance.company : ''} />
                             <Table.Td label="Statut">
-                                {data.lastMissionEndAt && (dayjs(data.lastMissionEndAt) > dayjs())
-                                    ? <span className="px-3 py-1 uppercase text-xs rounded-full text-white bg-info">Situation en cours</span>
-                                    : <span className="px-3 py-1 uppercase text-xs rounded-full text-white bg-neutral">Aucune situation</span>
-                                }
+                                <div className="flex flex-wrap items-center gap-3 text-black">
+                                    {data.lastMissionEndAt && (dayjs(data.lastMissionEndAt) > dayjs())
+                                        ?
+                                        <>
+                                            <div className="h-5 w-5 rounded-full bg-info"></div>
+                                            <div>Situation en cours</div>
+                                        </>
+                                        :
+                                        <>
+                                            <div className="h-5 w-5 rounded-full bg-neutral"></div>
+                                            <div>Aucune situation</div>
+                                        </>
+                                    }
+                                </div>
                             </Table.Td>
                             <Table.Td label="" text="" >
                                 <Dropdown type='table'>

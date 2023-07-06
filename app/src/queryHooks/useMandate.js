@@ -1,12 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useNavigate } from "react-router-dom";
 import { request, requestIRI } from '../utils/axios.utils'
-import { API_PATIENTS as API, IRI, itemsPerPage } from '../config/api.config'
+import { API_MANDATES as API, itemsPerPage } from '../config/api.config'
 import _ from 'lodash'
-import dayjs from 'dayjs';
+
 
 /* CONFIG */
-const queryKey = 'patients'
+const queryKey = 'mandates'
 
 /* API REQUESTS */
 const fetchAllDatas = () => {
@@ -24,6 +23,7 @@ const fetchPaginatedDatas = (page, sortValue, sortDirection, searchValue) => {
         return request({ url: API + "?page=" + page + "&itemsPerPage=" + itemsPerPage + "&order[" + sortValue + "]=" + sortDirection, method: 'get' })
 }
 
+
 const fetchOneData = ({ queryKey }) => {
     const id = queryKey[1]
     return request({ url: API + "/" + id, method: 'get' })
@@ -34,27 +34,38 @@ const fetchIRI = ({ queryKey }) => {
     return requestIRI({ url: iri, method: 'get' })
 }
 
+
 const postData = form => {
-    const _form = { ...form, birthdate: dayjs.utc(form.birthdate).local().format() }
+    console.log('form', form)
+    const _form = {
+        groupingId : form.groupingId,
+        patientFullname : form.patient.lastname + " " + form.patient.firstname,
+        content: {
+            patient: form.patient,
+            service: form.service
+        }
+    }
     return request({ url: API, method: 'post', data: _form })
 }
 
 const putData = form => {
-    const _form = { ...form, birthdate: dayjs.utc(form.birthdate).local().format() }
-    return request({ url: API + "/" + form.id, method: 'put', data: _form })
+    return request({ url: API + "/" + form.id, method: 'put', data: form })
 }
 
 /* HOOKS */
-export const useGetAllDatas = (search = '', sortValue, sortDirection, enabled) => {
+export const useGetAllDatas = (title = "", family = "", sortValue, sortDirection, enabled) => {
+
     return useQuery([queryKey], fetchAllDatas, {
         enabled: enabled ? true : false,
         staleTime: 60000,
         select: data => {
-            if (search === '') return _.orderBy(data['hydra:member'], sortValue, sortDirection)
-            else return _.orderBy(data['hydra:member'].filter(f =>
-                f.lastname.toLowerCase().includes(search.toLowerCase()) ||
-                f.firstname.toLowerCase().includes(search.toLowerCase())
+            if (family !== "") return _.orderBy(data['hydra:member'].filter(f =>
+                f.family.toLowerCase().includes(family.toLowerCase())
             ), sortValue, sortDirection)
+            if (title !== "") return _.orderBy(data['hydra:member'].filter(f =>
+                f.title.toLowerCase().includes(title.toLowerCase())
+            ), sortValue, sortDirection)
+            return _.orderBy(data['hydra:member'], sortValue, sortDirection)
         }
     })
 }
@@ -80,7 +91,7 @@ export const useGetPaginatedDatas = (page, sortValue, sortDirection, searchValue
 }
 
 export const useGetOneData = (id) => {
-    return useQuery([queryKey, IRI + API + "/" + id], fetchIRI, {
+    return useQuery([queryKey, id], fetchOneData, {
         cacheTime: 6000,
         staleTime: 60000,
         enabled: id ? true : false
@@ -97,11 +108,7 @@ export const useGetIRI = (iri) => {
 
 export const usePostData = () => {
     const queryClient = useQueryClient()
-    const navigate = useNavigate();
     return useMutation(postData, {
-        onSuccess: (data) => {
-            navigate(API + "/" + data.id)
-        },
         onError: (error, _, context) => {
             console.log('error', error)
         },
@@ -111,27 +118,12 @@ export const usePostData = () => {
     })
 }
 
-export const usePutData = (iri) => {
+export const usePutData = () => {
     const queryClient = useQueryClient()
     return useMutation(putData, {
-        onMutate: async updateData => {
-            // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-            await queryClient.cancelQueries([queryKey, iri])
-
-            // Snapshot the previous value
-            const previousData = queryClient.getQueryData([queryKey, iri])
-
-            // Optimistically update to the new value
-            queryClient.setQueryData([queryKey, iri], updateData)
-
-            // Return a context object with the snapshotted value
-            return { previousData, updateData }
-        },
-        onError: (err, updateData, context) => {
-            queryClient.setQueryData(
-                [[queryKey, iri], context.iri],
-                context.previousData
-            )
+        onError: (error, _, context) => {
+            console.log('error', error)
+            queryClient.setQueryData([queryKey], context.previousDatas)
         },
         onSettled: () => {
             queryClient.invalidateQueries()
