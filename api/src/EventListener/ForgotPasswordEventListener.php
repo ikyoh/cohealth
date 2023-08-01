@@ -77,7 +77,7 @@ final class ForgotPasswordEventListener implements EventSubscriberInterface
         $user = $passwordToken->getUser();
 
         $message = (new TemplatedEmail())
-            ->from('no-reply@example.com')
+            ->from('no-reply@cohealth.ch')
             ->to($user->getEmail())
             ->subject('Réinitialisation de votre mot de passe')
             ->htmlTemplate('ResetPassword/mail.html.twig')

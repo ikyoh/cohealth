@@ -32,7 +32,7 @@ use App\Filter\NotEqualFilter;
         new Post()
     ]
 )]
-#[ApiFilter(OrderFilter::class, properties: ['id', 'status', 'patient.lastname', 'prescriptions.status','user.id'])]
+#[ApiFilter(OrderFilter::class, properties: ['id', 'status', 'patient.lastname', 'prescriptions.status','user.id', 'beginAt', 'endAt'])]
 #[ApiFilter(SearchFilter::class, properties: ['status' => 'exact', 'user.id' => 'exact'])]
 #[ApiFilter(MultipleFieldsSearchFilter::class, properties: [
     "id",

@@ -40,9 +40,9 @@ final class NotEqualFilter extends AbstractFilter
                 if (!in_array($exploded_field[0], $queryBuilder->getAllAliases())) {
                     $queryBuilder->leftJoin($alias . '.' . $exploded_field[0], $exploded_field[0]);
                 }
-                $orExpressions[] = sprintf('%s.%s NOT LIKE :search', $exploded_field[0], $exploded_field[1]);
+                $orExpressions[] = sprintf('%s.%s NOT LIKE :notequal', $exploded_field[0], $exploded_field[1]);
             } else {
-                $orExpressions[] = sprintf('%s.%s NOT LIKE :search', $alias, $field);
+                $orExpressions[] = sprintf('%s.%s NOT LIKE :notequal', $alias, $field);
             }
         }
 
@@ -50,7 +50,7 @@ final class NotEqualFilter extends AbstractFilter
 
         $queryBuilder
             ->andWhere(implode(' OR ', $orExpressions))
-            ->setParameter('search', "%$value%");
+            ->setParameter('notequal', "%$value%");
 
     }
 

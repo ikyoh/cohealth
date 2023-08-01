@@ -29,7 +29,10 @@ const fetchPaginatedDatas = (page, sortValue, sortDirection, searchValue, filter
 const fetchCollaborationPaginatedDatas = (page, sortValue, sortDirection, searchValue, filters, userID) => {
     let options = "?page=" + page + "&itemsPerPage=" + itemsPerPage + "&order[" + sortValue + "]=" + sortDirection + "&notequal=" + userID
     if (searchValue) options += "&search=" + searchValue
-    if (filters.status !== "all") options += "&status=" + filters.status
+   // if (filters.status !== "all") options += "&status=" + filters.status
+
+    console.log('options', options)
+
     return request({ url: API + options, method: 'get' })
 }
 

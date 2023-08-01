@@ -1,6 +1,6 @@
 import React from 'react'
 
-const PageTitle = ({ title, subtitle, children, icon = false, mainButton }) => {
+const PageTitle = ({ title, subtitle, children, icon = false, mainButton = false }) => {
     return (
         <div className='p-3 md:p-0 flex md:h-20 flex-wrap gap-3'>
             <div className='flex items-center gap-3 grow'>

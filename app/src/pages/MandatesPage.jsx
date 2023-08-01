@@ -4,6 +4,8 @@ import { MdPendingActions } from "react-icons/md";
 import MandateForm from '../forms/MandateForm'
 import PageTitle from '../layouts/PageTitle'
 import { useGetPaginatedDatas, usePutData } from '../queryHooks/useMandate'
+import { useFilterMission } from '../hooks/useFilterMissions';
+import { useGetCurrentAccount } from '../queryHooks/useAccount'
 import { useSearch } from '../hooks/useSearch'
 import { useSortBy } from '../hooks/useSortBy'
 import { useModal } from '../hooks/useModal'
@@ -14,7 +16,6 @@ import Dropdown from '../components/dropdown/Dropdown'
 import { API_MISSIONS } from '../config/api.config'
 import { missionStatus } from '../utils/arrays'
 import Loader from '../components/Loader'
-import { useFilterMission } from '../hooks/useFilterMissions';
 import dayjs from 'dayjs';
 
 const MandatesPage = () => {
@@ -28,6 +29,8 @@ const MandatesPage = () => {
     const { sortValue, sortDirection, handleSort } = useSortBy(initialPageState ? { value: initialPageState.sortValue, direction: initialPageState.sortDirection } : "")
     const { data, isLoading, error } = useGetPaginatedDatas(page, sortValue, sortDirection, searchValue, filters)
     const { mutate } = usePutData()
+
+    const { data: account, isLoading: isLoadingAccount } = useGetCurrentAccount()
 
     useEffect(() => {
         if (searchValue && !initialPageState) {
@@ -46,7 +49,7 @@ const MandatesPage = () => {
     }
 
 
-    if (isLoading) return <Loader />
+    if (isLoading || isLoadingAccount) return <Loader />
     return (
         <>
             <Modal />
@@ -54,7 +57,10 @@ const MandatesPage = () => {
                 title={"Liste des mandats"}
                 subtitle={data["hydra:totalItems"]}
                 icon={<MdPendingActions size={40} />}
-                mainButton={<AddButton onClick={() => handleOpenModal({ title: 'Nouveau mandat', content: <MandateForm handleCloseModal={handleCloseModal} /> })} />}
+                mainButton={
+                    account && account.roles.includes('ROLE_DOCTOR') &&
+                    <AddButton onClick={() => handleOpenModal({ title: 'Nouveau mandat', content: <MandateForm handleCloseModal={handleCloseModal} /> })} />
+                }
             >
                 {searchbar}
                 {filter}
@@ -123,8 +129,8 @@ const MandatesPage = () => {
                             <Table.Td label="Mandant" text={data.user.lastname + ' ' + data.user.firstname} />
                             <Table.Td label="Mandataire" text={data.mandateUser ? data.mandateUser.lastname + ' ' + data.mandateUser.firstname : "..."} />
                             <Table.Td label="Prestations" text={data.content.service.category} />
-                            <Table.Td label="Créé le" text={dayjs(data.createdAt).format('L')}/>
-                            <Table.Td label="Statut" text={data.status}/>
+                            <Table.Td label="Créé le" text={dayjs(data.createdAt).format('L')} />
+                            <Table.Td label="Statut" text={data.status} />
                             <Table.Td label="" text="" >
                                 <Dropdown type='table'>
                                     <button

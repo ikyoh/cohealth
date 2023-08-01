@@ -35,8 +35,6 @@ const RegistrationForm = () => {
         postData(form)
     }
 
-    console.log('errors', errors)
-
     return (
 
         <Form onSubmit={handleSubmit(onSubmit)}

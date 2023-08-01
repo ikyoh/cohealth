@@ -75,14 +75,14 @@ const CollaborationsPage = () => {
                     />
                     <Table.Th
                         label="Début"
-                        sortBy='doctor.fullname'
+                        sortBy='beginAt'
                         sortValue={sortValue}
                         sortDirection={sortDirection}
                         handleSort={handleSort}
                     />
                     <Table.Th
                         label="Fin"
-                        sortBy='assurance.company'
+                        sortBy='endAt'
                         sortValue={sortValue}
                         sortDirection={sortDirection}
                         handleSort={handleSort}
