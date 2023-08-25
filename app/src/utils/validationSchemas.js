@@ -11,7 +11,8 @@ const gln = () => Yup.string().matches(/^\d{13}$/, "Numéro incorrect").required
 const rccDoctor = () => Yup.string().matches(/^[a-zA-Z]\d{6}$/, "Numéro incorrect").required("Champ obligatoire")
 const rcc = () => Yup.string().matches(/^[a-zA-Z]\d{4}\.\d{2}$/, "Numéro incorrect").required("Champ obligatoire")
 const assuranceNumber = () => Yup.string().required("Champ obligatoire")
-const avsNumber = () => Yup.string().matches(/^\d{13}$/, "Numéro incorrect").required("Champ obligatoire")
+const avsNumber = () => Yup.string().matches(/^\d{13}$/, "Numéro incorrect")
+const avsNumberRequired = () => Yup.string().matches(/^\d{13}$/, "Numéro incorrect").required("Champ obligatoire")
 const npa = () => Yup.string().matches(/^\d{4}$/, "Numéro incorrect")
 const npaRequired = () => Yup.string().matches(/^\d{4}$/, "Numéro incorrect").required("Champ obligatoire")
 
@@ -170,4 +171,8 @@ export const doctorIRI = Yup.object({
 
 export const assuranceIRI = Yup.object({
     assurance: Yup.string().required('Choix obligatoire').typeError('Choix obligatoire')
+})
+
+export const mandateUserIRI = Yup.object({
+    mandateUser: Yup.string().required('Choix obligatoire').typeError('Choix obligatoire')
 })

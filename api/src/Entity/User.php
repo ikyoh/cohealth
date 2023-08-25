@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use App\Controller\CurrentUserController;
+use App\Controller\AppUsersController;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -28,24 +29,32 @@ use App\Filter\MultipleFieldsSearchFilter;
 #[ApiResource(
     types: ['https://schema.org/MediaObject'],
     normalizationContext: ['groups' => ["users:read"]],
-    denormalizationContext : ['groups' => ["user:write"]],
+    denormalizationContext: ['groups' => ["user:write"]],
     operations: [
         new Post(),
         new Get(normalizationContext: ['groups' => ['user:read']]),
         new Put(),
-        new GetCollection(),
+        //new GetCollection(security: "is_granted('ROLE_ADMIN')"),
+        new GetCollection(
+            // name: 'users',
+            // uriTemplate: '/users',
+            paginationEnabled: true,
+            controller: AppUsersController::class,
+            //read: false,
+            security: "is_granted('ROLE_USER')"
+        ),
         new Get(
             name: 'currentUser',
             uriTemplate: '/current_user',
-            paginationEnabled: false, 
+            paginationEnabled: false,
             controller: CurrentUserController::class,
-            read: false, 
-            security: "is_granted('ROLE_USER')"    
+            read: false,
+            security: "is_granted('ROLE_USER')"
         ),
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['rcc' => 'exact'])]
-#[ApiFilter(OrderFilter::class, properties: ['id', 'email', 'rcc', 'lastname','organization','createdAt','isActive'])]
+#[ApiFilter(OrderFilter::class, properties: ['id', 'email', 'rcc', 'lastname', 'organization', 'createdAt', 'isActive'])]
 #[ApiFilter(MultipleFieldsSearchFilter::class, properties: [
     "id",
     "lastname",
@@ -58,13 +67,13 @@ use App\Filter\MultipleFieldsSearchFilter;
     fields: ['email'],
     errorPath: 'email',
     message: "Email déjà présent dans notre base de données.",
-    ignoreNull:true
+    ignoreNull: true
 )]
 #[UniqueEntity(
     fields: ['mobile'],
     errorPath: 'mobile',
     message: "Mobile déjà présent dans notre base de données.",
-    ignoreNull:true
+    ignoreNull: true
 )]
 #[UniqueEntity(
     fields: ['rcc'],
@@ -75,18 +84,18 @@ use App\Filter\MultipleFieldsSearchFilter;
     fields: ['gln'],
     errorPath: 'gln',
     message: "GLN déjà présent dans notre base de données.",
-    ignoreNull:true
+    ignoreNull: true
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["users:read", "user:read", "user:write", "partners:read", "missions:read","mission:read"])]
+    #[Groups(["users:read", "user:read", "user:write", "partners:read", "missions:read", "mission:read"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 180)]
-    #[Groups(["users:read", "user:read", "user:write","partners:read"])]
+    #[Groups(["users:read", "user:read", "user:write", "partners:read"])]
     #[Assert\Email(
         message: "L'Email {{ value }} n'est pas un Email valide.",
     )]
@@ -101,11 +110,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:read", "user:write", "missions:read", "mission:read", "partners:read", "mandates:read","mandate:read"])]
+    #[Groups(["users:read", "user:read", "user:write", "missions:read", "mission:read", "partners:read", "mandates:read", "mandate:read"])]
     private $firstname = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:read", "user:write", "missions:read", "mission:read", "partners:read", "mandates:read","mandate:read"])]
+    #[Groups(["users:read", "user:read", "user:write", "missions:read", "mission:read", "partners:read", "mandates:read", "mandate:read"])]
     private $lastname = null;
 
     #[ORM\Column(type: 'boolean')]
@@ -204,7 +213,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->mediaObjects = new ArrayCollection();
         $this->mandates = new ArrayCollection();
     }
-        
+
     // Issue for Can't get a way to read the property "username" in class "App\Entity\User" from authentication
     public function getUsername(): string
     {
@@ -635,6 +644,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-
 }

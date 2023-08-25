@@ -90,7 +90,7 @@ class Mission implements UserOwnedInterface
     #[Groups(["missions:read", "mission:read", "mission:write", "patient:read"])]
     private $coworkers = [];
 
-    #[ORM\OneToMany(mappedBy: 'mission', targetEntity: Prescription::class)]
+    #[ORM\OneToMany(mappedBy: 'mission', targetEntity: Prescription::class, cascade: ['persist', 'remove'])]
     #[Groups(["missions:read", "mission:read", "mission:write"])]
     private $prescriptions;
 

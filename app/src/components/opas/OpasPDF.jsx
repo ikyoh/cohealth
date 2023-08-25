@@ -1,31 +1,26 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
 import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Image, Font } from '@react-pdf/renderer'
 import * as dayjs from 'dayjs'
 import { nanoid } from '@reduxjs/toolkit'
 import { calcNumberOfDays, calcNumberOfWeeks, calcNumberOfMonths, calcABCN, calcMinutestoHours } from '../../utils/functions'
 import { useGetIRI as Mission } from '../../queryHooks/useMission'
-import { useGetIRI as Patient } from '../../queryHooks/usePatient'
 import { useGetIRI as Doctor } from '../../queryHooks/useDoctor'
 import { useGetIRI as Assurance } from '../../queryHooks/useAssurance'
 import { useGetIRI as Nurse } from '../../queryHooks/useUser'
+import { useGetAllDatas as Partners } from '../../queryHooks/usePartner'
 import Roboto from '../../assets/Roboto_Condensed/RobotoCondensed-Regular.ttf'
 import RobotoBold from '../../assets/Roboto_Condensed/RobotoCondensed-Bold.ttf'
 import { HiDownload } from 'react-icons/hi'
 
+
 const OpasPDF = ({ data }) => {
 
     const { data: mission } = Mission(data ? data.mission : null)
-    const { data: patient } = Patient(mission ? mission.patient : null)
     const { data: doctor } = Doctor(mission ? mission.doctor : null)
     const { data: assurance } = Assurance(mission ? mission.assurance : null)
     const { data: nurse } = Nurse(mission ? mission.user["@id"] : null)
+    const { data: partners } = Partners()
 
-    // console.log('data', data)
-    // console.log('mission', mission)
-    // console.log('patient', patient)
-    // console.log('doctor', doctor)
-    // console.log('assurance', assurance)
-    // console.log('nurse', nurse)
 
     // Create Document Component
     const MyDoc = () => {
@@ -101,7 +96,7 @@ const OpasPDF = ({ data }) => {
                 textAlign: 'left',
             },
             separator: {
-                width: '30px',
+                width: '20px',
                 height: '6px',
                 borderRadius: 20,
                 backgroundColor: '#027BBF',
@@ -251,6 +246,19 @@ const OpasPDF = ({ data }) => {
             }
         ]
 
+        const displayedPartners = () => {
+            let displayed = ""
+            partners.forEach(p => {
+                if (mission.coworkers.includes(p.partner.id)) {
+                    displayed += p.partner.firstname + ' ' + p.partner.lastname
+                    displayed += "\n"
+                    displayed += "RCC: " + p.partner.rcc
+                    displayed += "\n"
+                }
+            })
+            return (displayed)
+        }
+
         const displayedCares = () => {
 
             let displayed = [...cares]
@@ -363,7 +371,7 @@ const OpasPDF = ({ data }) => {
         const totalBHours = calcMinutestoHours(totalB)
         const totalC = calcABCN("C", data.content.services, mission.beginAt, mission.endAt)
         const totalCHours = calcMinutestoHours(totalC)
-        
+
         return (
 
             <Document >
@@ -514,17 +522,17 @@ const OpasPDF = ({ data }) => {
                             </Text>
                         </View>
 
-                        {/* {mission.coworkersDetailed.length > 0 &&
+                        {mission.coworkers.length !== 0 &&
                             <View style={styles.column}>
-                                <Text style={styles.title}>Autres prestataires </Text>
-                                <Separator />
-                                {mission.coworkersDetailed.map(p =>
-                                    <Text style={styles.text} key={nanoid()}>
-                                        {p.lastname.toUpperCase()} {p.firstname} {"\n"} RCC: {p.rcc}
-                                    </Text>
-                                )}
+                                <View style={[styles.row, { alignItems: 'center', marginBottom: 5, marginTop: 8 }]}>
+                                    <Text style={styles.title}>Autres prestataires</Text>
+                                    <Separator />
+                                </View>
+                                <Text style={styles.text}>
+                                    {displayedPartners()}
+                                </Text>
                             </View>
-                        } */}
+                        }
                     </View>
 
                     <View style={{ ...styles.row, marginTop: 10 }}>
@@ -786,7 +794,6 @@ const OpasPDF = ({ data }) => {
 
     }
 
-    //const fileName = "Opas_" + mission.patient.lastname.toUpperCase() + '_' + mission.patient.firstname.toUpperCase() + '_' + dayjs().format('DD-MM-YYYY')
     const fileName = "Opas_" + dayjs().format('DD-MM-YYYY')
 
     if (data && mission && doctor && assurance && nurse)

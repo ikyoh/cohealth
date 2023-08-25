@@ -22,6 +22,7 @@ const fetchPaginatedDatas = (page, sortValue, sortDirection, searchValue) => {
 
 const fetchOneData = ({ queryKey }) => {
     const id = queryKey[1]
+    console.log('id', id)
     return request({ url: API + "/" + id, method: 'get' })
 }
 
@@ -77,7 +78,7 @@ export const useGetPaginatedDatas = (page, sortValue, sortDirection, searchValue
 export const useGetOneData = (id) => {
     return useQuery([queryKey, id], fetchOneData, {
         cacheTime: 6000,
-staleTime: 60000,
+        staleTime: 60000,
         enabled: id ? true : false
     })
 }
@@ -85,7 +86,7 @@ staleTime: 60000,
 export const useGetIRI = (iri) => {
     return useQuery([queryKey, iri], fetchIRI, {
         cacheTime: 6000,
-staleTime: 60000,
+        staleTime: 60000,
         enabled: iri ? true : false
     })
 }

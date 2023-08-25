@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { MdPendingActions } from "react-icons/md";
 import MandateForm from '../forms/MandateForm'
+import MandateAgentForm from '../forms/MandateAgentForm'
+import MandateAcceptForm from '../forms/MandateAcceptForm'
 import PageTitle from '../layouts/PageTitle'
 import { useGetPaginatedDatas, usePutData } from '../queryHooks/useMandate'
 import { useFilterMission } from '../hooks/useFilterMissions';
@@ -13,8 +15,6 @@ import * as Table from '../components/table/Table'
 import Pagination from '../components/pagination/Pagination'
 import AddButton from '../components/buttons/AddButton'
 import Dropdown from '../components/dropdown/Dropdown'
-import { API_MISSIONS } from '../config/api.config'
-import { missionStatus } from '../utils/arrays'
 import Loader from '../components/Loader'
 import dayjs from 'dayjs';
 
@@ -122,7 +122,7 @@ const MandatesPage = () => {
                 <Table.Tbody>
                     {!isLoading && data['hydra:member'].map(data =>
                         <Table.Tr key={data.id}
-                            onClick={() => navigate(API_MISSIONS + "/" + data.id, { state: { page: page, sortDirection: sortDirection, sortValue: sortValue, searchValue: searchValue } })}
+                        onClick={() => handleOpenModal({ title: 'Détail du mandat', content: <MandateAcceptForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}
                         >
                             <Table.Td text={data.id} />
                             <Table.Td label="Patient" text={data.patientFullname} />
@@ -132,39 +132,9 @@ const MandatesPage = () => {
                             <Table.Td label="Créé le" text={dayjs(data.createdAt).format('L')} />
                             <Table.Td label="Statut" text={data.status} />
                             <Table.Td label="" text="" >
-                                <Dropdown type='table'>
-                                    <button
-                                        onClick={() => navigate(API_MISSIONS + "/" + data.id, { state: { page: page, sortDirection: sortDirection, sortValue: sortValue, searchValue: searchValue, filter: filters } })}
-                                    >
-                                        Voir la fiche mission
-                                    </button>
-                                    <button
-                                        onClick={() => handleOpenModal({ title: "Édition de la mission", content: <MandateForm iri={data['@id']} action='mission' handleCloseModal={handleCloseModal} /> })}>
-                                        Modifier la mission
-                                    </button>
-                                    <span>
-                                        Statut de la mission
-                                    </span>
-                                    <button
-                                        className='flex items-center gap-2'
-                                        onClick={() => handleChangeStatus(data.id, "en cours")}>
-                                        <div className={`rounded-full w-4 h-4 ${missionStatus["en cours"]}`}>
-                                        </div>
-                                        En cours
-                                    </button>
-                                    <button
-                                        className='flex items-center gap-2'
-                                        onClick={() => handleChangeStatus(data.id, "annulé")}>
-                                        <div className={`rounded-full w-4 h-4 ${missionStatus["annulé"]}`}>
-                                        </div>
-                                        Annulé
-                                    </button>
-                                    <button
-                                        className='flex items-center gap-2'
-                                        onClick={() => handleChangeStatus(data.id, "archivé")}>
-                                        <div className={`rounded-full w-4 h-4 ${missionStatus["archivé"]}`}>
-                                        </div>
-                                        Archivé
+                                <Dropdown>                                    
+                                    <button onClick={() => handleOpenModal({ title: 'Choix du mandataire', content: <MandateAgentForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
+                                        Choisir le mandataire
                                     </button>
                                 </Dropdown>
                             </Table.Td>

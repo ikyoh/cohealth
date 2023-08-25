@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { MdPendingActions } from "react-icons/md";
 import MissionForm from '../forms/MissionForm'
+import MissionDuplicateForm from '../forms/MissionDuplicateForm'
 import PageTitle from '../layouts/PageTitle'
 import { useGetPaginatedDatas, usePutData } from '../queryHooks/useMission'
 import { useSearch } from '../hooks/useSearch'
@@ -159,6 +160,10 @@ const MissionsPage = () => {
                                         <div className={`rounded-full w-4 h-4 ${missionStatus["archivé"]}`}>
                                         </div>
                                         Archivé
+                                    </button>
+                                    <button
+                                        onClick={() => handleOpenModal({ title: "Duplication de la mission", content: <MissionDuplicateForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
+                                        Dupliquer la mission
                                     </button>
                                 </Dropdown>
                             </Table.Td>

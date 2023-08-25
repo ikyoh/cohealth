@@ -45,7 +45,7 @@ const putData = form => {
 
 
 /* HOOKS */
-export const useGetAllDatas = (search = '', sortValue, sortDirection, enabled) => {
+export const useGetAllDatas = (search = '', sortValue = 'id', sortDirection = "ASC", enabled = true) => {
     return useQuery([queryKey], fetchAllDatas, {
         enabled: enabled ? true : false,
         staleTime: 60000,
@@ -68,7 +68,7 @@ export const useGetFilteredDatas = (sortValue, sortDirection, searchValue) => {
     })
 }
 
-export const useGetPaginatedDatas = (page, sortValue, sortDirection, searchValue, filters, enabled=true) => {
+export const useGetPaginatedDatas = (page, sortValue, sortDirection, searchValue, filters, enabled = true) => {
     return useQuery({
         queryKey: [queryKey, page, sortValue, sortDirection, searchValue, filters],
         queryFn: () => fetchPaginatedDatas(page, sortValue, sortDirection, searchValue, filters),
@@ -82,7 +82,7 @@ export const useGetPaginatedDatas = (page, sortValue, sortDirection, searchValue
 export const useGetOneData = (id) => {
     return useQuery([queryKey, id], fetchOneData, {
         cacheTime: 6000,
-staleTime: 60000,
+        staleTime: 60000,
         enabled: id ? true : false
     })
 }
@@ -90,7 +90,7 @@ staleTime: 60000,
 export const useGetIRI = (iri) => {
     return useQuery([queryKey, iri], fetchIRI, {
         cacheTime: 6000,
-staleTime: 60000,
+        staleTime: 60000,
         enabled: iri ? true : false
     })
 }
@@ -106,7 +106,7 @@ export const usePutData = (iri) => {
             const previousData = queryClient.getQueryData([queryKey, iri])
 
             // Optimistically update to the new value
-            queryClient.setQueryData([queryKey, iri], {...previousData, ...updateData})
+            queryClient.setQueryData([queryKey, iri], { ...previousData, ...updateData })
 
             // Return a context object with the snapshotted value
             return { previousData, updateData }
