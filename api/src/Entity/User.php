@@ -5,7 +5,6 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use App\Controller\CurrentUserController;
-use App\Controller\AppUsersController;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -34,15 +33,15 @@ use App\Filter\MultipleFieldsSearchFilter;
         new Post(),
         new Get(normalizationContext: ['groups' => ['user:read']]),
         new Put(),
-        //new GetCollection(security: "is_granted('ROLE_ADMIN')"),
-        new GetCollection(
-            // name: 'users',
-            // uriTemplate: '/users',
-            paginationEnabled: true,
-            controller: AppUsersController::class,
-            //read: false,
-            security: "is_granted('ROLE_USER')"
-        ),
+        new GetCollection(security: "is_granted('ROLE_USER')"),
+        // new GetCollection(
+        //     name: 'users',
+        //     uriTemplate: '/users',
+        //     paginationEnabled: true,
+        //     controller: AppUsersController::class,
+        //     //read: false,
+        //     security: "is_granted('ROLE_USER')"
+        // ),
         new Get(
             name: 'currentUser',
             uriTemplate: '/current_user',
@@ -54,38 +53,6 @@ use App\Filter\MultipleFieldsSearchFilter;
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['rcc' => 'exact'])]
-#[ApiFilter(OrderFilter::class, properties: ['id', 'email', 'rcc', 'lastname', 'organization', 'createdAt', 'isActive'])]
-#[ApiFilter(MultipleFieldsSearchFilter::class, properties: [
-    "id",
-    "lastname",
-    "firstname",
-    "rcc",
-    "email",
-    "organization",
-])]
-#[UniqueEntity(
-    fields: ['email'],
-    errorPath: 'email',
-    message: "Email déjà présent dans notre base de données.",
-    ignoreNull: true
-)]
-#[UniqueEntity(
-    fields: ['mobile'],
-    errorPath: 'mobile',
-    message: "Mobile déjà présent dans notre base de données.",
-    ignoreNull: true
-)]
-#[UniqueEntity(
-    fields: ['rcc'],
-    errorPath: 'rcc',
-    message: "Rcc déjà présent dans notre base de données.",
-)]
-#[UniqueEntity(
-    fields: ['gln'],
-    errorPath: 'gln',
-    message: "GLN déjà présent dans notre base de données.",
-    ignoreNull: true
-)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
