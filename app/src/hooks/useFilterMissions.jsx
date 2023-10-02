@@ -26,9 +26,9 @@ export const useFilterMissions = (props) => {
                 >
                     <GoSettings size={30} className="text-primary" />
                 </label>
-                <div tabIndex={0} className="dropdown-content menu p-2 border border-primary bg-slate-100 rounded w-56">
+                <div tabIndex={0} className="dropdown-content menu p-2 border border-primary bg-slate-100 rounded w-40">
                     <div className="form-control">
-                        <label className="label cursor-pointer">
+                        <label className="label cursor-pointer justify-start gap-3">
                             <input
                                 type="radio"
                                 name="status"
@@ -41,7 +41,7 @@ export const useFilterMissions = (props) => {
                         </label>
                     </div>
                     <div className="form-control">
-                        <label className="label cursor-pointer">
+                        <label className="label cursor-pointer justify-start gap-3">
                             <input
                                 type="radio"
                                 name="status"
@@ -54,7 +54,7 @@ export const useFilterMissions = (props) => {
                         </label>
                     </div>
                     <div className="form-control">
-                        <label className="label cursor-pointer">
+                        <label className="label cursor-pointer justify-start gap-3">
                             <input
                                 type="radio"
                                 name="status"
@@ -67,7 +67,7 @@ export const useFilterMissions = (props) => {
                         </label>
                     </div>
                     <div className="form-control">
-                        <label className="label cursor-pointer">
+                        <label className="label cursor-pointer justify-start gap-3">
                             <input
                                 type="radio"
                                 name="status"

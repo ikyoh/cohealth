@@ -39,20 +39,7 @@ export const useFilterMandates = (props) => {
                 >
                     {isLoadingAccount ? < Loader /> : <GoSettings size={30} className="text-primary" />}
                 </label>
-                <div tabIndex={0} className="dropdown-content menu p-2 border border-primary bg-slate-100 rounded w-56">
-                    <div className="form-control">
-                        <label className="label cursor-pointer justify-start gap-3">
-                            <input
-                                type="radio"
-                                name="status"
-                                value="attribué"
-                                className="radio checked:bg-primary"
-                                checked={filters.status === "attribué"}
-                                onChange={handleChangeInput}
-                            />
-                            <span className="label-text">Attribué</span>
-                        </label>
-                    </div>
+                <div tabIndex={0} className="dropdown-content menu p-2 border border-primary bg-slate-100 rounded w-40">
                     <div className="form-control">
                         <label className="label cursor-pointer justify-start gap-3">
                             <input
@@ -71,12 +58,12 @@ export const useFilterMandates = (props) => {
                             <input
                                 type="radio"
                                 name="status"
-                                value="accepté"
-                                className={`radio checked:bg-primary`}
-                                checked={filters.status === "accepté"}
+                                value="attribué"
+                                className="radio checked:bg-primary"
+                                checked={filters.status === "attribué"}
                                 onChange={handleChangeInput}
                             />
-                            <span className="label-text">Accepté</span>
+                            <span className="label-text">Attribué</span>
                         </label>
                     </div>
                     <div className="form-control">
@@ -84,12 +71,12 @@ export const useFilterMandates = (props) => {
                             <input
                                 type="radio"
                                 name="status"
-                                value="confirmé"
+                                value="accepté"
                                 className={`radio checked:bg-primary`}
-                                checked={filters.status === "confirmé"}
+                                checked={filters.status === "accepté"}
                                 onChange={handleChangeInput}
                             />
-                            <span className="label-text">Confirmé</span>
+                            <span className="label-text">Accepté</span>
                         </label>
                     </div>
                     <div className="form-control">
