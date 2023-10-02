@@ -39,11 +39,11 @@ const MandateAcceptForm = ({ iri, handleCloseModal }) => {
 
     useEffect(() => {
         if (isPutSuccess)
-            postData(datas)
+            postData(getValues())
     }, [isPutSuccess])
 
 
-    const { register, handleSubmit, reset, formState: { datas, errors, isSubmitting } } = useForm({
+    const { register, handleSubmit, reset, getValues, formState: { errors, isSubmitting } } = useForm({
         defaultValues: {},
         //resolver: yupResolver(validationSchema)
     })

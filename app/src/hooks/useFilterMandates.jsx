@@ -18,7 +18,7 @@ export const useFilterMandates = (props) => {
 
     }
 
-    const [filters, setFilters] = useState({status: statusFilter})
+    const [filters, setFilters] = useState({status: statusFilter()})
 
     const handleChangeInput = (e) => {
         setFilters({ ...filters, [e.target.name]: e.target.value })
