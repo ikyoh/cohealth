@@ -80,7 +80,7 @@ const Menu = () => {
 						<MenuButton onClick={() => setShow(!show)} disabled={true} title="Statistiques" roles={['ROLE_NURSE']}>
 							<AiOutlineBarChart size={25} />
 						</MenuButton>
-						<MenuButton onClick={() => setShow(!show)} link='/mandats' badge={isSuccessMandate && mandates['hydra:totalItems']} title="Mandats" roles={['ROLE_DOCTOR', 'ROLE_COORDINATOR', 'ROLE_NURSE']}>
+						<MenuButton onClick={() => setShow(!show)} link='/mandats' badge={isSuccessMandate && mandates['hydra:totalItems'] !== 0 && mandates['hydra:totalItems']} title="Mandats" roles={['ROLE_DOCTOR', 'ROLE_COORDINATOR', 'ROLE_NURSE']}>
 							<MdEventNote size={25} />
 						</MenuButton>
 						<div className='text-zinc-400 font-light uppercase mt-5 pl-2 pb-2'>
