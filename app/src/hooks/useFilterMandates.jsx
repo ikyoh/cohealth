@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
 import { GoSettings } from 'react-icons/go';
 
-export const useFilterMissions = (props) => {
+export const useFilterMandates = (props) => {
 
     const [filters, setFilters] = useState({
-        status: "en cours"
+        status: "en attente coordination"
     })
 
     const handleChangeInput = (e) => {
@@ -28,33 +28,46 @@ export const useFilterMissions = (props) => {
                 </label>
                 <div tabIndex={0} className="dropdown-content menu p-2 border border-primary bg-slate-100 rounded w-56">
                     <div className="form-control">
-                        <label className="label cursor-pointer">
+                        <label className="label cursor-pointer justify-start gap-3">
                             <input
                                 type="radio"
                                 name="status"
-                                value="en cours"
+                                value="en attente coordination"
                                 className="radio checked:bg-primary"
-                                checked={filters.status === "en cours"}
+                                checked={filters.status === "en attente coordination"}
                                 onChange={handleChangeInput}
                             />
-                            <span className="label-text">En cours</span>
+                            <span className="label-text">En attente coordination</span>
                         </label>
                     </div>
                     <div className="form-control">
-                        <label className="label cursor-pointer">
+                        <label className="label cursor-pointer justify-start gap-3">
                             <input
                                 type="radio"
                                 name="status"
-                                value="archivé"
+                                value="accepté"
                                 className={`radio checked:bg-primary`}
-                                checked={filters.status === "archivé"}
+                                checked={filters.status === "accepté"}
                                 onChange={handleChangeInput}
                             />
-                            <span className="label-text">Archivé</span>
+                            <span className="label-text">Accepté</span>
                         </label>
                     </div>
                     <div className="form-control">
-                        <label className="label cursor-pointer">
+                        <label className="label cursor-pointer justify-start gap-3">
+                            <input
+                                type="radio"
+                                name="status"
+                                value="confirmé"
+                                className={`radio checked:bg-primary`}
+                                checked={filters.status === "confirmé"}
+                                onChange={handleChangeInput}
+                            />
+                            <span className="label-text">Confirmé</span>
+                        </label>
+                    </div>
+                    <div className="form-control">
+                        <label className="label cursor-pointer justify-start gap-3">
                             <input
                                 type="radio"
                                 name="status"
@@ -67,7 +80,7 @@ export const useFilterMissions = (props) => {
                         </label>
                     </div>
                     <div className="form-control">
-                        <label className="label cursor-pointer">
+                        <label className="label cursor-pointer justify-start gap-3">
                             <input
                                 type="radio"
                                 name="status"

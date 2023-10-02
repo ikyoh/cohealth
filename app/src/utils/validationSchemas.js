@@ -72,11 +72,11 @@ export const registration = {
         then: rcc(),
         otherwise: Yup.string().nullable(),
     }),
-    gln: Yup.string().when('roles', {
-        is: (roles) => roles.includes("ROLE_DOCTOR") || roles.includes("ROLE_ORGANIZATION_BENEFIT") || roles.includes("ROLE_ORGANIZATION_MANDATOR"),
-        then: Yup.string().matches(/[0-9]{13}/, "Numéro incorrect").required('Champ obligatoire'),
-        otherwise: Yup.string().nullable(),
-    }),
+    // gln: Yup.string().when('roles', {
+    //     is: (roles) => roles.includes("ROLE_DOCTOR") || roles.includes("ROLE_ORGANIZATION_BENEFIT") || roles.includes("ROLE_ORGANIZATION_MANDATOR"),
+    //     then: Yup.string().matches(/[0-9]{13}/, "Numéro incorrect").required('Champ obligatoire'),
+    //     otherwise: Yup.string().nullable(),
+    // }),
     isOptin: bool(),
     isApproved: bool()
 }
@@ -144,7 +144,8 @@ export const mandatePatient = Yup.object({
     firstname: string(),
     lastname: string(),
     gender: string(),
-    canton: string()
+    canton: string(),
+    avsNumber: avsNumber(),
 })
 
 export const user = Yup.object({

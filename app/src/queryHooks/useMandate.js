@@ -36,7 +36,6 @@ const fetchIRI = ({ queryKey }) => {
 
 
 const postData = form => {
-    console.log('form', form)
     const _form = {
         groupingId : form.groupingId,
         patientFullname : form.patient.lastname + " " + form.patient.firstname,
@@ -49,6 +48,7 @@ const postData = form => {
 }
 
 const putData = form => {
+    console.log('form', form)
     return request({ url: API + "/" + form.id, method: 'put', data: form })
 }
 
@@ -126,7 +126,12 @@ export const usePutData = () => {
             queryClient.setQueryData([queryKey], context.previousDatas)
         },
         onSettled: () => {
+            //queryClient.invalidateQueries()
+        },
+        onSuccess: () => {
             queryClient.invalidateQueries()
-        }
-    })
+        },
+        
+    }
+    )
 }

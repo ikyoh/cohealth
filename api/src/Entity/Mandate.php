@@ -44,9 +44,10 @@ class Mandate implements UserOwnedInterface
     #[Groups(["mandates:read", "mandate:read", "mandate:write"])]
     private array $content = [];
 
+    //édité / annulé / accepté / refusé / attribué
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(["mandates:read", "mandate:read", "mandate:write"])]
-    private ?string $status = 'en attente coordination';
+    private ?string $status = 'édité';
 
     #[ORM\Column]
     #[Groups(["mandates:read", "mandate:read", "mandate:write"])]

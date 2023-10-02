@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\PatientRepository;
 use ApiPlatform\Metadata\GetCollection;
 use App\Filter\MultipleFieldsSearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -31,6 +32,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ]
 )]
 #[ApiFilter(OrderFilter::class, properties: ['id', 'lastname', 'doctor.fullname', 'assurance.company'])]
+#[ApiFilter(SearchFilter::class, properties: ['avsNumber' => 'exact'])]
 #[ApiFilter(MultipleFieldsSearchFilter::class, properties: [
     "id",
     "firstname",
@@ -39,7 +41,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
     "assurance.company",
     // the other desired fields 
 ])]
-
 
 class Patient implements UserOwnedInterface
 {

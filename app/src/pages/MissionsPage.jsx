@@ -19,7 +19,7 @@ import OpasStatus from '../components/opas/OpasStatus'
 import MissionStatus from '../components/mission_status/MissionsStatus'
 import { missionStatus } from '../utils/arrays'
 import Loader from '../components/Loader'
-import { useFilterMission } from '../hooks/useFilterMissions';
+import { useFilterMissions } from '../hooks/useFilterMissions';
 import { FaCircle } from 'react-icons/fa';
 
 const MissionsPage = () => {
@@ -28,7 +28,7 @@ const MissionsPage = () => {
     const navigate = useNavigate()
     const { Modal, handleOpenModal, handleCloseModal } = useModal()
     const { searchValue, searchbar } = useSearch(initialPageState ? initialPageState.searchValue : "")
-    const { filters, filter } = useFilterMission()
+    const { filters, filter } = useFilterMissions()
     const [page, setPage] = useState(initialPageState ? initialPageState.page : 1)
     const { sortValue, sortDirection, handleSort } = useSortBy(initialPageState ? { value: initialPageState.sortValue, direction: initialPageState.sortDirection } : "")
     const { data, isLoading, error } = useGetPaginatedDatas(page, sortValue, sortDirection, searchValue, filters)

@@ -128,7 +128,7 @@ const PatientFields = ({ name, errors, register }) => {
                 label="Numéro d'assuré"
                 error={name && errors[name] ? errors[name]['assuranceNumber'] : errors['assuranceNumber']}
                 register={register}
-                required={true}
+                required={false}
             />
             <FormTextarea
                 name={name ? name + ".furtherInfos" : "furtherInfos"}

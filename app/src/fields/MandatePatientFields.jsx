@@ -101,6 +101,15 @@ const MandatePatientFields = ({ name, errors, register }) => {
 
             <FormInput
                 type="text"
+                name={name ? name + ".avsNumber" : "avsNumber"}
+                label="Numéro AVS"
+                error={name && errors[name] ? errors[name]['avsNumber'] : errors['avsNumber']}
+                register={register}
+                required={true}
+            />
+
+            <FormInput
+                type="text"
                 name={name ? name + ".assuranceName" : "assuranceName"}
                 label="Assurance"
                 error={name && errors[name] ? errors[name]['assuranceName'] : errors['assuranceName']}

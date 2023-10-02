@@ -103,6 +103,7 @@ class Mission implements UserOwnedInterface
     private $coworkersDetailed = [];
 
     #[ORM\ManyToOne(inversedBy: 'mission')]
+    #[Groups(["missions:read", "mission:read", "mission:write"])]
     private ?Mandate $mandate = null;
 
     public function __construct()

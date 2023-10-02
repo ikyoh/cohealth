@@ -16,7 +16,7 @@ const MandateForm = ({ iri, handleCloseModal }) => {
     const { mutate: postData, isLoading: isPosting, isSuccess } = usePostData()
     const { mutate: putData } = usePutData()
 
-    const [currentStep, setCurrentStep] = useState(iri ? null : 1)
+    const [currentStep, setCurrentStep] = useState(1)
 
     const handleNextStep = async () => {
         const isStepValid = await trigger();
@@ -28,7 +28,6 @@ const MandateForm = ({ iri, handleCloseModal }) => {
     const handlePrevStep = () => {
         setCurrentStep(cur => cur - 1)
     }
-
 
     const validationSchema = {
         1: Yup.object({ patient: mandatePatientSchema }),
@@ -57,7 +56,8 @@ const MandateForm = ({ iri, handleCloseModal }) => {
     // Case update
     useEffect(() => {
         if (iri && data) {
-            reset(data)
+            console.log('data', data)
+            reset(data.content)
         }
     }, [isLoadingData, data])
 

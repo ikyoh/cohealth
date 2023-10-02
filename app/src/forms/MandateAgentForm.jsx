@@ -19,18 +19,15 @@ const MandateAgentForm = ({ iri, handleCloseModal }) => {
         resolver: yupResolver(validationSchema)
     })
 
-    console.log('data', data)
 
     useEffect(() => {
         if (data && !isLoadingData) {
-            console.log('reset')
             reset({ id: data.id, mandateUser: data.mandateUSer })
         }
     }, [isLoadingData, data])
 
     const onSubmit = form => {
-        console.log('form', form)
-        putData(form)
+        putData({...form, status : "attribué"})
         handleCloseModal()
     }
 

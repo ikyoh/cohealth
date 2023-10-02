@@ -100,7 +100,9 @@ export const Td = ({ label, text, children }) => {
                     : null
                 }
                 {children}
+                <p className='first-letter:uppercase'>
                 {text}
+                </p>
             </div>
         </td>
     )

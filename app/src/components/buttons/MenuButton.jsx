@@ -2,7 +2,7 @@ import React from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useGetCurrentAccount } from '../../queryHooks/useAccount'
 
-const MenuButton = ({ children, title = false, disabled = false, link = false, roles = [], onClick }) => {
+const MenuButton = ({ children, title = false, disabled = false, link = false, badge = false, roles = [], onClick }) => {
 
 	const location = useLocation();
 
@@ -12,12 +12,15 @@ const MenuButton = ({ children, title = false, disabled = false, link = false, r
 		<NavLink className="" to={link} onClick={onClick}>
 			<button
 				disabled={disabled}
-				className={`scaledown font-light text-left w-full px-2 py-1 rounded-lg flex items-center gap-2 mb-1 ${link === location.pathname ? 'bg-primary text-white' : 'text-primary '} ${disabled ? "hover:bg-slate-400 cursor-not-allowed" : "hover:bg-action" }`}
+				className={`scaledown font-light text-left w-full px-2 py-1 rounded-lg flex items-center gap-2 mb-1 ${link === location.pathname ? 'bg-primary text-white' : 'text-primary '} ${disabled ? "hover:bg-slate-400 cursor-not-allowed" : "hover:bg-action"}`}
 			>
 				{children}
 				<span>
 					{title}
 				</span>
+				{badge &&
+					<div className="badge badge-info">{badge}</div>
+				}
 			</button>
 		</NavLink>
 	)

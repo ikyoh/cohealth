@@ -24,7 +24,7 @@ const RegistrationForm = () => {
 
     const watchRole = watch(['roles[0]'])
 
-    console.log('watch()', watch())
+    console.log('errors', errors)
 
     const handleReset = (e) => {
         console.log('reset')
