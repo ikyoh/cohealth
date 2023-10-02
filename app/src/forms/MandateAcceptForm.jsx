@@ -39,8 +39,7 @@ const MandateAcceptForm = ({ iri, handleCloseModal }) => {
 
     useEffect(() => {
         if (isPutSuccess)
-            console.log('datas', datas)
-        //postData(datas)
+            postData(datas)
     }, [isPutSuccess])
 
 

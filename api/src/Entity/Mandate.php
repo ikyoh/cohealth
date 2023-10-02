@@ -15,6 +15,8 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\UserOwnedInterface;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
 #[ORM\Entity(repositoryClass: MandateRepository::class)]
 #[ApiResource(
@@ -28,6 +30,9 @@ use App\Entity\UserOwnedInterface;
         new Post()
     ]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['status' => 'exact'])]
+
+
 class Mandate implements UserOwnedInterface
 {
     #[ORM\Id]

@@ -31,7 +31,6 @@ const MandatesPage = () => {
     const { data, isLoading, error } = useGetPaginatedDatas(page, sortValue, sortDirection, searchValue, filters)
     const { mutate } = usePutData()
 
-    console.log('mandateStatus', mandateStatus["doctor"]["attribué"])
 
     const { data: account, isLoading: isLoadingAccount } = useGetCurrentAccount()
 
