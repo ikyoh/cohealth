@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useLogoutAccount } from '../queryHooks/useAccount';
+import { useLogoutAccount, useGetCurrentAccount } from '../queryHooks/useAccount';
 import { useGetPaginatedDatas as useGetMandates } from '../queryHooks/useMandate';
 import { NavLink } from 'react-router-dom'
 import MenuButton from '../components/buttons/MenuButton'
@@ -25,11 +25,20 @@ import ReactLogo from '../assets/logo-horizontal.svg';
 const Menu = () => {
 
 	const { mutate: logout } = useLogoutAccount()
-	const [show, setShow] = useState(false)
-	const {data: mandates, isSuccess : isSuccessMandate} = useGetMandates( 1, "id", "ASC")
+	const { data: account, isSuccess: isSuccessAccount } = useGetCurrentAccount()
 
- if(isSuccessMandate)
-	console.log('mandates', mandates['hydra:totalItems'])
+	const [show, setShow] = useState(false)
+
+	const defaultStatus = () => {
+		if (isSuccessAccount) {
+			if (account.roles.includes('ROLE_DOCTOR')) return ("édité")
+			if (account.roles.includes('ROLE_NURSE')) return ("attribué")
+			if (account.roles.includes('ROLE_COORDINATOR')) return ("édité")
+		}
+		else return null
+	}
+
+	const { data: mandates, isLoading: isLoadingMandates, isSuccess: isSuccessMandate } = useGetMandates(1, "id", "ASC", "", { status: defaultStatus() })
 
 	return (
 		<div className='z-[100] md=z-0 h-screen fixed md:sticky md:top-0'>

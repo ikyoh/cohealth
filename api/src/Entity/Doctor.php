@@ -8,10 +8,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use App\Filter\CustomSearchFilter;
+use App\Filter\MultipleFieldsSearchFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
@@ -31,7 +31,14 @@ use ApiPlatform\Metadata\GetCollection;
     ]
 )]
 #[ApiFilter(OrderFilter::class, properties: ['id', 'category', 'fullname', 'phone', 'email', 'gln', 'rcc'])]
-#[ApiFilter(CustomSearchFilter::class)]
+#[ApiFilter(MultipleFieldsSearchFilter::class, properties: [
+    "id",
+    "gln",
+    "rcc",
+    "fullname",
+    "email"
+])]
+#[ApiFilter(SearchFilter::class, properties: ['rcc' => 'exact'])]
 
 class Doctor 
 {
@@ -99,8 +106,6 @@ class Doctor
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(["doctors:read", "doctor:read", "doctor:write", "patient:write", "mission:write"])]
-    
-    
     private $gln;
 
     #[ORM\OneToMany(mappedBy: 'doctor', targetEntity: Patient::class)]

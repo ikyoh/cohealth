@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { useGetIRI, usePutData } from '../queryHooks/useMandate';
 import { usePostData } from '../queryHooks/useMission';
-import { useGetPaginatedDatas } from '../queryHooks/usePatient';
+import { useGetDatasByAvsNumber } from '../queryHooks/usePatient';
+import { useGetPaginatedDatas as useGetDoctors } from '../queryHooks/useDoctor';
 import { useForm } from "react-hook-form";
 import Form from "../components/form/form/Form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -19,19 +20,29 @@ const MandateAcceptForm = ({ iri, handleCloseModal }) => {
 
     const { isLoading: isLoading, data, isError, error } = useGetIRI(iri)
     const { data: user, isLoading: isLoadingUser } = useAccount()
-    const { data: patient, isLoading: isLoadingPatient } = useGetPaginatedDatas(1, "id", "asc", "", { avsNumber: data ? data.content.patient.avsNumber : null })
+    const { data: patient, isLoading: isLoadingPatient } = useGetDatasByAvsNumber(data ? data.content.patient.avsNumber : null)
+    const { data: doctor, isLoading: isLoadingDoctor } = useGetDoctors(1, "", "", "", { rcc: data ? data.user.rcc : null }, data ? data.user.rcc : false)
 
     const { mutate: postData, isSuccess: isPostSuccess, isLoading: isPosting } = usePostData()
     const { mutate: putData, isSuccess: isPutSuccess, isLoading: isPutting } = usePutData()
 
     useEffect(() => {
-        if (patient && !isLoading) {
+        if (patient && doctor && !isLoading) {
             if (patient['hydra:member'].length != 0)
-                reset({ patient: patient['hydra:member'][0], beginAt: data.content.service.beginAt, mandate: data['@id'] })
-            else reset({ patient: { ...data.content.patient, user: API_URL + API_USERS + "/" + user.id }, beginAt: data.content.service.beginAt, mandate: data['@id'] })
+                reset({
+                    patient: patient['hydra:member'][0],
+                    beginAt: data.content.service.beginAt,
+                    mandate: data['@id'],
+                    doctor: doctor['hydra:member'][0],
+                })
+            else reset({
+                patient: { ...data.content.patient, user: API_URL + API_USERS + "/" + user.id },
+                beginAt: data.content.service.beginAt,
+                mandate: data['@id'],
+                doctor: doctor['hydra:member'][0],
+            })
         }
-    }, [isLoadingPatient, patient, isLoadingUser, user])
-
+    }, [isLoadingPatient, isLoadingDoctor, isLoadingUser])
 
     const onSubmit = () => {
         putData({ id: data.id, status: "accepté", acceptedAt: dayjs().format(), rejectedAt: null })
@@ -54,7 +65,7 @@ const MandateAcceptForm = ({ iri, handleCloseModal }) => {
             <Form onSubmit={handleSubmit(onSubmit)}
                 submitLabel="Accepter ce mandat"
                 isLoading={isSubmitting || isPosting || isPutting}
-                isDisabled={isSubmitting || isPosting || isPutting}
+                isDisabled={isLoading || isLoadingUser || isLoadingDoctor ||isSubmitting || isPosting || isPutting}
                 className="p-5"
             >
                 <p>

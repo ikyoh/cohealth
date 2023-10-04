@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { usePostData } from '../queryHooks/useAccount';
-import { useForm ,useRegis } from "react-hook-form";
+import { usePostData as usePostDoctor } from '../queryHooks/useDoctor';
+import { useForm } from "react-hook-form";
 import Form from "../components/form/form/Form";
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -11,11 +12,12 @@ import { FormCheckbox } from '../components/form/checkbox/FormCheckbox'
 import AccountFields from '../fields/AccountFields';
 import OrganizationFields from '../fields/OrganizationFields';
 import PasswordFields from '../fields/PasswordFields';
-
+import { doctorCategories } from '../utils/arrays';
 
 const RegistrationForm = () => {
 
     const { mutate: postData, isLoading: isPosting, isSuccess, error: mutateError } = usePostData()
+    const { mutate: postDoctor, isLoading: isPostingDcotor, isSuccessDoctor, error: errorDoctor } = usePostDoctor()
 
     const { register, handleSubmit, watch, reset, control, formState: { errors, isSubmitting } } = useForm({
         resolver: yupResolver(Yup.object({ ...registrationValidation, ...passwordValidation })),
@@ -27,11 +29,12 @@ const RegistrationForm = () => {
     console.log('errors', errors)
 
     const handleReset = (e) => {
-        console.log('reset')
         reset({ ...account, ...password, roles: [e.target.value] })
     }
 
     const onSubmit = form => {
+        if (form.roles[0] === 'ROLE_DOCTOR')
+            postDoctor({ ...form, fullname: form.lastname + form.firstname, category : form.category })
         postData(form)
     }
 
@@ -55,11 +58,27 @@ const RegistrationForm = () => {
                 <option value="ROLE_ORGANIZATION_MANDATOR">Un hôpital / une clinique</option>
             </FormSelect>
 
+
             {watchRole[0] === 'ROLE_NURSE' &&
                 <AccountFields register={register} errors={errors} control={control} />
             }
             {watchRole[0] === 'ROLE_DOCTOR' &&
-                <AccountFields register={register} errors={errors} control={control} />
+                <>
+                    <FormSelect
+                        type="text"
+                        name="category"
+                        label="Catégorie"
+                        errors={errors}
+                        register={register}
+                        required={true}
+                    >
+                        <option value="">Choisir une catégorie</option>
+                        {doctorCategories.map(category =>
+                            <option key={category} value={category}>{category}</option>
+                        )}
+                    </FormSelect>
+                    <AccountFields register={register} errors={errors} control={control} />
+                </>
             }
             {watchRole[0] === 'ROLE_ORGANIZATION_BENEFIT' &&
                 <OrganizationFields register={register} errors={errors} />

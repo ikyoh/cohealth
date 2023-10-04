@@ -16,8 +16,11 @@ const fetchFilteredDatas = (sortValue, sortDirection, searchValue) => {
     return request({ url: API + "?pagination=false" + "&order[" + sortValue + "]=" + sortDirection + "&" + searchValue, method: 'get' })
 }
 
-const fetchPaginatedDatas = (page, sortValue, sortDirection, searchValue) => {
-    return request({ url: API + "?page=" + page + "&itemsPerPage=" + itemsPerPage + "&order[" + sortValue + "]=" + sortDirection + "&search[id,fullname,organization,email,rcc,gln]=" + searchValue, method: 'get' })
+const fetchPaginatedDatas = (page, sortValue, sortDirection, searchValue, filters = null) => {
+    let options = "?page=" + page + "&itemsPerPage=" + itemsPerPage + "&order[" + sortValue + "]=" + sortDirection
+    if (searchValue) options += "&search=" + searchValue
+    if (filters && filters.rcc) options += "&rcc=" + filters.rcc
+    return request({ url: API + options, method: 'get' })
 }
 
 const fetchOneData = ({ queryKey }) => {
@@ -65,12 +68,13 @@ export const useGetFilteredDatas = (sortValue, sortDirection, searchValue) => {
     })
 }
 
-export const useGetPaginatedDatas = (page, sortValue, sortDirection, searchValue) => {
+export const useGetPaginatedDatas = (page, sortValue, sortDirection, searchValue, filters, enabled = true) => {
     return useQuery({
-        queryKey: [queryKey, page, sortValue, sortDirection, searchValue],
-        queryFn: () => fetchPaginatedDatas(page, sortValue, sortDirection, searchValue),
+        queryKey: [queryKey, page, sortValue, sortDirection, searchValue, filters],
+        queryFn: () => fetchPaginatedDatas(page, sortValue, sortDirection, searchValue, filters),
         keepPreviousData: true,
         staleTime: 60000,
+        enabled: enabled ? true : false
         //select: data => {return data['hydra:member']}
     })
 }

@@ -119,7 +119,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $isOptin = false;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:read", "user:write", "missions:read", "partners:read"])]
+    #[Groups(["users:read", "user:read", "user:write", "missions:read", "partners:read", "mandate:read"])]
     private $rcc = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]

@@ -17,10 +17,14 @@ const fetchFilteredDatas = (sortValue, sortDirection, searchValue) => {
     return request({ url: API + "?pagination=false" + "&order[" + sortValue + "]=" + sortDirection + "&" + searchValue, method: 'get' })
 }
 
-const fetchPaginatedDatas = (page, sortValue, sortDirection, searchValue, filters) => {
+const fetchPaginatedDatas = (page, sortValue, sortDirection, searchValue) => {
     let options = "?page=" + page + "&itemsPerPage=" + itemsPerPage + "&order[" + sortValue + "]=" + sortDirection
     if (searchValue) options += "&search=" + searchValue
-    if (filters.avsNumber) options += "&avsNumber=" + filters.avsNumber
+    return request({ url: API + options, method: 'get' })
+}
+
+const fetchDatasByAvsNumber = (avsNumber) => {
+    let options = "?avsNumber=" + avsNumber
     return request({ url: API + options, method: 'get' })
 }
 
@@ -69,12 +73,23 @@ export const useGetFilteredDatas = (sortValue, sortDirection, searchValue) => {
     })
 }
 
-export const useGetPaginatedDatas = (page, sortValue, sortDirection, searchValue, filters) => {
+export const useGetPaginatedDatas = (page, sortValue, sortDirection, searchValue) => {
     return useQuery({
         queryKey: [queryKey, page, sortValue, sortDirection, searchValue],
-        queryFn: () => fetchPaginatedDatas(page, sortValue, sortDirection, searchValue, filters),
+        queryFn: () => fetchPaginatedDatas(page, sortValue, sortDirection, searchValue),
         keepPreviousData: true,
         staleTime: 60000,
+        //select: data => {return data['hydra:member']}
+    })
+}
+
+export const useGetDatasByAvsNumber = (avsNumber) => {
+    return useQuery({
+        queryKey: [queryKey, avsNumber],
+        queryFn: () => fetchDatasByAvsNumber(avsNumber),
+        keepPreviousData: true,
+        staleTime: 60000,
+        enabled: avsNumber ? true : false
         //select: data => {return data['hydra:member']}
     })
 }

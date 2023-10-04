@@ -38,8 +38,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     "firstname",
     "lastname",
     "doctor.fullname",
-    "assurance.company",
-    // the other desired fields 
+    "assurance.company"
 ])]
 
 class Patient implements UserOwnedInterface
