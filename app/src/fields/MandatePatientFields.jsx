@@ -9,6 +9,7 @@ const MandatePatientFields = ({ name, errors, register }) => {
 
     return (
         <>
+            <p className='text-xl font-semibold'>Patient</p>
             <FormSelect
                 type="text"
                 name={name ? name + ".gender" : "gender"}
@@ -45,7 +46,7 @@ const MandatePatientFields = ({ name, errors, register }) => {
                 label="Date de naissance"
                 error={name && errors[name] ? errors[name]['birthdate'] : errors['birthdate']}
                 register={register}
-                required={false}
+                required={true}
             />
             <FormInput
                 type="text"

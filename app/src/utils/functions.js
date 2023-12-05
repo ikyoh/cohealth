@@ -83,3 +83,7 @@ export const calcABCN = (category, services, beginAt, endAt) => {
 export const calcMinutestoHours = (minutes) => {
 	return Math.round(minutes * 100 / 60) / 100
 } 
+
+export const firstLetterUppercase = (string) => {
+	return string.charAt(0).toUpperCase() + string.slice(1);
+}

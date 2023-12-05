@@ -5,15 +5,24 @@ import { FormTextarea } from '../components/form/textarea/FormTextarea'
 import { mandateCategories } from '../utils/arrays';
 
 
-const MandateFields = ({ name, errors, register }) => {
+const MandateFields = ({ name = false, errors, register, index = false }) => {
+
+    const _name = (name && typeof index !== "number") ? name :
+        (name && typeof index === "number") ? `${name}.${index}` : false
+
+    const _errors = (name && typeof index !== "number" && Object.keys(errors).length !== 0 && errors[name]) ? errors[name] :
+        (name && (typeof index === "number" && Object.keys(errors).length !== 0) && errors[name][index]) ? errors[name][index] :
+            errors
+
 
     return (
         <>
+            <p className='text-xl font-semibold'>Mandat</p>
             <FormSelect
                 type="text"
-                name={name ? name + ".category" : "category"}
+                name={name ? `${_name}.category` : "category"}
                 label="Prestation"
-                error={name && errors[name] ? errors[name]['category'] : errors['category']}
+                error={_errors['category'] && _errors['category']}
                 register={register}
                 required={true}
             >
@@ -22,27 +31,27 @@ const MandateFields = ({ name, errors, register }) => {
             </FormSelect>
             <FormSelect
                 type="text"
-                name={name ? name + ".user" : "user"}
+                name={name ? `${_name}.user` : "user"}
                 label="Mandataire"
-                error={name && errors[name] ? errors[name]['user'] : errors['user']}
+                error={_errors['user'] && _errors['user']}
                 register={register}
                 required={true}
             >
-                <option value="">Choisir un mandataire</option>
-                <option value="">CoHealth</option>
+                {/* <option value="">Choisir un mandataire</option> */}
+                <option value="">Coordinateur CoHealth</option>
             </FormSelect>
             <FormInput
                 type="date"
-                name={name ? name + ".beginAt" : "beginAt"}
+                name={name ? `${_name}.beginAt` : "beginAt"}
                 label="Date de prise en charge"
-                error={name && errors[name] ? errors[name]['beginAt'] : errors['beginAt']}
+                error={_errors['beginAt'] && _errors['beginAt']}
                 register={register}
                 required={true}
             />
             <FormTextarea
-                name={name ? name + ".description" : "description"}
+                name={name ? `${_name}.description` : "description"}
                 label="Commentaire"
-                error={name && errors[name] ? errors[name]['description'] : errors['description']}
+                error={_errors['description'] && _errors['description']}
                 register={register}
                 required={false}
                 rows={5}
@@ -50,5 +59,6 @@ const MandateFields = ({ name, errors, register }) => {
         </>
     )
 }
+
 
 export default MandateFields

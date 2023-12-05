@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useLogoutAccount, useGetCurrentAccount } from '../queryHooks/useAccount';
 import { useGetPaginatedDatas as useGetMandates } from '../queryHooks/useMandate';
+import { useGetPaginatedDatas as useGetMissions } from '../queryHooks/useMission';
 import { NavLink } from 'react-router-dom'
 import MenuButton from '../components/buttons/MenuButton'
 import {
@@ -29,7 +30,7 @@ const Menu = () => {
 
 	const [show, setShow] = useState(false)
 
-	const defaultStatus = () => {
+	const mandateDefaultStatus = () => {
 		if (isSuccessAccount) {
 			if (account.roles.includes('ROLE_DOCTOR')) return ("édité")
 			if (account.roles.includes('ROLE_NURSE')) return ("attribué")
@@ -38,7 +39,21 @@ const Menu = () => {
 		else return null
 	}
 
-	const { data: mandates, isLoading: isLoadingMandates, isSuccess: isSuccessMandate } = useGetMandates(1, "id", "ASC", "", { status: defaultStatus() })
+	const { data: mandates, isSuccess: isSuccessMandate } = useGetMandates(1, "id", "ASC", "", { status: mandateDefaultStatus() })
+
+
+	const { data: missions, isSuccess: isSuccessMission } = useGetMissions(1, "id", "ASC", "", { status: "en cours" })
+
+
+	const missionsBadge = () => {
+		if (isSuccessMission && account.roles.includes('ROLE_DOCTOR')) {
+			const nbMissions = missions['hydra:member'].filter(mission => mission.opas && mission.opas.status === "envoyé au médecin").length
+			if (nbMissions > 0) return nbMissions
+			else return null
+		}
+		return null
+	}
+
 
 	return (
 		<div className='z-[100] md=z-0 h-screen fixed md:sticky md:top-0'>
@@ -74,7 +89,7 @@ const Menu = () => {
 						<MenuButton onClick={() => setShow(!show)} link='/dashboard' title="Tableau de bord" roles={['ROLE_USER']}>
 							<MdDashboard size={25} />
 						</MenuButton>
-						<MenuButton onClick={() => setShow(!show)} link='/missions' title="Missions" roles={['ROLE_NURSE']}>
+						<MenuButton onClick={() => setShow(!show)} link='/missions' title="Missions" roles={['ROLE_NURSE', 'ROLE_DOCTOR']} badge={missionsBadge()}>
 							<MdPendingActions size={25} />
 						</MenuButton>
 						<MenuButton onClick={() => setShow(!show)} link='/collaborations' title="Collaborations" roles={['ROLE_NURSE']}>
@@ -89,7 +104,7 @@ const Menu = () => {
 						<MenuButton onClick={() => setShow(!show)} disabled={true} title="Statistiques" roles={['ROLE_NURSE']}>
 							<AiOutlineBarChart size={25} />
 						</MenuButton>
-						<MenuButton onClick={() => setShow(!show)} link='/mandats' badge={isSuccessMandate && mandates['hydra:totalItems'] !== 0 && mandates['hydra:totalItems']} title="Mandats" roles={['ROLE_DOCTOR', 'ROLE_COORDINATOR', 'ROLE_NURSE']}>
+						<MenuButton onClick={() => setShow(!show)} link='/mandates' badge={isSuccessMandate && !account.roles.includes('ROLE_DOCTOR') && mandates['hydra:totalItems'] !== 0 && mandates['hydra:totalItems']} title="Mandats" roles={['ROLE_DOCTOR', 'ROLE_COORDINATOR', 'ROLE_NURSE']}>
 							<MdEventNote size={25} />
 						</MenuButton>
 						<div className='text-zinc-400 font-light uppercase mt-5 pl-2 pb-2'>
@@ -98,7 +113,7 @@ const Menu = () => {
 						<MenuButton onClick={() => setShow(!show)} link='/patients' title="Patients" roles={['ROLE_NURSE', 'ROLE_ORGANIZATION']}>
 							<IoPersonCircleOutline size={25} />
 						</MenuButton>
-						<MenuButton onClick={() => setShow(!show)} link='/doctors' title="Médecins" roles={['ROLE_USER', 'ROLE_COORDINATOR']}>
+						<MenuButton onClick={() => setShow(!show)} link='/doctors' title="Médecins" roles={['ROLE_NURSE', 'ROLE_COORDINATOR']}>
 							<RiStethoscopeFill size={25} />
 						</MenuButton>
 						<MenuButton onClick={() => setShow(!show)} link='/assurances' title="Assurances" roles={['ROLE_USER', 'ROLE_COORDINATOR']}>

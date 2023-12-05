@@ -24,7 +24,7 @@ const PatientsPage = () => {
     const { searchValue, searchbar } = useSearch(initialPageState ? initialPageState.searchValue : "")
     const [page, setPage] = useState(initialPageState ? initialPageState.page : 1)
     const { sortValue, sortDirection, handleSort } = useSortBy(initialPageState ? { value: initialPageState.sortValue, direction: initialPageState.sortDirection } : "")
-    const { data = [], isLoading, error } = useGetPaginatedDatas(page, sortValue, sortDirection, searchValue)
+    const { data = [], isLoading } = useGetPaginatedDatas(page, sortValue, sortDirection, searchValue)
 
     useEffect(() => {
         if (searchValue && !initialPageState) {

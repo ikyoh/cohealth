@@ -32,7 +32,7 @@ use App\Filter\NotEqualFilter;
         new Post()
     ]
 )]
-#[ApiFilter(OrderFilter::class, properties: ['id', 'status', 'patient.lastname', 'prescriptions.status','user.id', 'beginAt', 'endAt'])]
+#[ApiFilter(OrderFilter::class, properties: ['id', 'status', 'patient.lastname', 'opas.status','user.id', 'beginAt', 'endAt'])]
 #[ApiFilter(SearchFilter::class, properties: ['status' => 'exact', 'user.id' => 'exact'])]
 #[ApiFilter(MultipleFieldsSearchFilter::class, properties: [
     "id",
@@ -90,9 +90,9 @@ class Mission implements UserOwnedInterface
     #[Groups(["missions:read", "mission:read", "mission:write", "patient:read"])]
     private $coworkers = [];
 
-    #[ORM\OneToMany(mappedBy: 'mission', targetEntity: Prescription::class, cascade: ['persist', 'remove'])]
-    #[Groups(["missions:read", "mission:read", "mission:write"])]
-    private $prescriptions;
+    // #[ORM\OneToMany(mappedBy: 'mission', targetEntity: Prescription::class, cascade: ['persist', 'remove'])]
+    // #[Groups(["missions:read", "mission:read", "mission:write"])]
+    // private $prescriptions;
 
     #[ORM\OneToMany(mappedBy: 'mission', targetEntity: MediaObject::class)]
     #[Groups(["missions:read", "mission:read", "mission:write"])]
@@ -106,9 +106,12 @@ class Mission implements UserOwnedInterface
     #[Groups(["missions:read", "mission:read", "mission:write"])]
     private ?Mandate $mandate = null;
 
+    #[ORM\OneToOne(inversedBy: 'mission', cascade: ['persist', 'remove'])]
+    #[Groups(["missions:read", "mission:read", "mission:write"])]
+    private ?Prescription $opas = null;
+
     public function __construct()
     {
-        $this->prescriptions = new ArrayCollection();
         $this->documents = new ArrayCollection();
     }
 
@@ -228,35 +231,35 @@ class Mission implements UserOwnedInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Prescription>
-     */
-    public function getPrescriptions(): Collection
-    {
-        return $this->prescriptions;
-    }
+    // /**
+    //  * @return Collection<int, Prescription>
+    //  */
+    // public function getPrescriptions(): Collection
+    // {
+    //     return $this->prescriptions;
+    // }
 
-    public function addPrescription(Prescription $prescription): self
-    {
-        if (!$this->prescriptions->contains($prescription)) {
-            $this->prescriptions[] = $prescription;
-            $prescription->setMission($this);
-        }
+    // public function addPrescription(Prescription $prescription): self
+    // {
+    //     if (!$this->prescriptions->contains($prescription)) {
+    //         $this->prescriptions[] = $prescription;
+    //         $prescription->setMission($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removePrescription(Prescription $prescription): self
-    {
-        if ($this->prescriptions->removeElement($prescription)) {
-            // set the owning side to null (unless already changed)
-            if ($prescription->getMission() === $this) {
-                $prescription->setMission(null);
-            }
-        }
+    // public function removePrescription(Prescription $prescription): self
+    // {
+    //     if ($this->prescriptions->removeElement($prescription)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($prescription->getMission() === $this) {
+    //             $prescription->setMission(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * @return Collection<int, MediaObject>
@@ -308,6 +311,18 @@ class Mission implements UserOwnedInterface
     public function setMandate(?Mandate $mandate): self
     {
         $this->mandate = $mandate;
+
+        return $this;
+    }
+
+    public function getOpas(): ?Prescription
+    {
+        return $this->opas;
+    }
+
+    public function setOpas(?Prescription $opas): self
+    {
+        $this->opas = $opas;
 
         return $this;
     }

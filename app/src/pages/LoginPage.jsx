@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react'
 import { Navigate } from "react-router"
 import { NavLink } from 'react-router-dom'
 import { useGetCurrentAccount } from '../queryHooks/useAccount'
@@ -9,7 +8,7 @@ const LoginPage = () => {
 
     const location = useLocation()
 
-    const { data, isLoading, error } = useGetCurrentAccount()
+    const { data } = useGetCurrentAccount()
 
     if (data) return (
         <Navigate to="/dashboard" />

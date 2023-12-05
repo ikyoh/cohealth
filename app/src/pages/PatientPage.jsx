@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import { useGetOneData } from '../queryHooks/usePatient'
 import { useGetIRI as Doctor } from '../queryHooks/useDoctor'
@@ -8,12 +8,11 @@ import PatientForm from '../forms/PatientForm'
 import dayjs from 'dayjs'
 import Loader from '../components/Loader'
 import Dropdown from '../components/dropdown/Dropdown'
-import uuid from "react-uuid"
 import { IoPersonCircleOutline } from "react-icons/io5"
-import { RiStethoscopeFill } from "react-icons/ri";
-import { MdOutlineHealthAndSafety } from "react-icons/md";
+import { RiStethoscopeFill } from "react-icons/ri"
+import { MdOutlineHealthAndSafety } from "react-icons/md"
 import PageTitle from '../layouts/PageTitle'
-import { MdPendingActions, MdArrowBack } from "react-icons/md";
+import { MdPendingActions, MdArrowBack } from "react-icons/md"
 import Button from '../components/buttons/Button'
 import _ from 'lodash'
 
@@ -22,14 +21,14 @@ const PatientPage = () => {
     const navigate = useNavigate();
     const { state: previousPageState } = useLocation();
     const { id } = useParams()
-    const { data, isLoading, error } = useGetOneData(id)
+    const { data } = useGetOneData(id)
     const { Modal, handleOpenModal, handleCloseModal } = useModal()
     const [tab, setTab] = useState("infos")
 
 
     const DoctorCard = ({ iri }) => {
 
-        const { data, isLoading, error } = Doctor(iri ? iri : null)
+        const { data, isLoading } = Doctor(iri ? iri : null)
 
         if (isLoading) return <Loader />
         if (!data) return null

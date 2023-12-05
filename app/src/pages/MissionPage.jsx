@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import { useGetOneData, usePutData } from '../queryHooks/useMission'
-//import { useGetIRI as Patient } from '../queryHooks/usePatient'
+import { useGetIRI as mandate } from '../queryHooks/useMandate'
 import { useGetIRI as Doctor } from '../queryHooks/useDoctor'
 import { useGetIRI as Assurance } from '../queryHooks/useAssurance'
 import { IoPersonCircleOutline } from "react-icons/io5"
-import { MdPendingActions, MdArrowBack } from "react-icons/md";
-import { HiOutlinePaperClip } from "react-icons/hi"
+import { MdPendingActions, MdArrowBack, MdOutlineHealthAndSafety } from "react-icons/md";
+import { HiOutlinePaperClip, HiDownload } from "react-icons/hi"
 import { AiOutlineFolderOpen } from "react-icons/ai"
 import { FaHandshake } from "react-icons/fa";
 import * as dayjs from 'dayjs'
@@ -28,16 +28,18 @@ import { useQueryClient } from '@tanstack/react-query'
 import { URL } from '../features/apiConfig';
 import { missionStatus } from '../utils/arrays'
 import _ from 'lodash'
+import uuid from 'react-uuid'
+import { downloadFile } from '../utils/functions'
+import { RiStethoscopeFill } from 'react-icons/ri'
 
 const MissionPage = () => {
 
     const navigate = useNavigate();
     const { state: previousPageState } = useLocation();
     const { id } = useParams()
-    const { data, isLoading, error } = useGetOneData(id)
-    //const { data: patient, isLoading: isLoadingPatient, error: errorPatient } = Patient(data && data.patient ? data.patient : null)
-    const { data: doctor, isLoading: isLoadingDoctor, error: errorDoctor } = Doctor(data && data.doctor ? data.doctor : null)
-    const { data: assurance, isLoading: isLoadingAssurance, error: errorAssurance } = Assurance(data && data.assurance ? data.assurance : null)
+    const { data } = useGetOneData(id)
+    const { data: doctor } = Doctor(data && data.doctor ? data.doctor : null)
+    const { data: assurance } = Assurance(data && data.assurance ? data.assurance : null)
     const { Modal, handleOpenModal, handleCloseModal } = useModal()
     const [tab, setTab] = useState("infos")
     const { mutate } = usePutData()
@@ -65,46 +67,7 @@ const MissionPage = () => {
         else return (
             <div className="grid md:grid-cols-12 gap-5">
                 <div className="md:col-span-4 relative bg-white border p-5 pt-20 flex flex-col gap-5">
-                    {isMine &&
-                        <Dropdown type='card'>
-                            <button
-                                onClick={() => handleOpenModal({ title: "Edition de la mission", content: <MissionForm action="mission" iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
-                                Editer la mission
-                            </button>
-                            <button
-                                onClick={() => handleOpenModal({ title: "Edition du médecin", content: <MissionForm action="doctorIRI" iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
-                                Editer le médecin mandataire
-                            </button>
-                            <button
-                                onClick={() => handleOpenModal({ title: "Edition de l'assurance'", content: <MissionForm action="assuranceIRI" iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
-                                Editer l'assurance
-                            </button>
-                            <span>
-                                Statut de la mission
-                            </span>
-                            <button
-                                className='flex items-center gap-2'
-                                onClick={() => handleChangeStatus("en cours")}>
-                                <div className={`rounded-full w-4 h-4 ${missionStatus["en cours"]}`}>
-                                </div>
-                                En cours
-                            </button>
-                            <button
-                                className='flex items-center gap-2'
-                                onClick={() => handleChangeStatus("annulé")}>
-                                <div className={`rounded-full w-4 h-4 ${missionStatus["annulé"]}`}>
-                                </div>
-                                Annulé
-                            </button>
-                            <button
-                                className='flex items-center gap-2'
-                                onClick={() => handleChangeStatus("archivé")}>
-                                <div className={`rounded-full w-4 h-4 ${missionStatus["archivé"]}`}>
-                                </div>
-                                Archivé
-                            </button>
-                        </Dropdown>
-                    }
+
                     <div className='bg-slate-200 rounded-br-full px-3 flex items-center gap-1 absolute top-0 left-0 h-11 w-44 font-bold uppercase'>
                         <MdPendingActions size={36} />
                         Mission
@@ -134,37 +97,39 @@ const MissionPage = () => {
                             {data.description}
                         </div>
                     </div>
-                    <div>
-                        <div className='font-bold flex items-center gap-3 mb-2'>
-                            Médecin mandataire
-                            <hr className='hr_separator inset-0' />
-                        </div>
-                        <div className='whitespace-pre-line'>
-                            {doctor ?
-                                <>
-                                    <div>
-                                        {doctor.fullname}
-                                    </div>
-                                    <div className='text-slate-400'>
-                                        {doctor.category}
-                                    </div>
-                                    <div className="grid grid-cols-2">
+
+                    {!account.roles.includes('ROLE_DOCTOR') &&
+                        <div>
+                            <div className='font-bold flex items-center gap-3 mb-2'>
+                                Médecin mandant
+                                <hr className='hr_separator inset-0' />
+                            </div>
+                            <div className='whitespace-pre-line'>
+                                {doctor ?
+                                    <>
                                         <div>
-                                            {doctor.phone &&
-                                                "Téléphone: " + doctor.phone}
+                                            {doctor.fullname}
                                         </div>
-                                        <div>
-                                            {doctor.email &&
-                                                "Email: " + doctor.email}
+                                        <div className='text-slate-400'>
+                                            {doctor.category}
                                         </div>
-                                    </div>
-                                </>
-                                : <span className="px-3 py-1 uppercase text-xs rounded-full text-white bg-error">
-                                    A renseigner
-                                </span>
-                            }
-                        </div>
-                    </div>
+                                        {doctor.phone &&
+                                            <div>
+                                                Téléphone: {doctor.phone}
+                                            </div>
+                                        }
+                                        {doctor.email &&
+                                            <div>
+                                                Email: {doctor.email}
+                                            </div>
+                                        }
+                                    </>
+                                    : <span className="px-3 py-1 uppercase text-xs rounded-full text-white bg-error">
+                                        A renseigner
+                                    </span>
+                                }
+                            </div>
+                        </div>}
                     <div>
                         <div className='font-bold flex items-center gap-3 mb-2'>
                             Assurance
@@ -190,14 +155,6 @@ const MissionPage = () => {
 
 
                 <div className="md:col-span-4 relative bg-white border p-5 pt-20 flex flex-col gap-5">
-                    {isMine &&
-                        <Dropdown type='card'>
-                            <button
-                                onClick={() => handleOpenModal({ title: "édition du patient", content: <PatientForm iri={data.patient['@id']} handleCloseModal={handleCloseModal} /> })}>
-                                Editer le patient
-                            </button>
-                        </Dropdown>
-                    }
                     <div className='bg-slate-200 rounded-br-full px-3 flex items-center gap-1 absolute top-0 left-0 h-11 w-44 font-bold uppercase'>
                         <IoPersonCircleOutline size={36} />
                         Patient
@@ -214,13 +171,13 @@ const MissionPage = () => {
                     <hr className='hr_info' />
                     <div>
                         <div className='font-bold flex items-center gap-3 mb-2'>
-                            Infos assuré
+                        {data.patient.gender === 'homme' ? "Infos assuré" : "Infos assurée"}
                             <hr className='hr_separator' />
                         </div>
                         <div className="grid grid-cols-1 gap-2">
                             {data.patient.birthdate &&
                                 <div>
-                                    {data.patient.gender === 'hommme' ? "Né le : " : "Née le : "}
+                                    {data.patient.gender === 'homme' ? "Né le : " : "Née le : "}
                                     {dayjs(data.patient.birthdate).format('DD/MM/YYYY')}
                                 </div>
                             }
@@ -290,31 +247,6 @@ const MissionPage = () => {
                             Statut
                         </div>
                         <MissionStatus mission={data} />
-                        {isMine &&
-                            <Dropdown type='card'>
-                                <button
-                                    className='flex items-center gap-2'
-                                    onClick={() => handleChangeStatus("en cours")}>
-                                    <div className={`rounded-full w-4 h-4 ${missionStatus["en cours"]}`}>
-                                    </div>
-                                    En cours
-                                </button>
-                                <button
-                                    className='flex items-center gap-2'
-                                    onClick={() => handleChangeStatus("annulé")}>
-                                    <div className={`rounded-full w-4 h-4 ${missionStatus["annulé"]}`}>
-                                    </div>
-                                    Annulé
-                                </button>
-                                <button
-                                    className='flex items-center gap-2'
-                                    onClick={() => handleChangeStatus("archivé")}>
-                                    <div className={`rounded-full w-4 h-4 ${missionStatus["archivé"]}`}>
-                                    </div>
-                                    Archivé
-                                </button>
-                            </Dropdown>
-                        }
                     </div>
                     {!isMine &&
                         <div className='bg-white border rounded-sm p-5 pt-16 relative'>
@@ -336,20 +268,7 @@ const MissionPage = () => {
                         </div>
                     }
 
-                    {data.doctor && data.assurance &&
-                        <OpasCard iri={data.prescriptions[0] || false} missionIRI={data['@id']} isMine={isMine} />
-                    }
-
                     <div className='bg-white border rounded-sm p-5 pt-16 relative'>
-                        {isMine &&
-                            <Dropdown type='card'>
-                                <button
-                                    onClick={() => handleOpenModal({ title: 'Partenaires', content: <MissionPartnerForm iri={data["@id"]} partners={data.coworkers} handleCloseModal={handleCloseModal} /> })}
-                                >
-                                    Editer les partenaires
-                                </button>
-                            </Dropdown>
-                        }
                         <div className='bg-slate-200 rounded-br-full px-3 flex items-center gap-1 absolute top-0 left-0 h-11 w-44 font-bold uppercase'>
                             <FaHandshake size={30} />
                             Partenaires
@@ -357,27 +276,28 @@ const MissionPage = () => {
                         <MissionPartner partners={data.coworkers} />
                     </div>
 
-                    <div className='bg-white border rounded-sm p-5 pt-16 relative'>
-                        {isMine &&
-                            <Dropdown type="card">
-                                <button
-                                    onClick={() => handleOpenModal({ title: 'Nouveau document', content: <DocumentForm event={false} missionID={data.id} handleCloseModal={handleCloseModal} /> })}
-                                >
-                                    Ajouter un document
-                                </button>
-                            </Dropdown>
-                        }
-                        <div className='bg-slate-200 rounded-br-full px-3 flex items-center gap-1 absolute top-0 left-0 h-11 w-44 font-bold uppercase'>
-                            <AiOutlineFolderOpen size={30} />
-                            Documents
+                    {!account.roles.includes('ROLE_DOCTOR') &&
+                        <div className='bg-white border rounded-sm p-5 pt-16 relative'>
+                            <div className='bg-slate-200 rounded-br-full pl-3 pr-4 flex items-center gap-1 absolute top-0 left-0 h-11 w-auto font-bold uppercase'>
+                                <AiOutlineFolderOpen size={30} />
+                                Documents {data.documents.length}
+                            </div>
+
+                            {data.documents.length === 0 ? "Aucun document" :
+                                <div className='h-[240px] overflow-y-auto pr-3'>
+                                    {data.documents.map(document =>
+                                        <MissionDocument key={document["@id"]} iri={document["@id"]} isMine={isMine} />
+                                    )}
+                                </div>
+                            }
+
                         </div>
+                    }
 
-                        {data.documents.length === 0 && "Aucun document"}
-                        {data.documents.map(document =>
-                            <MissionDocument key={document["@id"]} iri={document["@id"]} isMine={isMine} />
-                        )}
 
-                    </div>
+                    {data.mandate &&
+                        <MandateDocuments iri={data.mandate['@id']} />
+                    }
 
                 </div>
 
@@ -387,13 +307,13 @@ const MissionPage = () => {
 
     const MissionSchedules = () => {
         return (
-            <h1>schedules</h1>
+            <h1>En cours de développement</h1>
         )
     }
 
     const MissionInvoices = () => {
         return (
-            <h1>invoices</h1>
+            <h1>En cours de développement</h1>
         )
     }
 
@@ -401,8 +321,8 @@ const MissionPage = () => {
     else return (
         <>
             <Modal />
-            <PageTitle title="Mission"
-                icon={<IoPersonCircleOutline size={40} />}
+            <PageTitle title={!account.roles.includes('ROLE_DOCTOR') ? "Mission" : data.mandate.category}
+                icon={<MdPendingActions size={40} />}
                 mainButton={_.isEmpty(previousPageState)
                     ?
                     <Button
@@ -418,14 +338,96 @@ const MissionPage = () => {
                     </Button>
                 }
             >
+                {data.doctor && data.assurance &&
+                    <OpasCard iri={data.opas || false} missionIRI={data['@id']} isMine={isMine} />
+                }
+                {account.roles.includes('ROLE_DOCTOR') &&
+                    <Dropdown type='button'>
+                        <button
+                            onClick={() => handleOpenModal({ title: 'Nouveau document', content: <DocumentForm event={false} mandateID={data.mandate.id} handleCloseModal={handleCloseModal} /> })}
+                        >
+                            Ajouter un document
+                        </button>
+                    </Dropdown>
+                }
+                {isMine &&
+                    <Dropdown type='button'>
+                        <button type='button'
+                            onClick={() => handleOpenModal({ title: "Edition de la mission", content: <MissionForm action="mission" iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
+                            <MdPendingActions size={20} />
+                            Éditer la mission
+                        </button>
+                        <button
+                            type='button'
+                            onClick={() => handleOpenModal({ title: "édition du patient", content: <PatientForm iri={data.patient['@id']} handleCloseModal={handleCloseModal} /> })}>
+                            <IoPersonCircleOutline size={20} />
+                            Éditer le patient
+                        </button>
+                        <button
+                            type='button'
+                            onClick={() => handleOpenModal({ title: "Edition du médecin", content: <MissionForm action="doctorIRI" iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
+                            <RiStethoscopeFill size={20} />
+                            Éditer le médecin mandant
+                        </button>
+                        <button
+                            type='button'
+                            onClick={() => handleOpenModal({ title: "Edition de l'assurance'", content: <MissionForm action="assuranceIRI" iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
+                            <MdOutlineHealthAndSafety size={20} />
+                            Éditer l'assurance
+                        </button>
+                        <button
+                            type='button'
+                            onClick={() => handleOpenModal({ title: 'Partenaires', content: <MissionPartnerForm iri={data["@id"]} partners={data.coworkers} handleCloseModal={handleCloseModal} /> })}
+                        >
+                            <FaHandshake size={20} />
+                            Éditer les partenaires
+                        </button>
+                        <button
+                            type='button'
+                            onClick={() => handleOpenModal({ title: 'Nouveau document', content: <DocumentForm event={false} missionID={data.id} handleCloseModal={handleCloseModal} /> })}
+                        >
+                            <AiOutlineFolderOpen size={20} />
+                            Ajouter un document
+                        </button>
+                        <p>
+                            Statut de la mission
+                        </p>
+                        <button
+                            type='button'
+                            className='flex items-center gap-2'
+                            onClick={() => handleChangeStatus("en cours")}>
+                            <div className={`rounded-full w-4 h-4 ${missionStatus["en cours"]}`}>
+                            </div>
+                            En cours
+                        </button>
+                        <button
+                            type='button'
+                            className='flex items-center gap-2'
+                            onClick={() => handleChangeStatus("annulé")}>
+                            <div className={`rounded-full w-4 h-4 ${missionStatus["annulé"]}`}>
+                            </div>
+                            Annulé
+                        </button>
+                        <button
+                            type='button'
+                            className='flex items-center gap-2'
+                            onClick={() => handleChangeStatus("archivé")}>
+                            <div className={`rounded-full w-4 h-4 ${missionStatus["archivé"]}`}>
+                            </div>
+                            Archivé
+                        </button>
+                    </Dropdown>
+                }
             </PageTitle>
 
             <div className='px-5 pb-5 md:px-0 md:pb-0'>
-                <div className='bg-slate-200 flex border rounded-sm mb-5'>
-                    <div className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "infos" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("infos")}>Informations</div>
-                    <div className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "schedules" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("schedules")}>Planning</div>
-                    <div className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "invoices" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("invoices")}>Facturation</div>
-                </div>
+                {!account.roles.includes('ROLE_DOCTOR') &&
+                    <div className='bg-slate-200 flex border rounded-sm mb-5'>
+                        <div className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "infos" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("infos")}>Informations</div>
+                        <div className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "schedules" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("schedules")}>Planning</div>
+                        <div className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "invoices" ? 'bg-action text-white rounded-sm' : 'cursor-pointer'}`} onClick={() => setTab("invoices")}>Facturation</div>
+                    </div>
+                }
                 <div>
                     {tab === "infos" && <MissionInfos />}
                     {tab === "schedules" && <MissionSchedules />}
@@ -438,3 +440,36 @@ const MissionPage = () => {
 }
 
 export default MissionPage
+
+
+const MandateDocuments = ({ iri }) => {
+
+    const { data } = mandate(iri)
+    const queryClient = useQueryClient()
+    const account = queryClient.getQueryData(['account'])
+
+    if (!data) return null
+    if (data && data.documents.length === 0) return null
+    return (
+
+        <div className='bg-white border rounded-sm p-5 pt-16 relative'>
+
+            <div className='bg-slate-200 rounded-br-full px-3 flex items-center gap-1 absolute top-0 left-0 h-11 w-44 font-bold uppercase'>
+                <AiOutlineFolderOpen size={30} />
+                {!account.roles.includes('ROLE_DOCTOR') ? "Mandat" : "Documents"}
+            </div>
+
+            {data.documents.map(document =>
+                <div key={uuid()} className='flex justify-between items-center border-l-2 border-base-300 bg-gradient-to-r from-base-200 to-white rounded mb-3 pl-3 py-2'>
+                    {document.type}
+                    <button className='btn btn-sm btn-circle btn-primary' onClick={() => downloadFile(document)}>
+                        <HiDownload />
+                    </button>
+                </div>
+            )}
+
+        </div>
+
+    )
+
+}

@@ -4,8 +4,8 @@
 namespace App\Controller;
 
 use App\Entity\MediaObject;
-use App\Entity\Mission;
 use App\Repository\MissionRepository;
+use App\Repository\MandateRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -17,9 +17,7 @@ use ApiPlatform\Api\IriConverterInterface;
 final class CreateMediaObjectAction extends AbstractController
 {
 
-
-    
-    public function __construct(private Security $security, private MissionRepository $missionRepository, private IriConverterInterface $iriConverter)
+    public function __construct(private Security $security, private MissionRepository $missionRepository, private MandateRepository $mandateRepository, private IriConverterInterface $iriConverter)
     {
     }
 
@@ -29,8 +27,11 @@ final class CreateMediaObjectAction extends AbstractController
         $type = $request->request->get('type');
         $status = $request->request->get('status');
         $comment = $request->request->get('comment');
-        $missionID= $request->request->get('mission');
+        $missionID = $request->request->get('mission');
         $mission = $this->missionRepository->findOneBy(['id' => $missionID]);
+        $mandateID = $request->request->get('mandate');
+        $mandate = $this->mandateRepository->findOneBy(['id' => $mandateID]);
+
 
         if (!$uploadedFile) {
             throw new BadRequestHttpException('"file" is required');
@@ -51,8 +52,10 @@ final class CreateMediaObjectAction extends AbstractController
         if ($missionID) {
             $mediaObject->setMission($mission);
         }
+        if ($mandateID) {
+            $mediaObject->setMandate($mandate);
+        }
 
         return $mediaObject;
     }
 }
-

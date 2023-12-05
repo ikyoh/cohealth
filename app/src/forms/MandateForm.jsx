@@ -5,6 +5,7 @@ import Form from "../components/form/form/Form";
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { mandatePatient as mandatePatientSchema } from '../utils/validationSchemas';
+import { mandateServices as mandateServicesSchema } from '../utils/validationSchemas';
 import uuid from 'react-uuid'
 
 import MandatePatientFields from '../fields/MandatePatientFields';
@@ -14,7 +15,6 @@ const MandateForm = ({ iri, handleCloseModal }) => {
 
     const { isLoading: isLoadingData, data, isError, error } = useGetIRI(iri)
     const { mutate: postData, isLoading: isPosting, isSuccess } = usePostData()
-    const { mutate: putData } = usePutData()
 
     const [currentStep, setCurrentStep] = useState(1)
 
@@ -31,7 +31,7 @@ const MandateForm = ({ iri, handleCloseModal }) => {
 
     const validationSchema = {
         1: Yup.object({ patient: mandatePatientSchema }),
-        2: Yup.object()
+        2: Yup.object({ services: mandateServicesSchema })
     }
 
 
@@ -47,7 +47,6 @@ const MandateForm = ({ iri, handleCloseModal }) => {
 
     const { register, handleSubmit, reset, watch, control, setValue, trigger, formState: { errors, isSubmitting } } = methods;
 
-
     const { fields, append, remove } = useFieldArray({
         control,
         name: "services"
@@ -56,7 +55,6 @@ const MandateForm = ({ iri, handleCloseModal }) => {
     // Case update
     useEffect(() => {
         if (iri && data) {
-            console.log('data', data)
             reset(data.content)
         }
     }, [isLoadingData, data])
@@ -64,18 +62,21 @@ const MandateForm = ({ iri, handleCloseModal }) => {
     const onSubmit = async (form) => {
 
         const groupingId = uuid()
-
         await form.services.forEach(async service => {
             let _form = {
                 groupingId: groupingId,
                 patient: form.patient,
                 service: service,
+                category: service.category
             }
             await postData(_form)
         })
 
         handleCloseModal()
     }
+
+
+    console.log('errors', errors)
 
     return (
         <>
@@ -110,11 +111,11 @@ const MandateForm = ({ iri, handleCloseModal }) => {
                                                 </button>
                                             }
                                             <MandateServiceFields
-                                                name={`services.${index}`}
+                                                name="services"
+                                                index={index}
                                                 register={register}
                                                 errors={errors}
                                             />
-
                                         </li>
                                     )
                                 })}
@@ -124,15 +125,7 @@ const MandateForm = ({ iri, handleCloseModal }) => {
                                 type='button'
                                 className='btn'
                                 onClick={() => {
-                                    append({
-                                        // details: { nouveloccupant: "" },
-                                        // services: property.services.reduce((acc, item) => {
-                                        //     return {
-                                        //         ...acc,
-                                        //         [item]: item,
-                                        //     }
-                                        // }, {})
-                                    },
+                                    append({ category: "", beginAt: "", user: "", description: "" },
                                         { focusName: `services.${fields.length}.category` })
                                 }}
                             >

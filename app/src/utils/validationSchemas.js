@@ -140,12 +140,30 @@ export const patient = Yup.object({
     // mobile: Yup.string().matches(/^0[0-9]{9}/, "Numéro incorrect"),
 })
 
+
 export const mandatePatient = Yup.object({
     firstname: string(),
     lastname: string(),
     gender: string(),
     canton: string(),
+    birthdate: string(),
     avsNumber: avsNumber(),
+})
+
+
+export const mandateService = Yup.object({
+    beginAt: string(),
+    category: string(),
+})
+
+export const mandateServices = Yup.array().of(mandateService)
+
+export const mandate = Yup.object({
+    category: string(),
+    content: Yup.object({
+        patient : mandatePatient,
+        service :mandateService
+    })
 })
 
 export const user = Yup.object({

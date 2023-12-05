@@ -7,12 +7,16 @@ const PageTitle = ({ title, subtitle = false, children, icon = false, mainButton
                 <div>{icon}</div>
                 <div className='font-medium text-xl md:text-2x'>
                     {title}
-                    {subtitle &&
-                        <span className='font-light text-base ml-3'>
-                            {subtitle}
-                        </span>
-                    }
                 </div>
+                {subtitle !== false && subtitle !== 0 &&
+                <div className="chat chat-start">
+                    <div className="chat-bubble bg-white">
+                        <p className='text-primary pt-[6px] text-sm font-semibold'>
+                            {subtitle}
+                        </p>
+                    </div>
+                </div>
+                }
             </div>
             <div className='w-full md:w-auto flex items-center justify-end gap-3 order-last md:order-2 grow'>
                 {children}

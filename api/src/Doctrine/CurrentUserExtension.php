@@ -46,25 +46,32 @@ final class CurrentUserExtension implements QueryCollectionExtensionInterface, Q
         }
 
         if ($reflexionClass->implementsInterface(UserOwnedInterface::class) && $resourceClass === Mission::class) {
-            $queryBuilder->andWhere("$rootAlias.user = :user OR $rootAlias.coworkers LIKE :userId");
+            $queryBuilder->andWhere("$rootAlias.user = :user OR $rootAlias.coworkers LIKE :userId OR mandate.user = :user");
             $queryBuilder->setParameter("user", $user);
             $queryBuilder->setParameter('userId', '%' . $user->getId() . '%');
+            $queryBuilder->leftJoin("$rootAlias.mandate", 'mandate');
             return;
         }
 
         if ($reflexionClass->implementsInterface(UserOwnedInterface::class) && $resourceClass === Prescription::class) {
-            $queryBuilder->andWhere("$rootAlias.user = :user OR mission.coworkers LIKE :userId");
+            $queryBuilder->andWhere("$rootAlias.user = :user OR mission.coworkers LIKE :userId OR missionMandate.user = :user");
             $queryBuilder->setParameter("user", $user);
             $queryBuilder->setParameter('userId', '%' . $user->getId() . '%');
             $queryBuilder->leftJoin("$rootAlias.mission", 'mission');
+
+            $queryBuilder->leftJoin("mission.mandate", 'missionMandate');
+            //dd($queryBuilder);
             return;
         }
 
         if ($reflexionClass->implementsInterface(UserOwnedInterface::class) && $resourceClass === MediaObject::class) {
-            $queryBuilder->andWhere("$rootAlias.user = :user OR mission.coworkers LIKE :userId");
+            if (in_array("ROLE_COORDINATOR", $userRoles))
+            return;
+            $queryBuilder->andWhere("$rootAlias.user = :user OR mandate.mandateUser = :user OR mission.coworkers LIKE :userId");
             $queryBuilder->setParameter("user", $user);
             $queryBuilder->setParameter('userId', '%' . $user->getId() . '%');
             $queryBuilder->leftJoin("$rootAlias.mission", 'mission');
+            $queryBuilder->leftJoin("$rootAlias.mandate", 'mandate');
             return;
         }
 

@@ -15,12 +15,12 @@ const fetchAllDatas = () => {
     return request({ url: API + "?pagination=false", method: 'get' })
 }
 
-const fetchFilteredDatas = (sortValue, sortDirection, searchValue) => {
+const fetchFilteredDatas = (sortValue = "id", sortDirection = "asc", searchValue) => {
     return request({ url: API + "?pagination=false" + "&order[" + sortValue + "]=" + sortDirection + "&" + searchValue, method: 'get' })
 }
 
-const fetchPaginatedDatas = (page, sortValue, sortDirection, searchValue, filters, userID) => {
-    let options = "?page=" + page + "&itemsPerPage=" + itemsPerPage + "&order[" + sortValue + "]=" + sortDirection + "&user.id=" + userID
+const fetchPaginatedDatas = (page, sortValue, sortDirection, searchValue, filters) => {
+    let options = "?page=" + page + "&itemsPerPage=" + itemsPerPage + "&order[" + sortValue + "]=" + sortDirection
     if (searchValue) options += "&search=" + searchValue
     if (filters.status !== "all") options += "&status=" + filters.status
     return request({ url: API + options, method: 'get' })
@@ -29,13 +29,7 @@ const fetchPaginatedDatas = (page, sortValue, sortDirection, searchValue, filter
 const fetchCollaborationPaginatedDatas = (page, sortValue, sortDirection, searchValue, filters, userID) => {
     let options = "?page=" + page + "&itemsPerPage=" + itemsPerPage + "&order[" + sortValue + "]=" + sortDirection + "&notequal=" + userID
     if (searchValue) options += "&search=" + searchValue
-   // if (filters.status !== "all") options += "&status=" + filters.status
     return request({ url: API + options, method: 'get' })
-}
-
-const fetchOneData = ({ queryKey }) => {
-    const id = queryKey[1]
-    return request({ url: API + "/" + id, method: 'get' })
 }
 
 const fetchIRI = ({ queryKey }) => {
@@ -83,16 +77,16 @@ export const useGetFilteredDatas = (sortValue, sortDirection, searchValue) => {
 
 export const useGetPaginatedDatas = (page, sortValue, sortDirection, searchValue, filters) => {
 
-    const { data: account } = useGetCurrentAccount()
-    const userID = account?.id
+    //const { data: account } = useGetCurrentAccount()
+    //const userID = account?.id
 
     return useQuery({
         queryKey: [queryKey, page, sortValue, sortDirection, searchValue, filters],
-        queryFn: () => fetchPaginatedDatas(page, sortValue, sortDirection, searchValue, filters, userID),
+        queryFn: () => fetchPaginatedDatas(page, sortValue, sortDirection, searchValue, filters),
         keepPreviousData: true,
         cacheTime: 60000,
         staleTime: 60000,
-        enabled: !!userID,
+        //enabled: !!userID,
         //select: data => {return data['hydra:member']}
     })
 }

@@ -25,30 +25,6 @@
   
 }
 
-.responsive-table {
-  @apply w-full divide-y bg-white table-fixed;
-}
-
-.responsive-table thead {
-  @apply bg-slate-200 sticky top-24;
-}
-
-.responsive-table thead th {
-  @apply hidden md:table-cell px-6 py-3 text-left font-normal text-sm;
-}
-
-.responsive-table tbody {
-  @apply divide-y;
-}
-
-.responsive-table tbody tr {
-  @apply text-sm flex md:table-row flex-row md:flex-row flex-wrap md:flex-nowrap hover:bg-slate-50 cursor-pointer;
-}
-
-.responsive-table tbody tr td {
-  @apply px-6 py-4 p-3 block md:table-cell relative md:static;
-}
-
 
 /* MODAL */
 

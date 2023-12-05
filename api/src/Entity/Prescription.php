@@ -36,7 +36,7 @@ class Prescription implements UserOwnedInterface
     #[Groups(["prescriptions:read", "prescription:read", "prescription:write", "mission:write", "missions:read"])]
     private $type;
 
-    // brouillon
+    // brouillon, 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(["prescriptions:read", "prescription:read", "prescription:write", "mission:write", "missions:read"])]
     private $status = "brouillon";
@@ -54,9 +54,17 @@ class Prescription implements UserOwnedInterface
     #[Groups(["prescriptions:read", "prescription:read", "prescription:write", "mission:write", "missions:read"])]
     private $user;
 
-    #[ORM\ManyToOne(targetEntity: Mission::class, inversedBy: 'prescriptions')]
+    #[ORM\OneToOne(mappedBy: 'opas', cascade: ['persist', 'remove'])]
     #[Groups(["prescriptions:read", "prescription:read", "prescription:write"])]
-    private $mission;
+    private ?Mission $mission = null;
+    
+    #[ORM\Column(nullable: true)]
+    #[Groups(["prescriptions:read", "prescription:read", "prescription:write"])]
+    private ?bool $isSigned = null;
+    
+    #[ORM\Column(nullable: true)]
+    #[Groups(["prescriptions:read", "prescription:read", "prescription:write"])]
+    private ?\DateTimeImmutable $signedAt = null;
 
 
     public function __construct()
@@ -136,7 +144,41 @@ class Prescription implements UserOwnedInterface
 
     public function setMission(?Mission $mission): self
     {
+        // unset the owning side of the relation if necessary
+        if ($mission === null && $this->mission !== null) {
+            $this->mission->setOpas(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($mission !== null && $mission->getOpas() !== $this) {
+            $mission->setOpas($this);
+        }
+
         $this->mission = $mission;
+
+        return $this;
+    }
+
+    public function isIsSigned(): ?bool
+    {
+        return $this->isSigned;
+    }
+
+    public function setIsSigned(?bool $isSigned): self
+    {
+        $this->isSigned = $isSigned;
+
+        return $this;
+    }
+
+    public function getSignedAt(): ?\DateTimeImmutable
+    {
+        return $this->signedAt;
+    }
+
+    public function setSignedAt(?\DateTimeImmutable $signedAt): self
+    {
+        $this->signedAt = $signedAt;
 
         return $this;
     }

@@ -1,18 +1,22 @@
 import React from 'react'
 import { useGetIRI, usePutData } from '../../queryHooks/usePrescription'
+import { useQueryClient } from '@tanstack/react-query'
 import OpasForm from '../../forms/OpasForm'
 import Dropdown from '../dropdown/Dropdown'
 import { useModal } from '../../hooks/useModal'
 import { FaCircle } from 'react-icons/fa'
-import { AiOutlineFile } from 'react-icons/ai'
-import { opasStatus } from '../../utils/arrays'
 import OpasPDF from './OpasPDF'
-import Loader from '../Loader'
 
+import { HiEye, HiOutlineClipboardCheck, HiOutlineClipboardList } from 'react-icons/hi'
+import OpasStatus from './OpasStatus'
+import OpasDoctorValidationForm from '../../forms/OpasDoctorValidationForm'
 
 const OpasCard = ({ iri, missionIRI, isMine = false }) => {
 
-    const { data, isLoading, error } = useGetIRI(iri)
+    const queryClient = useQueryClient()
+    const account = queryClient.getQueryData(['account'])
+
+    const { data } = useGetIRI(iri)
 
 
     const { mutate: putData } = usePutData(iri)
@@ -22,85 +26,110 @@ const OpasCard = ({ iri, missionIRI, isMine = false }) => {
         putData({ ...data, status: status })
     }
 
+
+    if (account.roles.includes('ROLE_DOCTOR') && !data) return null
+
     return (
         <>
             <Modal />
-            <div className='bg-white border rounded-sm p-5 pt-14 relative'>
-                {isMine &&
-                    <Dropdown type='card'>
-                        <button
-                            onClick={() => handleOpenModal({ size: "full", title: iri ? "Edition de l'OPAS" : "Nouveau OPAS", content: <OpasForm iri={iri} missionIRI={missionIRI} handleCloseModal={handleCloseModal} /> })}
-                        >
-                            {iri ? "Editer l'OPAS" : "Créer un OPAS"}
-                        </button>
-                        {data &&
-                            <>
-                                <span>
-                                    Status de l'OPAS
-                                </span>
-                                <button
-                                    onClick={() => handleUpdateOpasStatus("brouillon")}
-                                >
-                                    <FaCircle className="mr-1 text-waiting" />
-                                    Brouillon
-                                </button>
-                                <button
-                                    onClick={() => handleUpdateOpasStatus("envoyé au médecin")}
-                                >
-                                    <FaCircle className="mr-1 text-mention" />
-                                    Envoyé au médecin
-                                </button>
-                                <button
-                                    onClick={() => handleUpdateOpasStatus("validé par le médecin")}
-                                >
-                                    <FaCircle className="mr-1 text-info" />
-                                    Validé par le médecin
-                                </button>
-                                <button
-                                    onClick={() => handleUpdateOpasStatus("envoyé à l'assurance")}
-                                >
-                                    <FaCircle className="mr-1 text-success" />
-                                    Envoyé à l'assurance
-                                </button>
-                                <button
-                                    className='flex items-center gap-1 hover:text-action py-1'
-                                    onClick={() => handleUpdateOpasStatus("contesté")}
-                                >
-                                    <FaCircle className="mr-1 text-black" />
-                                    Contesté par l'assurance
-                                </button>
-                            </>
-                        }
-                    </Dropdown>
-                }
-                <div className='bg-slate-200 rounded-br-full px-3 flex items-center gap-1 absolute top-0 left-0 h-11 w-44 font-bold uppercase'>
-                    <AiOutlineFile size={36} />
-                    OPAS
-                </div>
+            <div className='bg-white rounded-full relative flex items-center gap-3 pl-3'>
+                OPAS
 
-                {isLoading && iri
-                    ?
-                    <Loader />
+                {account.roles.includes('ROLE_DOCTOR') && data.status === "envoyé au médecin" ?
+                    " à valider"
                     :
-                    <div className='mt-3 flex items-center justify-between'>
-                        {
-                            data &&
-                            <>
-                                <div className="flex flex-wrap items-center gap-3 text-black">
-                                    <div className={`h-5 w-5 rounded-full ${!data.status ? 'bg-error' : opasStatus[data.status]}`}>
-                                    </div>
-                                    <div>
-                                        {!data.status
-                                            ? 'OPAS à créer'
-                                            : data.status.charAt(0).toUpperCase() + data.status.slice(1)}
-                                    </div>
-                                </div>
-                                <OpasPDF data={data} />
-                            </>
-                        }
-                    </div>
+                    <OpasStatus opas={data} />
                 }
-            </div>
+
+                <Dropdown type='opas'>
+                    {isMine && !data &&
+                        <button
+                            onClick={() => handleOpenModal({ size: "full", title: "Nouveau OPAS", content: <OpasForm missionIRI={missionIRI} handleCloseModal={handleCloseModal} /> })}
+                        >
+                            <HiOutlineClipboardList size={20} />
+                            Créer un OPAS
+                        </button>
+                    }
+                    {isMine && data && data.status === "brouillon" &&
+                        <button
+                            onClick={() => handleOpenModal({ size: "full", title: "Edition de l'OPAS", content: <OpasForm iri={iri} missionIRI={missionIRI} handleCloseModal={handleCloseModal} /> })}
+                        >
+                            <HiOutlineClipboardList size={20} />
+                            Éditer l'OPAS
+                        </button>
+                    }
+                    {data &&
+                        <>
+                            <button
+                                onClick={() => handleOpenModal({ size: "full", title: "OPAS", content: <OpasPDF missionIRI={missionIRI || false} isOnePage={true} isPDFViewer={true} isPDFDownload={false} handleCloseModal={handleCloseModal} /> })}
+                            >
+                                <HiEye size={20} />
+                                OPAS
+                            </button>
+                            {account.roles.includes('ROLE_NURSE') &&
+                                <button
+                                    onClick={() => handleOpenModal({ size: "full", title: "OPAS", content: <OpasPDF missionIRI={missionIRI || false} isOnePage={false} isPDFViewer={true} isPDFDownload={false} handleCloseModal={handleCloseModal} /> })}
+                                >
+                                    <HiEye size={20} />
+                                    OPAS Détaillé
+                                </button>
+                            }
+
+                            {/* <OpasPDF missionIRI={missionIRI || false} isOnePage={false} isPDFViewer={false} isPDFDownload={true} /> */}
+
+                            {account.roles.includes('ROLE_DOCTOR') && data.status === "envoyé au médecin" &&
+                                <button
+                                    type='button'
+                                    onClick={() => handleOpenModal({
+                                        title: "OPAS", size: "small",
+                                        content: <OpasDoctorValidationForm iri={data['@id']} handleCloseModal={handleCloseModal} />
+                                    })}>
+                                    <HiOutlineClipboardCheck size={20} /> Valider
+                                </button>
+                            }
+                            {isMine &&
+                                <>
+                                    <p>
+                                        Status de l'OPAS
+                                    </p>
+                                    <button
+                                        onClick={() => handleUpdateOpasStatus("brouillon")}
+                                    >
+                                        <FaCircle className="mr-1 text-waiting" />
+                                        Brouillon
+                                    </button>
+                                    <button
+                                        onClick={() => handleUpdateOpasStatus("envoyé au médecin")}
+                                    >
+                                        <FaCircle className="mr-1 text-mention" />
+                                        Envoyé au médecin
+                                    </button>
+                                    <button
+                                        onClick={() => handleUpdateOpasStatus("validé par le médecin")}
+                                    >
+                                        <FaCircle className="mr-1 text-info" />
+                                        Validé par le médecin
+                                    </button>
+                                    <button
+                                        onClick={() => handleUpdateOpasStatus("envoyé à l'assurance")}
+                                    >
+                                        <FaCircle className="mr-1 text-success" />
+                                        Envoyé à l'assurance
+                                    </button>
+                                    <button
+                                        onClick={() => handleUpdateOpasStatus("contesté")}
+                                    >
+                                        <FaCircle className="mr-1 text-black" />
+                                        Contesté par l'assurance
+                                    </button>
+                                </>
+                            }
+                        </>
+                    }
+                </Dropdown>
+
+
+            </div >
         </>
     )
 }

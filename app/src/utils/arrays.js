@@ -163,7 +163,6 @@ export const doctorCategories = [
     "Autre"
 ]
 
-
 export const mandateCategories = [
     "Soins infirmiers",
     "Physiothérapie",
@@ -193,6 +192,7 @@ export const cantons = {
     "Argovie": "Argovie (19)",
     "Thurgovie": "Thurgovie (20)",
     "Tessin": "Tessin (21)",
+    "Vaud": "Vaud (22)",
     "Valais": "Valais (23)",
     "Neuchâtel": "Neuchâtel (24)",
     "Genève": "Genève (25)",
@@ -263,5 +263,12 @@ export const serviceCategoryColor = {
     "B": 'text-pink-400',
     "C": 'text-orange-400',
     "N": 'text-gray-400',
+}
+
+export const mandateCategoriesUsersRoles = {
+    "Soins infirmiers": "ROLE_NURSE",
+    "Physiothérapie": "ROLE_NONE",
+    "Aide à la personne": "ROLE_NONE",
+    "Matériel": "ROLE_NONE"
 }
 

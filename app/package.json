@@ -21,7 +21,6 @@
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "classnames": "^2.3.2",
-    "daisyui": "^2.45.0",
     "dayjs": "^1.11.7",
     "formik": "^2.2.9",
     "js-file-download": "^0.4.12",
@@ -43,6 +42,7 @@
     "react-toastify": "^9.0.8",
     "react-uuid": "^2.0.0",
     "stream-browserify": "^3.0.0",
+    "tailwind-capitalize-first-letter": "^1.0.4",
     "util": "^0.12.4",
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
@@ -73,6 +73,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.8",
+    "daisyui": "^4.4.2",
     "postcss": "^8.4.16",
     "react-app-rewired": "^2.2.1",
     "tailwindcss": "^3.1.8"

@@ -7,7 +7,6 @@ const Form = ({ children, onSubmit, isLoading, isDisabled, steps = null, current
     const buttonClassName = classNames("btn btn-wide btn-primary rounded-full",
         {
             "btn-disabled": isDisabled,
-            "loading": isLoading,
         }
     )
 
@@ -27,8 +26,11 @@ const Form = ({ children, onSubmit, isLoading, isDisabled, steps = null, current
                     </div>
                     <div className='place-self-center'>
                         {steps === currentStep &&
-                            <button className={buttonClassName}>
-                                {submitLabel || "Valider"}
+                            <button className={buttonClassName} disabled={isDisabled}>
+                                {isLoading ?
+                                <span className="loading loading-spinner loading-sm"></span>
+                                : submitLabel || "Valider"
+                            }
                             </button>
                         }
                     </div>

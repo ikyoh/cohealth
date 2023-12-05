@@ -1,0 +1,19 @@
+.cards {
+    @apply bg-white p-5 rounded-xl flex flex-row items-center gap-3;
+}
+
+.card {
+    @apply bg-white p-5 rounded-xl;
+}
+
+.icon {
+    @apply rounded-full p-2 bg-slate-200;
+}
+
+.title {
+    @apply text-sm text-slate-400
+}
+
+.info {
+    @apply text-xl font-bold
+}

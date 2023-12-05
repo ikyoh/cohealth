@@ -35,8 +35,15 @@ const fetchIRI = ({ queryKey }) => {
 }
 
 
+const deleteIRI = (iri) => {
+    console.log('iri', iri)
+    return requestIRI({ url: iri, method: 'delete' })
+}
+
+
 const postData = form => {
     const _form = {
+        ...form,
         groupingId: form.groupingId,
         patientFullname: form.patient.lastname + " " + form.patient.firstname,
         content: {
@@ -48,8 +55,13 @@ const postData = form => {
 }
 
 const putData = form => {
-    console.log('form', form)
-    return request({ url: API + "/" + form.id, method: 'put', data: form })
+    const _form = {...form}
+    if (form.content) form.patientFullname = form.content.patient.lastname + " " + form.content.patient.firstname
+    delete _form.createdAt
+    delete _form.documents
+    delete _form.mission
+    delete _form.user
+    return request({ url: API + "/" + form.id, method: 'put', data: _form })
 }
 
 /* HOOKS */
@@ -109,6 +121,18 @@ export const useGetIRI = (iri) => {
 export const usePostData = () => {
     const queryClient = useQueryClient()
     return useMutation(postData, {
+        onError: (error, _, context) => {
+            console.log('error', error)
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries()
+        }
+    })
+}
+
+export const useDeleteIRI = () => {
+    const queryClient = useQueryClient()
+    return useMutation(deleteIRI, {
         onError: (error, _, context) => {
             console.log('error', error)
         },

@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Image, Font, PDFViewer } from '@react-pdf/renderer'
 import * as dayjs from 'dayjs'
 import { nanoid } from '@reduxjs/toolkit'
@@ -7,20 +6,15 @@ import { useGetIRI as Mission } from '../../queryHooks/useMission'
 import { useGetIRI as Doctor } from '../../queryHooks/useDoctor'
 import { useGetIRI as Assurance } from '../../queryHooks/useAssurance'
 import { useGetIRI as Nurse } from '../../queryHooks/useUser'
-import { useGetIRI as Prescription } from '../../queryHooks/usePrescription'
-import { useGetIRI as Mandate } from '../../queryHooks/useMandate'
 import { useGetAllDatas as Partners } from '../../queryHooks/usePartner'
 import Roboto from '../../assets/Roboto_Condensed/RobotoCondensed-Regular.ttf'
 import RobotoBold from '../../assets/Roboto_Condensed/RobotoCondensed-Bold.ttf'
-import { HiDownload } from 'react-icons/hi'
 import Loader from '../Loader'
 
 
-const OpasPDF = ({ missionIRI, isPDFDownload = true, isPDFViewer = false, isOnePage = false }) => {
+const OpasPage1PDF = ({ data }) => {
 
-    const { data: mission } = Mission(missionIRI ? missionIRI : null)
-    const { data: opas } = Prescription(mission && mission.opas ? mission.opas : null)
-    const { data: mandate } = Mandate(mission && mission.mandate ? mission.mandate["@id"] : null)
+    const { data: mission } = Mission(data ? data.mission : null)
     const { data: doctor } = Doctor(mission ? mission.doctor : null)
     const { data: assurance } = Assurance(mission ? mission.assurance : null)
     const { data: nurse } = Nurse(mission ? mission.user["@id"] : null)
@@ -30,6 +24,7 @@ const OpasPDF = ({ missionIRI, isPDFDownload = true, isPDFViewer = false, isOneP
     // Create Document Component
     const MyDoc = () => {
 
+        // console.log('data', data)
 
         const dpi = 72
 
@@ -267,7 +262,7 @@ const OpasPDF = ({ missionIRI, isPDFDownload = true, isPDFViewer = false, isOneP
 
             let displayed = [...cares]
 
-            opas.content.services.forEach(service => {
+            data.content.services.forEach(service => {
                 let index = cares.findIndex(obj => obj.act === service.opas)
                 if (displayed[index].display === false) {
                     displayed[index].display = true
@@ -287,7 +282,7 @@ const OpasPDF = ({ missionIRI, isPDFDownload = true, isPDFViewer = false, isOneP
         }
 
         const groupedServices = (groupBy) => {
-            return opas.content.services.filter(f => f.category === groupBy)
+            return data.content.services.filter(f => f.category === groupBy)
         }
 
 
@@ -369,11 +364,11 @@ const OpasPDF = ({ missionIRI, isPDFDownload = true, isPDFViewer = false, isOneP
             )
         }
 
-        const totalA = calcABCN("A", opas.content.services, mission.beginAt, mission.endAt)
+        const totalA = calcABCN("A", data.content.services, mission.beginAt, mission.endAt)
         const totalAHours = calcMinutestoHours(totalA)
-        const totalB = calcABCN("B", opas.content.services, mission.beginAt, mission.endAt)
+        const totalB = calcABCN("B", data.content.services, mission.beginAt, mission.endAt)
         const totalBHours = calcMinutestoHours(totalB)
-        const totalC = calcABCN("C", opas.content.services, mission.beginAt, mission.endAt)
+        const totalC = calcABCN("C", data.content.services, mission.beginAt, mission.endAt)
         const totalCHours = calcMinutestoHours(totalC)
 
         return (
@@ -426,16 +421,16 @@ const OpasPDF = ({ missionIRI, isPDFDownload = true, isPDFViewer = false, isOneP
                             </View>
                             <View style={{ ...styles.row, justifyContent: 'space-between' }}>
                                 <Text style={{ ...styles.text, fontWeight: 'bold' }}>
-                                    {opas.content.type}
+                                    {data.content.type}
                                 </Text>
                                 <Text style={{ ...styles.text, fontWeight: 'bold' }}>
                                     Période : {dayjs(mission.beginAt).format('L')} au {dayjs(mission.endAt).format('L') + ' '}
                                     ({calcNumberOfDays(mission.beginAt, mission.endAt)} jours)
                                 </Text>
                                 <Text style={{ ...styles.text, fontWeight: 'bold' }}>
-                                    Cas : {opas.content.case}
+                                    Cas : {data.content.case}
                                 </Text>
-                                {opas.content.disability === "oui" &&
+                                {data.content.disability === "oui" &&
                                     <Text style={{ ...styles.text, fontWeight: 'bold' }}>
                                         Au bénifice d’une allocation pour impotent
                                     </Text>
@@ -444,10 +439,10 @@ const OpasPDF = ({ missionIRI, isPDFDownload = true, isPDFViewer = false, isOneP
                         </View>
                     </View>
 
-                    {opas.content.diagnosticNurse.length > 0 &&
+                    {data.content.diagnosticNurse.length > 0 &&
                         <View style={styles.comment}>
                             <Text style={{ ...styles.text, whiteSpace: 'pre-line' }}>
-                                {opas.content.diagnosticNurse}
+                                {data.content.diagnosticNurse}
                             </Text>
                         </View>
                     }
@@ -456,7 +451,7 @@ const OpasPDF = ({ missionIRI, isPDFDownload = true, isPDFViewer = false, isOneP
                         <Text style={{ ...styles.text, whiteSpace: 'pre-line' }}>
                             (à remplir par le médecin pour des mesures médico-déléguées uniquement)
                             {"\n"}
-                            {opas.content.diagnosticDoctor}
+                            {data.content.diagnosticDoctor}
                         </Text>
                     </View>
 
@@ -542,16 +537,6 @@ const OpasPDF = ({ missionIRI, isPDFDownload = true, isPDFViewer = false, isOneP
                     <View style={{ ...styles.row, marginTop: 10 }}>
                         <View style={styles.column}>
                             <Text style={styles.signature}>Date et signature du médecin</Text>
-                            {mandate && opas.signedAt &&
-                                <>
-                                    <Text style={styles.signature}>Le : {dayjs(opas.signedAt).format('L')}</Text>
-                                    <Image
-                                        style={styles.userSignature}
-                                        cache={true}
-                                        src={mandate.user.signature.contentUrl}
-                                    />
-                                </>
-                            }
                         </View>
                         <View style={styles.column}>
                             <Text style={styles.signature}>Signature de l'infirmier</Text>
@@ -571,242 +556,6 @@ const OpasPDF = ({ missionIRI, isPDFDownload = true, isPDFViewer = false, isOneP
 
                 </Page >
 
-                {!isOnePage &&
-
-
-                    <Page size="A4" style={styles.page} dpi={dpi} wrap debug={false}>
-
-                        <View style={styles.header}>
-                            <View>
-                                <Text style={styles.mainTitle}>
-                                    Description détaillée de la prestation
-                                </Text>
-                            </View>
-                            <View>
-                                <Text style={styles.mainSubtitle}>
-                                    (Selon article 7, al.2 OPAS)
-                                </Text>
-                            </View>
-                        </View>
-
-                        <View style={styles.row}>
-                            <View style={styles.column}>
-                                <View style={[styles.row, { alignItems: 'center', marginBottom: 5, marginTop: 8 }]}>
-                                    <Text style={styles.title}>
-                                        {mission.patient.gender === "homme" ? 'Patient' : 'Patiente'}
-                                    </Text>
-                                    <Separator />
-                                </View>
-                                <Text style={styles.text}>
-                                    {patientField}
-                                </Text>
-                            </View>
-                            <View style={styles.column}>
-                                <View style={[styles.row, { alignItems: 'center', marginBottom: 5, marginTop: 8 }]}>
-                                    <Text style={styles.title}>Assurance</Text>
-                                    <Separator />
-                                </View>
-                                <Text style={styles.text}>
-                                    {assuranceField}
-                                </Text>
-                            </View>
-                        </View>
-
-                        <View style={styles.row}>
-                            <View style={styles.column}>
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <View style={[styles.row, { alignItems: 'center', marginBottom: 5, marginTop: 8 }]}>
-                                        <Text style={styles.title}>
-                                            Soins infirmiers
-                                        </Text>
-                                        <Separator />
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
-                        <View style={styles.row}>
-                            <View style={styles.column}>
-                                <View style={{ ...styles.row, justifyContent: 'space-between' }}>
-                                    <Text style={{ ...styles.text, fontWeight: 'bold' }}>
-                                        {opas.content.type}
-                                    </Text>
-                                    <Text style={{ ...styles.text, fontWeight: 'bold' }}>
-                                        Période : {dayjs(mission.beginAt).format('L')} au {dayjs(mission.endAt).format('L') + ' '}
-                                        ({calcNumberOfDays(mission.beginAt, mission.endAt)} jours)
-                                    </Text>
-                                    <Text style={{ ...styles.text, fontWeight: 'bold' }}>
-                                        Cas : {opas.content.case}
-                                    </Text>
-                                    {opas.content.disability === "oui" &&
-                                        <Text style={{ ...styles.text, fontWeight: 'bold' }}>
-                                            Au bénifice d’une allocation pour impotent
-                                        </Text>
-                                    }
-                                </View>
-                            </View>
-                        </View>
-                        <View style={styles.row}>
-                            <View style={styles.column}>
-                                <View style={{ marginTop: '9px' }}>
-                                    <View style={{
-                                        padding: '0 0',
-                                        flexDirection: 'row',
-                                        //fontFamily: 'DinCondensed',
-                                        fontSize: '9px',
-                                    }}>
-                                        <Text style={{ width: 100, paddingLeft: 5 }}>
-                                            OPAS *
-                                        </Text>
-                                        <Text style={{ width: 90, paddingLeft: 5, textAlign: 'center' }}>
-                                            Code *
-                                        </Text>
-                                        <Text style={{ width: '100%', paddingLeft: 5, paddingRight: 15 }}>
-                                            Prestation
-                                        </Text>
-                                        <Text style={{ width: 100, textAlign: 'center' }}>
-                                            Durée
-                                        </Text>
-                                        <Text style={{ width: 140, textAlign: 'center' }}>
-                                            Fréquence
-                                        </Text>
-                                        <Text style={{ width: 120, textAlign: 'center' }}>
-                                            Durée totale
-                                        </Text>
-                                    </View>
-                                </View>
-
-                                {groupedServices("A").length > 0 &&
-                                    <View style={styles.caresContainer}>
-                                        <View>
-                                            <Text style={styles.careTitle}>
-                                                A / Evaluation et conseils
-                                            </Text>
-                                        </View>
-                                        {groupedServices("A").map((s) =>
-                                            <View style={styles.care} key={nanoid()}>
-                                                <Text style={{ width: 110, paddingLeft: 5, paddingTop: 5, paddingBottom: 5 }}>
-                                                    {s.opas}
-                                                </Text>
-                                                <Text style={{ width: 90, paddingLeft: 5, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black', textAlign: 'center' }}>
-                                                    {s.act}
-                                                </Text>
-                                                <Text style={{ width: '100%', paddingLeft: 5, paddingRight: 15, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black' }}>
-                                                    {s.title}
-                                                </Text>
-                                                <Text style={{ width: 110, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
-                                                    {s.time}
-                                                </Text>
-                                                <Text style={{ width: 140, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
-                                                    {s.frequency}x / {s.periodicity === "par période" ? 'période' : s.periodicity}
-                                                </Text>
-                                                <Text style={{ width: 120, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
-                                                    {calcTotalServiceTime(s)}
-                                                </Text>
-                                            </View>
-                                        )}
-                                    </View>
-                                }
-                                {groupedServices("B").length > 0 &&
-                                    <View style={styles.caresContainer}>
-                                        <View>
-                                            <Text style={styles.careTitle}>
-                                                B / Examens et traitements
-                                            </Text>
-                                        </View>
-                                        {groupedServices("B").map((s) =>
-                                            <View style={styles.care} key={nanoid()}>
-                                                <Text style={{ width: 110, paddingLeft: 5, paddingTop: 5, paddingBottom: 5 }}>
-                                                    {s.opas}
-                                                </Text>
-                                                <Text style={{ width: 90, paddingLeft: 5, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black', textAlign: 'center' }}>
-                                                    {s.act}
-                                                </Text>
-                                                <Text style={{ width: '100%', paddingLeft: 5, paddingRight: 15, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black' }}>
-                                                    {s.title}
-                                                </Text>
-                                                <Text style={{ width: 110, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
-                                                    {s.time}
-                                                </Text>
-                                                <Text style={{ width: 140, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
-                                                    {s.frequency}x / {s.periodicity === "par période" ? 'période' : s.periodicity}
-                                                </Text>
-                                                <Text style={{ width: 120, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
-                                                    {calcTotalServiceTime(s)}
-                                                </Text>
-                                            </View>
-                                        )}
-                                    </View>
-                                }
-                                {groupedServices("C").length > 0 &&
-                                    <View style={styles.caresContainer}>
-                                        <View>
-                                            <Text style={styles.careTitle}>
-                                                C / Soins de base
-                                            </Text>
-                                        </View>
-                                        {groupedServices("C").map((s) =>
-                                            <View style={styles.care} key={nanoid()}>
-                                                <Text style={{ width: 110, paddingLeft: 5, paddingTop: 5, paddingBottom: 5 }}>
-                                                    {s.opas}
-                                                </Text>
-                                                <Text style={{ width: 90, paddingLeft: 5, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black', textAlign: 'center' }}>
-                                                    {s.act}
-                                                </Text>
-                                                <Text style={{ width: '100%', paddingLeft: 5, paddingRight: 15, paddingTop: 5, paddingBottom: 5, borderLeft: '1px solid black' }}>
-                                                    {s.title}
-                                                </Text>
-                                                <Text style={{ width: 110, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
-                                                    {s.time}
-                                                </Text>
-                                                <Text style={{ width: 140, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
-                                                    {s.frequency}x / {s.periodicity === "par période" ? 'période' : s.periodicity}
-                                                </Text>
-                                                <Text style={{ width: 120, borderLeft: '1px solid black', textAlign: 'center', paddingTop: 5, paddingBottom: 5 }}>
-                                                    {calcTotalServiceTime(s)}
-                                                </Text>
-                                            </View>
-                                        )}
-                                    </View>
-                                }
-                            </View>
-                        </View>
-
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: '5px' }}>
-                            <View style={{ marginHorizontal: gap / 2 }} >
-                                <Text style={styles.text}>
-                                    Total A (Évaluation et conseils)  : {totalA} min.
-                                    {totalA !== 0 && " (" + totalAHours + "h)"}
-                                    {"\n"}
-                                    Total B (Examens et traitements) : {totalB} min.
-                                    {totalB !== 0 && " (" + totalBHours + "h)"}
-                                    {"\n"}
-                                    Total C (Soins de base) : {totalC} min.
-                                    {totalC !== 0 && " (" + totalCHours + "h)"}
-                                </Text>
-                            </View>
-                            <View style={{ marginHorizontal: gap / 2 }} >
-                                <Text style={styles.textBold}>
-                                    Total : {totalA + totalB + totalC} min. ({Math.round((totalA + totalB + totalC) * 100 / 60) / 100} h)
-                                </Text>
-                            </View>
-                        </View>
-
-
-                        <View style={styles.row}>
-                            <View style={styles.column}>
-                                <Text style={{ fontSize: '8px', lineHeight: 1.4 }}>
-                                    OPAS * : Prestation selon OPAS article 7 alinéa 2
-                                </Text>
-                                <Text style={{ fontSize: '8px', lineHeight: 1.4 }}>
-                                    Code * : Selon le catalogue des actes de l'ASSASD (novembre 2015)
-                                </Text>
-                            </View>
-                        </View>
-
-                    </Page >
-                }
-
             </Document >
         )
 
@@ -814,25 +563,13 @@ const OpasPDF = ({ missionIRI, isPDFDownload = true, isPDFViewer = false, isOneP
 
     const fileName = "Opas_" + dayjs().format('DD-MM-YYYY')
 
-    if (missionIRI && mission && doctor && assurance && nurse) {
-        if (isPDFDownload) return (
-            <PDFDownloadLink document={<MyDoc />} fileName={fileName} className='m-1 hover:bg-action hover:text-white rounded-sm cursor-pointer whitespace-nowrap flex items-center p-2 w-full text-left'>
-                {({ blob, loading, error }) => (
-                    <div className='flex gap-2 items-center'>
-                        <HiDownload size={20} /> Télécharger
-                    </div>
-                )
-                }
-            </PDFDownloadLink>
-        )
-        if (isPDFViewer) return (
-            <PDFViewer style={{ width: '100%', height: '100%' }}>
+    if (data && mission && doctor && assurance && nurse)
+        return (
+            <PDFViewer showToolbar={true}>
                 <MyDoc />
             </PDFViewer>
         )
-    }
-
-    else return (<Loader />)
+    else return <Loader />
 }
 
-export default OpasPDF
+export default OpasPage1PDF

@@ -18,7 +18,7 @@ export const useFilterMissions = (props) => {
     return {
         filters,
         filter:
-            <div className="dropdown dropdown-left">
+            <div className="dropdown dropdown-left z-50">
                 <label
                     tabIndex={0}
                     className="hover:cursor-pointer scaledown rounded-full h-12 w-12 flex items-center justify-center bg-transparent hover:bg-slate-200 border"
@@ -27,6 +27,9 @@ export const useFilterMissions = (props) => {
                     <GoSettings size={30} className="text-primary" />
                 </label>
                 <div tabIndex={0} className="dropdown-content menu p-2 border border-primary bg-slate-100 rounded w-40">
+                    <p className='text-sm'>
+                        Statut
+                    </p>
                     <div className="form-control">
                         <label className="label cursor-pointer justify-start gap-3">
                             <input

@@ -58,7 +58,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["users:read", "user:read", "user:write", "partners:read", "missions:read", "mission:read"])]
+    #[Groups(["users:read", "user:read", "user:write", "partners:read", "missions:read", "mission:read", "mandate:read"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 180)]
@@ -139,7 +139,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $avatar;
 
     #[ORM\OneToOne(targetEntity: MediaObject::class)]
-    #[Groups(["users:read", "user:read", "user:write"])]
+    #[Groups(["users:read", "user:read", "user:write", "mandate:read"])]
     private $signature;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]

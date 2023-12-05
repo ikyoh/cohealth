@@ -11,7 +11,7 @@ import DocumentForm from '../../forms/DocumentForm'
 
 const MissionDocument = ({ iri, isMine }) => {
 
-    const { data, isLoading, error } = useGetIRI(iri)
+    const { data, isLoading } = useGetIRI(iri)
     const { mutate: deleteDocument } = useDeleteIRI()
 
     const queryClient = useQueryClient()
@@ -43,7 +43,7 @@ const MissionDocument = ({ iri, isMine }) => {
                     </div>
                 </div>
 
-                <div className='border-l-2 border-base-300 bg-base-100 rounded mb-3 pl-3 py-2 flex justify-between'>
+                <div className='border-l-2 border-base-300 bg-gradient-to-r from-base-200 to-white rounded mb-3 pl-3 py-2 flex justify-between'>
                     <div>
                         {data.type}
                         {

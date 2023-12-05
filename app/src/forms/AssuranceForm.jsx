@@ -20,8 +20,6 @@ const AssuranceForm = ({ iri, handleCloseModal }) => {
         defaultValues: assurance
     })
 
-console.log('errors', errors)
-
     // Case update
     useEffect(() => {
         if (iri && data) {

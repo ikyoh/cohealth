@@ -4,9 +4,9 @@ import classNames from 'classnames';
 
 export const Table = ({ children }) => {
     return (
-            <table className="w-full table-fixed text-left border-collapse bg-white text-sm">
-                {children}
-            </table>
+        <table className="w-full table-fixed text-left border-collapse bg-white text-sm">
+            {children}
+        </table>
     )
 }
 
@@ -14,7 +14,7 @@ export const Thead = ({ children }) => {
     return (
         <thead className='bg-slate-200 sticky top-24 z-10 hidden md:table-header-group'>
             <tr>
-            {children}
+                {children}
             </tr>
         </thead>
     )
@@ -28,7 +28,7 @@ export const Tbody = ({ children }) => {
     )
 }
 
-export const Th = ({ label, sortBy, sortValue, sortDirection, handleSort}) => {
+export const Th = ({ label, sortBy, sortValue, sortDirection, handleSort }) => {
 
     const className = classNames("leading-10 p-0 font-normal",
         {
@@ -63,7 +63,7 @@ export const Th = ({ label, sortBy, sortValue, sortDirection, handleSort}) => {
             className={className}
         >
             <div className='px-2 py-2 border-b border-slate-200 h-[60px] items-center'>
-                <div className="">
+                <div className="className">
                     {label}
                 </div>
             </div>
@@ -72,11 +72,11 @@ export const Th = ({ label, sortBy, sortValue, sortDirection, handleSort}) => {
 
 }
 
-export const Tr = ({ onClick, children }) => {
+export const Tr = ({ onClick = false, children }) => {
 
     const ClassNames = classNames("flex flex-col md:table-row border-t border-slate-500/20 md:leading-[1em] even:bg-slate-100 md:even:bg-white relative",
         {
-            "hover:bg-slate-50 cursor-pointer modal-open": onClick,
+            "hover:bg-slate-50 cursor-pointer": true,
         })
 
     return (
@@ -92,7 +92,7 @@ export const Tr = ({ onClick, children }) => {
 export const Td = ({ label, text, children }) => {
     return (
         <td className='px-3 pb-1 md:py-4 first:pt-5 md:first:pt-auto'>
-            <div className='flex flex-col md:flex-row md:items-center'>
+            <div className='flex flex-wrap flex-col md:flex-row md:items-center'>
                 {label ?
                     <div className="block md:hidden text-sm text-primary/50">
                         {label}
@@ -101,7 +101,7 @@ export const Td = ({ label, text, children }) => {
                 }
                 {children}
                 <p className='first-letter:uppercase'>
-                {text}
+                    {text}
                 </p>
             </div>
         </td>

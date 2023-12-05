@@ -10,7 +10,7 @@ const Pagination = ({ totalItems = 5, page, setPage }) => {
         setPage(event.selected + 1);
     };
 
-    if (pageCount === 1) return null
+    if (pageCount <= 1) return null
     else return (
         <div className="bg-slate-100 md:sticky bottom-0 right-0 w-full md:pr-5">
             <ReactPaginate

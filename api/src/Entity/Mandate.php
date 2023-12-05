@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\UserOwnedInterface;
 use ApiPlatform\Metadata\ApiFilter;
@@ -27,7 +28,8 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
         new GetCollection(),
         new Get(normalizationContext: ['groups' => ['mandate:read']]),
         new Put(),
-        new Post()
+        new Post(),
+        new Delete(),
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['status' => 'exact'])]
@@ -38,8 +40,8 @@ class Mandate implements UserOwnedInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["mandates:read", "mandate:read"])]
-    private ?int $id = null;
+    #[Groups(["mandates:read", "mandate:read", "mission:read"])]
+    private ?int $id;
 
     #[ORM\OneToMany(mappedBy: 'mandate', targetEntity: Mission::class)]
     #[Groups(["mandates:read", "mandate:read", "mandate:write"])]
@@ -49,8 +51,13 @@ class Mandate implements UserOwnedInterface
     #[Groups(["mandates:read", "mandate:read", "mandate:write"])]
     private array $content = [];
 
+    // Soins infirmiers / Physiothérapie / Aide à la personne / Matériel
+    #[ORM\Column(length: 255)]
+    #[Groups(["mandates:read", "mandate:read", "mandate:write", "missions:read", "mission:read"])]
+    private ?string $category = 'Soins infirmiers';
+
     //édité / annulé / accepté / refusé / attribué
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     #[Groups(["mandates:read", "mandate:read", "mandate:write"])]
     private ?string $status = 'édité';
 
@@ -83,10 +90,16 @@ class Mandate implements UserOwnedInterface
     #[Groups(["mandates:read", "mandate:read", "mandate:write"])]
     private ?string $groupingId = null;
 
+    #[ORM\OneToMany(mappedBy: 'mandate', targetEntity: MediaObject::class)]
+    #[Groups(["mandates:read", "mandate:read", "mandate:write", "mission:read"])]
+    private $documents;
+
+
     public function __construct()
     {
         $this->mission = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
+        $this->documents = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -156,6 +169,17 @@ class Mandate implements UserOwnedInterface
     public function setStatus(?string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?string $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }
@@ -232,5 +256,33 @@ class Mandate implements UserOwnedInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, MediaObject>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
 
+    public function addDocument(MediaObject $document): self
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents->add($document);
+            $document->setMandate($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(MediaObject $document): self
+    {
+        if ($this->documents->removeElement($document)) {
+            // set the owning side to null (unless already changed)
+            if ($document->getMandate() === $this) {
+                $document->setMandate(null);
+            }
+        }
+
+        return $this;
+    }
 }

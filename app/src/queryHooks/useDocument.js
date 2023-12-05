@@ -30,11 +30,13 @@ const fetchIRI = ({ queryKey }) => {
 }
 
 const postData = form => {
+    console.log('form', form)
     const formData = new FormData()
     formData.append('file', form.file[0])
     formData.append('type', form.type)
     if (form.comment) formData.append('comment', form.comment)
     if (form.mission) formData.append('mission', form.mission)
+    if (form.mandate) formData.append('mandate', form.mandate)
     return request({ url: API, method: 'post', data: formData })
 }
 

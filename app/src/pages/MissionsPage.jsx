@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { MdPendingActions } from "react-icons/md";
+import { MdPendingActions } from "react-icons/md"
 import MissionForm from '../forms/MissionForm'
 import MissionDuplicateForm from '../forms/MissionDuplicateForm'
 import PageTitle from '../layouts/PageTitle'
@@ -19,8 +19,10 @@ import OpasStatus from '../components/opas/OpasStatus'
 import MissionStatus from '../components/mission_status/MissionsStatus'
 import { missionStatus } from '../utils/arrays'
 import Loader from '../components/Loader'
-import { useFilterMissions } from '../hooks/useFilterMissions';
-import { FaCircle } from 'react-icons/fa';
+import { useFilterMissions } from '../hooks/useFilterMissions'
+import { useGetCurrentAccount } from '../queryHooks/useAccount'
+import NoData from '../components/no_data/NoData'
+
 
 const MissionsPage = () => {
 
@@ -31,8 +33,11 @@ const MissionsPage = () => {
     const { filters, filter } = useFilterMissions()
     const [page, setPage] = useState(initialPageState ? initialPageState.page : 1)
     const { sortValue, sortDirection, handleSort } = useSortBy(initialPageState ? { value: initialPageState.sortValue, direction: initialPageState.sortDirection } : "")
-    const { data, isLoading, error } = useGetPaginatedDatas(page, sortValue, sortDirection, searchValue, filters)
+    const { data, isLoading } = useGetPaginatedDatas(page, sortValue, sortDirection, searchValue, filters)
     const { mutate } = usePutData()
+
+    const { data: account, isLoading: isLoadingAccount } = useGetCurrentAccount()
+
 
     useEffect(() => {
         if (searchValue && !initialPageState) {
@@ -51,7 +56,7 @@ const MissionsPage = () => {
     }
 
 
-    if (isLoading) return <Loader />
+    if (isLoading || isLoadingAccount) return <Loader />
     return (
         <>
             <Modal />
@@ -65,113 +70,137 @@ const MissionsPage = () => {
                 {filter}
             </PageTitle>
 
-            <Table.Table>
-                <Table.Thead>
-                    <Table.Th
-                        label="#"
-                        sortBy='id'
-                        sortValue={sortValue}
-                        sortDirection={sortDirection}
-                        handleSort={handleSort}
-                    />
-                    <Table.Th
-                        label="Patient"
-                        sortBy='patient.lastname'
-                        sortValue={sortValue}
-                        sortDirection={sortDirection}
-                        handleSort={handleSort}
-                    />
-                    <Table.Th
-                        label="Début"
-                        sortBy='beginAt'
-                        sortValue={sortValue}
-                        sortDirection={sortDirection}
-                        handleSort={handleSort}
-                    />
-                    <Table.Th
-                        label="Fin"
-                        sortBy='endAt'
-                        sortValue={sortValue}
-                        sortDirection={sortDirection}
-                        handleSort={handleSort}
-                    />
-                    <Table.Th
-                        label="Durée"
-                    />
-                    <Table.Th
-                        label="OPAS"
-                        sortBy='prescriptions.status'
-                        sortValue={sortValue}
-                        sortDirection={sortDirection}
-                        handleSort={handleSort}
-                    />
-                    <Table.Th
-                        label="Statut"
-                        sortBy='status'
-                        sortValue={sortValue}
-                        sortDirection={sortDirection}
-                        handleSort={handleSort}
-                    />
-                    <Table.Th label="" style={{ width: 10 }} />
-                </Table.Thead>
-                <Table.Tbody>
-                    {!isLoading && data['hydra:member'].map(data =>
-                        <Table.Tr key={data.id}
-                            onClick={() => navigate(API_MISSIONS + "/" + data.id, { state: { page: page, sortDirection: sortDirection, sortValue: sortValue, searchValue: searchValue } })}
-                        >
-                            <Table.Td text={data.id} />
-                            <Table.Td label="Patient" text={data.patient.lastname + " " + data.patient.firstname} />
-                            <Table.Td label="Début" text={dayjs(data.beginAt).format('DD/MM/YYYY')} />
-                            <Table.Td label="Fin" text={dayjs(data.endAt).format('DD/MM/YYYY')} />
-                            <Table.Td label="Durée" text={calcNumberOfDays(data.beginAt, data.endAt) + " jours"} />
-                            <Table.Td label="Opas" children={<OpasStatus prescriptions={data.prescriptions} />} />
-                            <Table.Td label="Statut" children={<MissionStatus mission={data} />} />
-                            <Table.Td label="" text="" >
-                                <Dropdown type='table'>
-                                    <button
-                                        onClick={() => navigate(API_MISSIONS + "/" + data.id, { state: { page: page, sortDirection: sortDirection, sortValue: sortValue, searchValue: searchValue, filter: filters } })}
-                                    >
-                                        Voir la fiche mission
-                                    </button>
-                                    <button
-                                        onClick={() => handleOpenModal({ title: "Édition de la mission", content: <MissionForm iri={data['@id']} action='mission' handleCloseModal={handleCloseModal} /> })}>
-                                        Modifier la mission
-                                    </button>
-                                    <span>
-                                        Statut de la mission
-                                    </span>
-                                    <button
-                                        className='flex items-center gap-2'
-                                        onClick={() => handleChangeStatus(data.id, "en cours")}>
-                                        <div className={`rounded-full w-4 h-4 ${missionStatus["en cours"]}`}>
-                                        </div>
-                                        En cours
-                                    </button>
-                                    <button
-                                        className='flex items-center gap-2'
-                                        onClick={() => handleChangeStatus(data.id, "annulé")}>
-                                        <div className={`rounded-full w-4 h-4 ${missionStatus["annulé"]}`}>
-                                        </div>
-                                        Annulé
-                                    </button>
-                                    <button
-                                        className='flex items-center gap-2'
-                                        onClick={() => handleChangeStatus(data.id, "archivé")}>
-                                        <div className={`rounded-full w-4 h-4 ${missionStatus["archivé"]}`}>
-                                        </div>
-                                        Archivé
-                                    </button>
-                                    <button
-                                        onClick={() => handleOpenModal({ title: "Duplication de la mission", content: <MissionDuplicateForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
-                                        Dupliquer la mission
-                                    </button>
-                                </Dropdown>
-                            </Table.Td>
-                        </Table.Tr>
-                    )}
-                </Table.Tbody>
-            </Table.Table>
+            {data["hydra:totalItems"] === 0 ?
+                <NoData />
+                :
+                <Table.Table>
+                    <Table.Thead>
+                        <Table.Th
+                            label="#"
+                            sortBy='id'
+                            sortValue={sortValue}
+                            sortDirection={sortDirection}
+                            handleSort={handleSort}
+                        />
+                        <Table.Th
+                            label="Patient"
+                            sortBy='patient.lastname'
+                            sortValue={sortValue}
+                            sortDirection={sortDirection}
+                            handleSort={handleSort}
+                        />
+                        <Table.Th
+                            label="Début"
+                            sortBy='beginAt'
+                            sortValue={sortValue}
+                            sortDirection={sortDirection}
+                            handleSort={handleSort}
+                        />
+                        <Table.Th
+                            label="Fin"
+                            sortBy='endAt'
+                            sortValue={sortValue}
+                            sortDirection={sortDirection}
+                            handleSort={handleSort}
+                        />
+                        <Table.Th
+                            label="Durée"
+                        />
+                        {account.roles.includes('ROLE_DOCTOR') &&
+                            <Table.Th
+                                label="Prestation"
+                            />
+                        }
+                        {!account.roles.includes('ROLE_DOCTOR') &&
+                            <Table.Th
+                                label="OPAS"
+                                sortBy='opas.status'
+                                sortValue={sortValue}
+                                sortDirection={sortDirection}
+                                handleSort={handleSort}
+                            />
+                        }
+                        <Table.Th
+                            label="Statut"
+                            sortBy='status'
+                            sortValue={sortValue}
+                            sortDirection={sortDirection}
+                            handleSort={handleSort}
+                        />
+                        <Table.Th label="" style={{ width: 10 }} />
+                    </Table.Thead>
+                    <Table.Tbody>
+                        {!isLoading && data['hydra:member'].map(data =>
+                            <Table.Tr key={data.id}
+                                onClick={() => navigate(API_MISSIONS + "/" + data.id, { state: { page: page, sortDirection: sortDirection, sortValue: sortValue, searchValue: searchValue } })}
+                            >
+                                <Table.Td text={data.id} />
+                                <Table.Td label="Patient" text={data.patient.lastname + " " + data.patient.firstname} />
+                                <Table.Td label="Début" text={dayjs(data.beginAt).format('DD/MM/YYYY')} />
+                                <Table.Td label="Fin" text={dayjs(data.endAt).format('DD/MM/YYYY')} />
+                                <Table.Td label="Durée" text={calcNumberOfDays(data.beginAt, data.endAt) + " jours"} />
+
+                                {account.roles.includes('ROLE_DOCTOR') &&
+                                    <Table.Td label="Prestation" text={data.mandate.category} />
+                                }
+                                {!account.roles.includes('ROLE_DOCTOR') &&
+                                    <Table.Td label="Opas" children={<OpasStatus opas={data.opas} />} />
+                                }
+
+                                <Table.Td label="Statut">
+                                    <MissionStatus mission={data} isAnimated={account.roles.includes('ROLE_DOCTOR') && data.opas && data.opas.status === "envoyé au médecin"}
+                                        label={account.roles.includes('ROLE_DOCTOR') && data.opas && data.opas.status === "envoyé au médecin" && "OPAS à valider"} />
+                                </Table.Td>
+                                <Table.Td label="" text="" >
+                                    {account.roles.includes('ROLE_NURSE') &&
+                                        <Dropdown type='table'>
+                                            <button
+                                                onClick={() => navigate(API_MISSIONS + "/" + data.id, { state: { page: page, sortDirection: sortDirection, sortValue: sortValue, searchValue: searchValue, filter: filters } })}
+                                            >
+                                                Voir la fiche mission
+                                            </button>
+                                            <button
+                                                onClick={() => handleOpenModal({ title: "Édition de la mission", content: <MissionForm iri={data['@id']} action='mission' handleCloseModal={handleCloseModal} /> })}>
+                                                Modifier la mission
+                                            </button>
+                                            <p>
+                                                Statut de la mission
+                                            </p>
+                                            <button
+                                                className='flex items-center gap-2'
+                                                onClick={() => handleChangeStatus(data.id, "en cours")}>
+                                                <div className={`rounded-full w-4 h-4 ${missionStatus["en cours"]}`}>
+                                                </div>
+                                                En cours
+                                            </button>
+                                            <button
+                                                className='flex items-center gap-2'
+                                                onClick={() => handleChangeStatus(data.id, "annulé")}>
+                                                <div className={`rounded-full w-4 h-4 ${missionStatus["annulé"]}`}>
+                                                </div>
+                                                Annulé
+                                            </button>
+                                            <button
+                                                className='flex items-center gap-2'
+                                                onClick={() => handleChangeStatus(data.id, "archivé")}>
+                                                <div className={`rounded-full w-4 h-4 ${missionStatus["archivé"]}`}>
+                                                </div>
+                                                Archivé
+                                            </button>
+                                            <button
+                                                onClick={() => handleOpenModal({ title: "Duplication de la mission", content: <MissionDuplicateForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
+                                                Dupliquer la mission
+                                            </button>
+                                        </Dropdown>
+                                    }
+                                </Table.Td>
+                            </Table.Tr>
+                        )}
+                    </Table.Tbody>
+                </Table.Table>
+            }
             <Pagination totalItems={data['hydra:totalItems']} page={page} setPage={setPage} />
+
         </>
     )
 }

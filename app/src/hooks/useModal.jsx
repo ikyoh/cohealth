@@ -12,8 +12,8 @@ export const useModal = () => {
         size: "medium"
     })
 
-    const handleOpenModal = (event) => {
-        setModal({ ...modal, show: true, title: event.title, content: event.content, size: event.size || 'medium' })
+    const handleOpenModal = (props) => {
+        setModal({ ...modal, show: true, title: props.title, content: props.content, size: props.size || 'medium' })
     }
 
     const handleCloseModal = () => {
@@ -26,9 +26,10 @@ export const useModal = () => {
     });
 
     const boxClassName = classNames({
-        "modal-box rounded-none md:rounded-md p-0 w-screen !h-screen md:!h-auto max-h-screen": true,
-        "max-w-4xl": modal.size==="medium",
-        "max-w-screen-2xl": modal.size==="full",
+        "modal-box rounded-none md:rounded-md p-0": true,
+        "max-w-4xl": modal.size === "medium",
+        "max-w-screen-2xl h-screen": modal.size === "full",
+        "max-w-sm": modal.size === "small",
     });
 
 
@@ -42,7 +43,7 @@ export const useModal = () => {
                             <MdClose />
                         </button>
                     </div>
-                    <div className='overflow-y-scroll max-h-[calc(100vh-73px)] md:max-h-[calc(100vh-160px)]'>
+                    <div className={`overflow-y-auto max-h-[calc(100vh-73px)] md:max-h-[calc(100vh-160px)] ${modal.size === "full" && "h-full"}`}>
                         {modal.content}
                     </div>
                 </div>

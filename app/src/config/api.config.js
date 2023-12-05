@@ -18,4 +18,4 @@ export const API_SERVICES = "/services";
 export const API_USERS = "/users";
 export const API_PASSWORD = "/forgot_password/";
 
-export const itemsPerPage = 20
+export const itemsPerPage = 40

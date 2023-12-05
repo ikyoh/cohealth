@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import Pict1 from '../assets/svg/undraw_doctors_hwty.svg'
 import Pict2 from '../assets/svg/undraw_process_re_gws7.svg'
 import Pict3 from '../assets/svg/undraw_calendar_re_ki49.svg'
-import FrontLayout from '../layouts/FrontLayout'
+
 
 const Homepage = () => {
 

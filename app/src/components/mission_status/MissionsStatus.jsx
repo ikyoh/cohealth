@@ -3,7 +3,7 @@ import { missionStatus } from '../../utils/arrays'
 import dayjs from 'dayjs'
 
 
-const MissionStatus = ({ mission }) => {
+const MissionStatus = ({ mission, label, isAnimated }) => {
 
     const showStatus = () => {
         if (mission.status !== 'en cours') return mission.status
@@ -14,14 +14,20 @@ const MissionStatus = ({ mission }) => {
 
     return (
         <div className="flex flex-wrap items-center gap-3 text-black">
-            <div className={`h-5 w-5 rounded-full ${missionStatus[showStatus()]}`}>
-            </div>
+
+            <span className="relative flex h-4 w-4">
+                {isAnimated &&
+                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${missionStatus[showStatus()]} opacity-75`}></span>}
+                <span className={`relative inline-flex rounded-full h-4 w-4 ${missionStatus[showStatus()]}`}></span>
+            </span>
+
+
             <div>
-                {showStatus().charAt(0).toUpperCase() + showStatus().slice(1)}
+                {label ? label : showStatus().charAt(0).toUpperCase() + showStatus().slice(1)}
             </div>
         </div>
     )
-    
+
 }
 
 export default MissionStatus

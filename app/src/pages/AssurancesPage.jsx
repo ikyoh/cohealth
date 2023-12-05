@@ -39,14 +39,15 @@ const AssurancesPage = () => {
         <>
             <Modal />
             <PageTitle
-            title="Liste des assurances"
-            subtitle={data["hydra:totalItems"]}
-            icon={<MdOutlineHealthAndSafety size={40}/>}
-            mainButton={<AddButton onClick={() => handleOpenModal({ title: 'Nouvelle assurance', content: <AssuranceForm handleCloseModal={handleCloseModal} /> })} />
-        }
+                title="Liste des assurances"
+                subtitle={data["hydra:totalItems"]}
+                icon={<MdOutlineHealthAndSafety size={40} />}
+                mainButton={<AddButton onClick={() => handleOpenModal({ title: 'Nouvelle assurance', content: <AssuranceForm handleCloseModal={handleCloseModal} /> })} />
+                }
             >
                 {searchbar}
             </PageTitle>
+
 
             <Table.Table>
                 <Table.Thead>

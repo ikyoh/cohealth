@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect } from 'react';
 import { useGetIRI, usePutData } from '../queryHooks/useMandate';
 import { usePostData } from '../queryHooks/useMission';
 import { useGetDatasByAvsNumber } from '../queryHooks/usePatient';
@@ -6,29 +6,28 @@ import { useGetPaginatedDatas as useGetDoctors } from '../queryHooks/useDoctor';
 import { useForm } from "react-hook-form";
 import Form from "../components/form/form/Form";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { mandateUserIRI as validationSchema } from '../utils/validationSchemas';
+import { mission as validationSchema } from '../utils/validationSchemas';
 import Loader from '../components/Loader';
-import dayjs from 'dayjs'
+import dayjs from 'dayjs';
 import MissionFields from '../fields/MissionFields';
-import { useGetCurrentAccount as useAccount } from '../queryHooks/useAccount'
-import { API_URL, API_USERS } from '../config/api.config'
+import { useGetCurrentAccount as useAccount } from '../queryHooks/useAccount';
+import { API_URL, API_USERS } from '../config/api.config';
 
 
-const MandateAcceptForm = ({ iri, handleCloseModal }) => {
+const MandateAcceptForm = ({ iri }) => {
 
-    const [step, setStep] = useState(1)
-
-    const { isLoading: isLoading, data, isError, error } = useGetIRI(iri)
+    const { isLoading, data } = useGetIRI(iri)
     const { data: user, isLoading: isLoadingUser } = useAccount()
     const { data: patient, isLoading: isLoadingPatient } = useGetDatasByAvsNumber(data ? data.content.patient.avsNumber : null)
     const { data: doctor, isLoading: isLoadingDoctor } = useGetDoctors(1, "", "", "", { rcc: data ? data.user.rcc : null }, data ? data.user.rcc : false)
 
-    const { mutate: postData, isSuccess: isPostSuccess, isLoading: isPosting } = usePostData()
+    const { mutate: postData, isLoading: isPosting } = usePostData()
     const { mutate: putData, isSuccess: isPutSuccess, isLoading: isPutting } = usePutData()
+
 
     useEffect(() => {
         if (patient && doctor && !isLoading) {
-            if (patient['hydra:member'].length != 0)
+            if (patient['hydra:member'].length !== 0)
                 reset({
                     patient: patient['hydra:member'][0],
                     beginAt: data.content.service.beginAt,
@@ -56,7 +55,7 @@ const MandateAcceptForm = ({ iri, handleCloseModal }) => {
 
     const { register, handleSubmit, reset, getValues, formState: { errors, isSubmitting } } = useForm({
         defaultValues: {},
-        //resolver: yupResolver(validationSchema)
+        resolver: yupResolver(validationSchema)
     })
 
     if (isLoading || isLoadingPatient || isLoadingUser) return <Loader />

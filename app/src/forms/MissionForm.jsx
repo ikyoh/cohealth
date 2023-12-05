@@ -24,15 +24,14 @@ import {
     doctorIRI as doctorIRISchema,
     assuranceIRI as assuranceIRISchema,
 } from '../utils/validationSchemas'
-import Loader from '../components/Loader'
 import { API_URL, API_USERS } from '../config/api.config'
 
 const MissionForm = ({ iri, handleCloseModal, action = "patientIRI" }) => {
 
     const [modalAction, setModalAction] = useState(action)
-    const { isLoading, data, isError, error } = useGetIRI(iri)
+    const { isLoading, data } = useGetIRI(iri)
     const { data: user } = useAccount()
-    const { mutate: postData, isLoading: isPosting, isSuccess } = usePostData()
+    const { mutate: postData } = usePostData()
     const { mutate: putData } = usePutData(iri)
 
     const { searchValue, searchbar } = useSearch("")
@@ -73,9 +72,6 @@ const MissionForm = ({ iri, handleCloseModal, action = "patientIRI" }) => {
 
     const { register, handleSubmit, reset, watch, setValue, trigger, formState: { errors, isSubmitting } } = methods;
 
-
-    console.log('watch', watch())
-
     // Case update
     useEffect(() => {
         if (iri && data) {
@@ -93,12 +89,16 @@ const MissionForm = ({ iri, handleCloseModal, action = "patientIRI" }) => {
         postData(form)
         else {
             const datas = {...form}
+            delete datas.user
             delete datas.documents
+            delete datas.mandate
+            delete datas.patient
             putData(datas)
         }
-        console.log('form', form)
         handleCloseModal()
     }
+
+
 
     return (
         <>
@@ -161,7 +161,7 @@ const MissionForm = ({ iri, handleCloseModal, action = "patientIRI" }) => {
                         </>
                     }
                     {modalAction === 'assurance' &&
-                        <AssuranceFields errors={errors} register={register} name="assurance" />
+                        <AssuranceFields errors={errors} register={register} name="assurance" watch={watch} />
                     }
                 </Form>
             </FormProvider>
