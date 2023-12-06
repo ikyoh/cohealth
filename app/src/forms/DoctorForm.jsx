@@ -8,12 +8,13 @@ import { doctor } from '../utils/arrays';
 import DoctorFields from '../fields/DoctorFields';
 import CommentForm from './CommentForm';
 import { doctor as validationSchema } from '../utils/validationSchemas';
+import Loader from '../components/Loader';
 
 const DoctorForm = ({ iri, handleCloseModal }) => {
 
-    const { isLoading: isLoadingData, data, isError, error } = useGetIRI(iri)
-    const { mutate: postData, isLoading: isPosting, isSuccess } = usePostData()
-    const { mutate: putData } = usePutData()
+    const { isLoading, data } = useGetIRI(iri)
+    const { mutate: postData, isLoading: isPostPending, isSuccess: isPostSuccess } = usePostData()
+    const { mutate: putData, isLoading: isPutPending, isSuccess: isPutSuccess } = usePutData()
 
 
     const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
@@ -26,7 +27,7 @@ const DoctorForm = ({ iri, handleCloseModal }) => {
         if (iri && data) {
             reset(data)
         }
-    }, [isLoadingData, data])
+    }, [isLoading, data])
 
     const onSubmit = form => {
         if (!iri)
@@ -34,14 +35,19 @@ const DoctorForm = ({ iri, handleCloseModal }) => {
         else {
             putData(form)
         }
-        handleCloseModal()
     }
 
+    useEffect(() => {
+        if (isPostSuccess || isPutSuccess) handleCloseModal()
+    }, [isPostSuccess, isPutSuccess])
+
+
+    if (isLoading && iri) return <Loader />
     return (
         <>
             <Form onSubmit={handleSubmit(onSubmit)}
-                isLoading={isSubmitting}
-                isDisabled={isSubmitting}
+                isLoading={isPostPending || isPutPending}
+                isDisabled={isPostPending || isPutPending}
                 className="p-5"
             >
                 <DoctorFields register={register} errors={errors} />

@@ -24,6 +24,9 @@ import { useGetCurrentAccount } from '../queryHooks/useAccount'
 import NoData from '../components/no_data/NoData'
 
 
+import { HiDuplicate, HiDotsCircleHorizontal, HiChevronRight } from 'react-icons/hi'
+
+
 const MissionsPage = () => {
 
     const { state: initialPageState } = useLocation()
@@ -157,10 +160,12 @@ const MissionsPage = () => {
                                             <button
                                                 onClick={() => navigate(API_MISSIONS + "/" + data.id, { state: { page: page, sortDirection: sortDirection, sortValue: sortValue, searchValue: searchValue, filter: filters } })}
                                             >
+                                                <HiChevronRight size={20} />
                                                 Voir la fiche mission
                                             </button>
                                             <button
                                                 onClick={() => handleOpenModal({ title: "Édition de la mission", content: <MissionForm iri={data['@id']} action='mission' handleCloseModal={handleCloseModal} /> })}>
+                                                <HiDotsCircleHorizontal size={20} />
                                                 Modifier la mission
                                             </button>
                                             <p>
@@ -189,6 +194,8 @@ const MissionsPage = () => {
                                             </button>
                                             <button
                                                 onClick={() => handleOpenModal({ title: "Duplication de la mission", content: <MissionDuplicateForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
+
+                                                <HiDuplicate size={20} />
                                                 Dupliquer la mission
                                             </button>
                                         </Dropdown>

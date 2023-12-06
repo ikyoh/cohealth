@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 
 
@@ -23,7 +24,8 @@ use ApiPlatform\Metadata\GetCollection;
         new GetCollection(),
         new Get(normalizationContext: ['groups' => ['partner:read']]),
         new Put(),
-        new Post()
+        new Post(),
+        new Delete(),
     ]
 )]
 

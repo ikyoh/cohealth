@@ -72,11 +72,12 @@ export const Th = ({ label, sortBy, sortValue, sortDirection, handleSort }) => {
 
 }
 
-export const Tr = ({ onClick = false, children }) => {
+export const Tr = ({ onClick, children }) => {
 
-    const ClassNames = classNames("flex flex-col md:table-row border-t border-slate-500/20 md:leading-[1em] even:bg-slate-100 md:even:bg-white relative",
+    const ClassNames = classNames("flex flex-col md:table-row border-t border-slate-500/20 md:leading-[1em] relative",
         {
-            "hover:bg-slate-50 cursor-pointer": true,
+            "hover:bg-slate-50": true,
+            "cursor-pointer": onClick ? true : false,
         })
 
     return (
@@ -100,7 +101,7 @@ export const Td = ({ label, text, children }) => {
                     : null
                 }
                 {children}
-                <p className='first-letter:uppercase'>
+                <p>
                     {text}
                 </p>
             </div>

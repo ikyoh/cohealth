@@ -6,7 +6,6 @@ import { cantons, doctorCategories } from '../utils/arrays';
 
 const DoctorFields = ({ name, errors, register }) => {
 
-    console.log('errors', errors)
     return (
         <>
             <FormInput
@@ -57,7 +56,7 @@ const DoctorFields = ({ name, errors, register }) => {
             />
             <FormInput
                 type="text"
-                name={name ? name + ".address" : "address"}
+                name={name ? name + ".address1" : "address1"}
                 label="Adresse"
                 error={name && errors[name] ? errors[name]['address'] : errors['address']}
                 register={register}

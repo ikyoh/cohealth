@@ -9,7 +9,6 @@ const PartnerForm = ({ handleCloseModal }) => {
 
     const [filters, setFilters] = useState({ rcc: "" })
     const [enabled, setEnabled] = useState(false)
-    const [partner, setPartner] = useState('')
     const { isLoading: isLoadingUsers, data: dataUsers } = getUsers(1, "id", "asc", "", filters, enabled)
     const { isLoading: isLoadingPartners, data: dataPartners } = getPartners()
     const { mutate: post } = usePostData()
@@ -19,8 +18,6 @@ const PartnerForm = ({ handleCloseModal }) => {
         setFilters({ ...filters, [e.target.name]: e.target.value })
     }
 
-    console.log('dataUsers', dataUsers)
-    console.log('dataPartners', dataPartners)
 
     useEffect(() => {
         if (filters.rcc.length === 8)

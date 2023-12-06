@@ -36,7 +36,6 @@ const fetchIRI = ({ queryKey }) => {
 
 
 const deleteIRI = (iri) => {
-    console.log('iri', iri)
     return requestIRI({ url: iri, method: 'delete' })
 }
 

@@ -17,6 +17,8 @@ import Loader from '../components/Loader'
 import { useFilterMissions } from '../hooks/useFilterMissions';
 import { URL } from '../features/apiConfig';
 
+import { HiChevronRight } from 'react-icons/hi'
+
 const CollaborationsPage = () => {
 
     const { state: initialPageState } = useLocation()
@@ -104,7 +106,6 @@ const CollaborationsPage = () => {
                         sortDirection={sortDirection}
                         handleSort={handleSort}
                     />
-                    <Table.Th label="" style={{ width: 10 }} />
                 </Table.Thead>
                 <Table.Tbody>
                     {!isLoading && data['hydra:member'].map(data =>
@@ -128,15 +129,6 @@ const CollaborationsPage = () => {
                             <Table.Td label="Durée" text={calcNumberOfDays(data.beginAt, data.endAt) + " jours"} />
                             <Table.Td label="Opas" children={<OpasStatus prescriptions={data.prescriptions} />} />
                             <Table.Td label="Statut" children={<MissionStatus mission={data} />} />
-                            <Table.Td label="" text="" >
-                                <Dropdown type='table'>
-                                    <button
-                                        onClick={() => navigate(API_MISSIONS + "/" + data.id, { state: { page: page, sortDirection: sortDirection, sortValue: sortValue, searchValue: searchValue, filter: filters } })}
-                                    >
-                                        Voir la fiche mission
-                                    </button>
-                                </Dropdown>
-                            </Table.Td>
                         </Table.Tr>
                     )}
                 </Table.Tbody>

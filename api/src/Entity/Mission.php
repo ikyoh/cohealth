@@ -231,35 +231,6 @@ class Mission implements UserOwnedInterface
         return $this;
     }
 
-    // /**
-    //  * @return Collection<int, Prescription>
-    //  */
-    // public function getPrescriptions(): Collection
-    // {
-    //     return $this->prescriptions;
-    // }
-
-    // public function addPrescription(Prescription $prescription): self
-    // {
-    //     if (!$this->prescriptions->contains($prescription)) {
-    //         $this->prescriptions[] = $prescription;
-    //         $prescription->setMission($this);
-    //     }
-
-    //     return $this;
-    // }
-
-    // public function removePrescription(Prescription $prescription): self
-    // {
-    //     if ($this->prescriptions->removeElement($prescription)) {
-    //         // set the owning side to null (unless already changed)
-    //         if ($prescription->getMission() === $this) {
-    //             $prescription->setMission(null);
-    //         }
-    //     }
-
-    //     return $this;
-    // }
 
     /**
      * @return Collection<int, MediaObject>

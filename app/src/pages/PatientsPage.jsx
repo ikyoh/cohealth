@@ -14,6 +14,7 @@ import Dropdown from '../components/dropdown/Dropdown'
 import { API_PATIENTS } from '../config/api.config'
 import Loader from '../components/Loader'
 import dayjs from 'dayjs'
+import { HiDotsCircleHorizontal, HiChevronRight } from 'react-icons/hi'
 
 const PatientsPage = () => {
 
@@ -120,11 +121,13 @@ const PatientsPage = () => {
                                     <button
                                         onClick={() => navigate(API_PATIENTS + "/" + data.id, { state: { page: page, sortDirection: sortDirection, sortValue: sortValue, searchValue: searchValue } })}
                                     >
+                                        <HiChevronRight size={20} />
                                         Voir la fiche patient
                                     </button>
                                     <button
-                                        onClick={() => handleOpenModal({ title: "édition du patient", content: <PatientForm iri={data['@id']} /> })}>
-                                        Modifier la patient
+                                        onClick={() => handleOpenModal({ title: "Édition du patient", content: <PatientForm iri={data['@id']} /> })}>
+                                        <HiDotsCircleHorizontal size={20} />
+                                        Éditer le patient
                                     </button>
                                 </Dropdown>
                             </Table.Td>

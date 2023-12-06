@@ -18,8 +18,8 @@ import Button from '../components/buttons/Button'
 import _ from 'lodash'
 import { useQueryClient } from '@tanstack/react-query'
 
-import { AiOutlineFolderOpen } from "react-icons/ai"
-import { HiOutlinePaperClip } from 'react-icons/hi'
+import { AiOutlineFolderOpen } from 'react-icons/ai';
+import { HiOutlinePaperClip, HiDotsCircleHorizontal, HiCheckCircle, HiOutlineRefresh } from 'react-icons/hi'
 
 const PatientPage = () => {
 
@@ -69,23 +69,27 @@ const PatientPage = () => {
 
                         {account.roles.includes('ROLE_NURSE') && data.status === "attribué" &&
                             <button onClick={() => handleOpenModal({ title: 'Accepter le mandat', content: <MandateAcceptForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
+                                <HiCheckCircle size={20} />
                                 Accepter le mandat
                             </button>
                         }
 
                         {(account.roles.includes('ROLE_COORDINATOR') && data.status === "édité") &&
                             <button onClick={() => handleOpenModal({ title: 'Choix du mandataire', content: <MandateAgentForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
+                                <HiOutlineRefresh size={20} />
                                 Choisir le mandataire
                             </button>
                         }
                         {(account.roles.includes('ROLE_DOCTOR') || account.roles.includes('ROLE_COORDINATOR') && data.status === "édité") &&
                             <>
                                 <button onClick={() => handleOpenModal({ title: 'Édition du mandat', content: <MandateEditForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
+                                    <HiDotsCircleHorizontal size={20} />
                                     Éditer le mandat
                                 </button>
                                 <button
                                     onClick={() => handleOpenModal({ title: 'Nouveau document', content: <DocumentForm event={false} mandateID={data.id} handleCloseModal={handleCloseModal} /> })}
                                 >
+                                    <AiOutlineFolderOpen size={20} />
                                     Ajouter un document
                                 </button>
                             </>
@@ -148,15 +152,6 @@ const PatientPage = () => {
                     </div>
 
                     <div className='col-span-4 bg-white border rounded-sm p-5 pt-16 relative'>
-                        {isMine &&
-                            <Dropdown type="card">
-                                <button
-                                    onClick={() => handleOpenModal({ title: 'Nouveau document', content: <DocumentForm event={false} mandateID={data.id} handleCloseModal={handleCloseModal} /> })}
-                                >
-                                    Ajouter un document
-                                </button>
-                            </Dropdown>
-                        }
                         <div className='bg-slate-200 rounded-br-full px-3 flex items-center gap-1 absolute top-0 left-0 h-11 w-44 font-bold uppercase'>
                             <AiOutlineFolderOpen size={30} />
                             Documents

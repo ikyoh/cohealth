@@ -86,13 +86,6 @@ const PatientPage = () => {
                             <IoPersonCircleOutline size={36} />
                             Patient
                         </div>
-                        <Dropdown type='card'>
-                            <button
-                                onClick={() => handleOpenModal({ title: 'Edition patient', content: <PatientForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}
-                            >
-                                Modifier le patient
-                            </button>
-                        </Dropdown>
                         <div className='flex flex-col gap-5 p-3 relative order-last md:order-first'>
                             <div className='font-semibold'>
                                 Coordonnées
@@ -169,13 +162,6 @@ const PatientPage = () => {
                 <div className="md:col-span-4 flex flex-col gap-3">
 
                     <div className='bg-white border rounded-sm p-5 pt-16 relative'>
-                        <Dropdown type='card'>
-                            <button
-                                onClick={() => handleOpenModal({ title: 'Médecin Traitant', content: <PatientForm iri={data['@id']} action="doctorIRI" handleCloseModal={handleCloseModal} /> })}
-                            >
-                                Modifier le médecin
-                            </button>
-                        </Dropdown>
                         <div className='bg-slate-200 rounded-br-full px-3 flex items-center gap-1 absolute top-0 left-0 h-11 w-44 font-bold uppercase'>
                             <RiStethoscopeFill size={36} />
                             Médecin
@@ -198,13 +184,6 @@ const PatientPage = () => {
                         } */}
                     </div>
                     <div className='bg-white border rounded-sm p-5 pt-16 relative'>
-                        <Dropdown type='card'>
-                            <button
-                                onClick={() => handleOpenModal({ title: 'Assurance', content: <PatientForm iri={data['@id']} action="assuranceIRI" handleCloseModal={handleCloseModal} /> })}
-                            >
-                                Modifier l'assurance
-                            </button>
-                        </Dropdown>
                         <div className='bg-slate-200 rounded-br-full px-3 flex items-center gap-1 absolute top-0 left-0 h-11 w-44 font-bold uppercase'>
                             <MdOutlineHealthAndSafety size={36} />
                             Assurance
@@ -253,6 +232,26 @@ const PatientPage = () => {
                         </Button>
                     }
                 >
+                    <Dropdown type="button">
+                        <button
+                            onClick={() => handleOpenModal({ title: 'Edition patient', content: <PatientForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}
+                        >
+                            <IoPersonCircleOutline size={20} />
+                            Modifier le patient
+                        </button>
+                        <button
+                            onClick={() => handleOpenModal({ title: 'Médecin Traitant', content: <PatientForm iri={data['@id']} action="doctorIRI" handleCloseModal={handleCloseModal} /> })}
+                        >
+                            <RiStethoscopeFill size={20} />
+                            Modifier le médecin
+                        </button>
+                        <button
+                            onClick={() => handleOpenModal({ title: 'Assurance', content: <PatientForm iri={data['@id']} action="assuranceIRI" handleCloseModal={handleCloseModal} /> })}
+                        >
+                            <MdOutlineHealthAndSafety size={20} />
+                            Modifier l'assurance
+                        </button>
+                    </Dropdown>
                 </PageTitle>
 
                 <div className='px-5 pb-5 md:px-0 md:pb-0'>

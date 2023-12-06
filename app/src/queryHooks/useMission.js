@@ -19,10 +19,15 @@ const fetchFilteredDatas = (sortValue = "id", sortDirection = "asc", searchValue
     return request({ url: API + "?pagination=false" + "&order[" + sortValue + "]=" + sortDirection + "&" + searchValue, method: 'get' })
 }
 
-const fetchPaginatedDatas = (page, sortValue, sortDirection, searchValue, filters) => {
+const fetchPaginatedDatas = (page, sortValue, sortDirection, searchValue, filters, account) => {
+
+    const userID = account?.id
+
     let options = "?page=" + page + "&itemsPerPage=" + itemsPerPage + "&order[" + sortValue + "]=" + sortDirection
     if (searchValue) options += "&search=" + searchValue
     if (filters.status !== "all") options += "&status=" + filters.status
+    if (filters.status !== "all") options += "&status=" + filters.status
+    if (account.roles.includes('ROLE_NURSE')) options += "&user.id=" + userID
     return request({ url: API + options, method: 'get' })
 }
 
@@ -77,12 +82,11 @@ export const useGetFilteredDatas = (sortValue, sortDirection, searchValue) => {
 
 export const useGetPaginatedDatas = (page, sortValue, sortDirection, searchValue, filters) => {
 
-    //const { data: account } = useGetCurrentAccount()
-    //const userID = account?.id
+    const { data: account } = useGetCurrentAccount()
 
     return useQuery({
         queryKey: [queryKey, page, sortValue, sortDirection, searchValue, filters],
-        queryFn: () => fetchPaginatedDatas(page, sortValue, sortDirection, searchValue, filters),
+        queryFn: () => fetchPaginatedDatas(page, sortValue, sortDirection, searchValue, filters, account),
         keepPreviousData: true,
         cacheTime: 60000,
         staleTime: 60000,

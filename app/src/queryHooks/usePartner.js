@@ -39,8 +39,12 @@ const putData = form => {
     return request({ url: API + "/" + form.id, method: 'put', data: form })
 }
 
+const deleteData = (iri) => {
+    return requestIRI({ url: iri, method: 'delete' })
+}
+
 /* HOOKS */
-export const useGetAllDatas = (search = '', sortValue="id", sortDirection="asc", enabled=true) => {
+export const useGetAllDatas = (search = '', sortValue = "id", sortDirection = "asc", enabled = true) => {
     return useQuery([queryKey], fetchAllDatas, {
         enabled: enabled ? true : false,
         staleTime: 60000,
@@ -77,7 +81,7 @@ export const useGetPaginatedDatas = (page, sortValue, sortDirection, searchValue
 export const useGetOneData = (id) => {
     return useQuery([queryKey, id], fetchOneData, {
         cacheTime: 6000,
-staleTime: 60000,
+        staleTime: 60000,
         enabled: id ? true : false
     })
 }
@@ -85,7 +89,7 @@ staleTime: 60000,
 export const useGetIRI = (iri) => {
     return useQuery([queryKey, iri], fetchIRI, {
         cacheTime: 6000,
-staleTime: 60000,
+        staleTime: 60000,
         enabled: iri ? true : false
     })
 }
@@ -108,6 +112,19 @@ export const usePutData = () => {
         onError: (error, _, context) => {
             console.log('error', error)
             queryClient.setQueryData([queryKey], context.previousDatas)
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries()
+        }
+    })
+}
+
+
+export const useDeleteData = () => {
+    const queryClient = useQueryClient()
+    return useMutation(deleteData, {
+        onError: (error, _, context) => {
+            console.log('error', error)
         },
         onSettled: () => {
             queryClient.invalidateQueries()

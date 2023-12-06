@@ -346,6 +346,7 @@ const MissionPage = () => {
                         <button
                             onClick={() => handleOpenModal({ title: 'Nouveau document', content: <DocumentForm event={false} mandateID={data.mandate.id} handleCloseModal={handleCloseModal} /> })}
                         >
+                            <AiOutlineFolderOpen size={0} />
                             Ajouter un document
                         </button>
                     </Dropdown>

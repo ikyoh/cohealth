@@ -5,7 +5,7 @@ import MandateForm from '../forms/MandateForm';
 import MandateAgentForm from '../forms/MandateAgentForm';
 import MandateEditForm from '../forms/MandateEditForm';
 import PageTitle from '../layouts/PageTitle';
-import { useGetPaginatedDatas, usePutData, useGetIRI, useDeleteIRI } from '../queryHooks/useMandate';
+import { useGetPaginatedDatas, usePutData, useDeleteIRI } from '../queryHooks/useMandate';
 import { useFilterMandates } from '../hooks/useFilterMandates';
 import { useGetCurrentAccount } from '../queryHooks/useAccount';
 import { useSearch } from '../hooks/useSearch';
@@ -20,7 +20,9 @@ import dayjs from 'dayjs';
 import { mandateStatus } from '../utils/translations';
 import { API_MANDATES } from '../config/api.config';
 import NoData from '../components/no_data/NoData';
-
+import { TiDelete } from "react-icons/ti";
+import { AiOutlineFolderOpen } from 'react-icons/ai';
+import { HiDotsCircleHorizontal, HiChevronRight } from 'react-icons/hi'
 
 const MandatesPage = () => {
 
@@ -158,21 +160,25 @@ const MandatesPage = () => {
                                         <Dropdown type='table'>
                                             {data.status === "édité" &&
                                                 <button onClick={() => handleOpenModal({ title: 'Édition du mandat', content: <MandateEditForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
+                                                    <HiDotsCircleHorizontal size={20} />
                                                     Éditer le mandat
                                                 </button>
                                             }
                                             {data.status !== "annulé" &&
                                                 <button onClick={() => handleOpenModal({ title: 'Édition du mandat', content: <MandateEditForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
+                                                    <AiOutlineFolderOpen size={20} />
                                                     Ajouter un document
                                                 </button>
                                             }
                                             {(data.status !== "édité" && data.mission.length !== 0) &&
                                                 <button onClick={() => handleChangeStatus({ id: data.id, status: 'annulé' })}>
+                                                    <TiDelete size={20}/>
                                                     Annuler le mandat
                                                 </button>
                                             }
                                             {data.status === "édité" &&
                                                 <button onClick={() => handleOpenModal({ title: 'Supprimer le mandat', size: "small", content: <MandateDelete iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
+                                                    <TiDelete size={20}/>
                                                     Supprimer le mandat
                                                 </button>
                                             }

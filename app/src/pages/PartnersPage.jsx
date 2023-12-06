@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { FaHandshake } from "react-icons/fa";
 import PartnerForm from '../forms/PartnerForm'
 import PageTitle from '../layouts/PageTitle'
-import { useGetPaginatedDatas } from '../queryHooks/usePartner'
+import { useGetPaginatedDatas, useDeleteData } from '../queryHooks/usePartner'
 import { useSearch } from '../hooks/useSearch'
 import { useSortBy } from '../hooks/useSortBy'
 import { useModal } from '../hooks/useModal'
@@ -11,6 +11,9 @@ import * as Table from '../components/table/Table'
 import Pagination from '../components/pagination/Pagination'
 import AddButton from '../components/buttons/AddButton'
 import Loader from '../components/Loader'
+import Dropdown from '../components/dropdown/Dropdown';
+import { TiDelete } from "react-icons/ti";
+
 
 const PartnersPage = () => {
 
@@ -40,11 +43,11 @@ const PartnersPage = () => {
         <>
             <Modal />
             <PageTitle
-            title="Liste des partenaires"
-            subtitle={data["hydra:totalItems"]}
-            icon={<FaHandshake size={40} />}
-            mainButton={<AddButton onClick={() => handleOpenModal({ title: 'Nouveau partenaire', content: <PartnerForm handleCloseModal={handleCloseModal} /> })} />
-        }
+                title="Liste des partenaires"
+                subtitle={data["hydra:totalItems"]}
+                icon={<FaHandshake size={40} />}
+                mainButton={<AddButton onClick={() => handleOpenModal({ title: 'Nouveau partenaire', content: <PartnerForm handleCloseModal={handleCloseModal} /> })} />
+                }
             >
                 {searchbar}
             </PageTitle>
@@ -86,6 +89,7 @@ const PartnersPage = () => {
                         sortDirection={sortDirection}
                         handleSort={handleSort}
                     />
+                    <Table.Th label="" style={{ width: 10 }} />
                 </Table.Thead>
                 <Table.Tbody>
                     {!isLoading && data['hydra:member'].map(data =>
@@ -104,6 +108,14 @@ const PartnersPage = () => {
                             <Table.Td label="Mobile" text={data.partner.mobile} />
                             <Table.Td label="Email" text={data.partner.email} />
                             <Table.Td label="Canton" text={data.partner.rcc} />
+                            <Table.Td label="" text="">
+                                <Dropdown type='table'>
+                                    <button onClick={() => handleOpenModal({ title: 'Supprimer le partenaire', size: "small", content: <DeletePartner iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
+                                        <TiDelete size={20}/>
+                                        Supprimer le partenaire
+                                    </button>
+                                </Dropdown>
+                            </Table.Td>
                         </Table.Tr>
                     )}
                 </Table.Tbody>
@@ -114,3 +126,30 @@ const PartnersPage = () => {
 }
 
 export default PartnersPage
+
+
+
+const DeletePartner = ({ iri, handleCloseModal }) => {
+
+    const { mutate, isSuccess } = useDeleteData()
+
+    useEffect(() => {
+        if (isSuccess) handleCloseModal()
+    }, [isSuccess])
+
+
+    return (
+        <div className='p-8'>
+            <p>Attention cette opération est irréversible, voulez-vous confirmer la suppression ?</p>
+            <div className="flex items-center gap-5 justify-center p-5">
+                <button className='btn btn-outline'
+                    onClick={() => handleCloseModal()}
+                >Annuler</button>
+                <button className='btn btn-error text-white'
+                    onClick={() => mutate(iri)}
+                >Confirmer</button>
+            </div>
+        </div>
+    )
+
+}
