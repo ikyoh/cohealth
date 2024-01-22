@@ -53,13 +53,18 @@ const RegistrationForm = () => {
             >
                 <option value="ROLE_NURSE">Un infirmier indépendant</option>
                 <option value="ROLE_DOCTOR">Un médecin</option>
-                <option value="ROLE_ORGANIZATION_BENEFIT">Une organisation de services à domicile</option>
+                <option value="ROLE_PHARMACY">Une pharmacie</option>
+                <option value="ROLE_PHYSIO">Un physiothérapeute</option>
+                {/* <option value="ROLE_ORGANIZATION_BENEFIT">Une organisation de services à domicile</option>
                 <option value="ROLE_ORGANIZATION_MANDATOR">Un cabinet médical</option>
-                <option value="ROLE_ORGANIZATION_MANDATOR">Un hôpital / une clinique</option>
+                <option value="ROLE_ORGANIZATION_MANDATOR">Un hôpital / une clinique</option> */}
             </FormSelect>
 
 
             {watchRole[0] === 'ROLE_NURSE' &&
+                <AccountFields register={register} errors={errors} control={control} />
+            }
+            {watchRole[0] === 'ROLE_PHYSIO' &&
                 <AccountFields register={register} errors={errors} control={control} />
             }
             {watchRole[0] === 'ROLE_DOCTOR' &&
@@ -84,6 +89,9 @@ const RegistrationForm = () => {
                 <OrganizationFields register={register} errors={errors} />
             }
             {watchRole[0] === 'ROLE_ORGANIZATION_MANDATOR' &&
+                <OrganizationFields register={register} errors={errors} />
+            }
+            {watchRole[0] === 'ROLE_PHARMACY' &&
                 <OrganizationFields register={register} errors={errors} />
             }
 
