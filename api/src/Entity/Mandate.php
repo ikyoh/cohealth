@@ -20,6 +20,7 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
 #[ORM\Entity(repositoryClass: MandateRepository::class)]
+#[ORM\EntityListeners(['App\EntityListener\MandateListener'])]
 #[ApiResource(
     paginationClientEnabled: true,
     normalizationContext: ['groups' => ['mandates:read']],
@@ -47,22 +48,19 @@ class Mandate implements UserOwnedInterface
     #[Groups(["mandates:read", "mandate:read", "mandate:write"])]
     private Collection $mission;
 
-    #[ORM\Column(nullable: true)]
-    #[Groups(["mandates:read", "mandate:read", "mandate:write"])]
-    private array $content = [];
 
-    // Soins infirmiers / Physiothérapie / Aide à la personne / Matériel
+    // ROLE_NURSE / Physiothérapie / Aide à la personne / Matériel
     #[ORM\Column(length: 255)]
-    #[Groups(["mandates:read", "mandate:read", "mandate:write", "missions:read", "mission:read"])]
-    private ?string $category = 'Soins infirmiers';
+    #[Groups(["mandates:read", "mandate:read", "mandate:write", "missions:read", "mission:read", "mandate_group:write", "mandate_group:read", "mandates_group:read"])]
+    private ?string $category = 'ROLE_NURSE';
 
     //édité / annulé / accepté / refusé / attribué
     #[ORM\Column(length: 255)]
-    #[Groups(["mandates:read", "mandate:read", "mandate:write"])]
+    #[Groups(["mandates:read", "mandate:read", "mandate:write", "mandate_group:write"])]
     private ?string $status = 'édité';
 
     #[ORM\Column]
-    #[Groups(["mandates:read", "mandate:read", "mandate:write"])]
+    #[Groups(["mandates:read", "mandate:read", "mandate:write", "mandate_group:write"])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -75,24 +73,34 @@ class Mandate implements UserOwnedInterface
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["mandates:read", "mandate:read", "mandate:write"])]
+    #[Groups(["mandates:read", "mandate:read", "mandate:write", "mandate_group:write"])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'mandates')]
-    #[Groups(["mandates:read", "mandate:read", "mandate:write"])]
+    #[Groups(["mandates:read", "mandate:read", "mandate:write", "mandate_group:write"])]
     private ?User $mandateUser = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["mandates:read", "mandate:read", "mandate:write"])]
+    #[Groups(["mandates:read", "mandate:read", "mandate:write", "mandate_group:write"])]
     private ?string $patientFullname = null;
 
-    #[ORM\Column(length: 255)]
-    #[Groups(["mandates:read", "mandate:read", "mandate:write"])]
-    private ?string $groupingId = null;
 
     #[ORM\OneToMany(mappedBy: 'mandate', targetEntity: MediaObject::class)]
-    #[Groups(["mandates:read", "mandate:read", "mandate:write", "mission:read"])]
+    #[Groups(["mandates:read", "mandate:read", "mandate:write", "mission:read", "mandate_group:write"])]
     private $documents;
+
+    #[ORM\ManyToOne(inversedBy: 'mandates')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["mandates:read", "mandate:read", "mission:read"])]
+    private ?MandateGroup $mandateGroup = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(["mandates:read", "mandate:read", "mandate:write", "mandate_group:write"])]
+    private ?\DateTimeInterface $beginAt = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(["mandates:read", "mandate:read", "mandate:write", "mandate_group:write"])]
+    private ?string $description = null;
 
 
     public function __construct()
@@ -149,17 +157,6 @@ class Mandate implements UserOwnedInterface
         return $this;
     }
 
-    public function getContent(): array
-    {
-        return $this->content;
-    }
-
-    public function setContent(?array $content): self
-    {
-        $this->content = $content;
-
-        return $this;
-    }
 
     public function getStatus(): ?string
     {
@@ -244,17 +241,6 @@ class Mandate implements UserOwnedInterface
         return $this;
     }
 
-    public function getGroupingId(): ?string
-    {
-        return $this->groupingId;
-    }
-
-    public function setGroupingId(string $groupingId): self
-    {
-        $this->groupingId = $groupingId;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, MediaObject>
@@ -282,6 +268,42 @@ class Mandate implements UserOwnedInterface
                 $document->setMandate(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMandateGroup(): ?MandateGroup
+    {
+        return $this->mandateGroup;
+    }
+
+    public function setMandateGroup(?MandateGroup $mandateGroup): self
+    {
+        $this->mandateGroup = $mandateGroup;
+
+        return $this;
+    }
+
+    public function getBeginAt(): ?string
+    {
+        //return $this->beginAt;
+        return $this->beginAt->format('Y-m-d');
+    }
+
+    public function setBeginAt(\DateTimeInterface $beginAt): self
+    {
+        $this->beginAt = $beginAt;
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

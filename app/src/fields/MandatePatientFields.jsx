@@ -50,17 +50,17 @@ const MandatePatientFields = ({ name, errors, register }) => {
             />
             <FormInput
                 type="text"
-                name={name ? name + ".phone" : "phone"}
-                label="Téléphone fixe"
-                error={name && errors[name] ? errors[name]['phone'] : errors['phone']}
+                name={name ? name + ".avsNumber" : "avsNumber"}
+                label="Numéro AVS"
+                error={name && errors[name] ? errors[name]['avsNumber'] : errors['avsNumber']}
                 register={register}
-                required={false}
+                required={true}
             />
             <FormInput
                 type="text"
-                name={name ? name + ".mobile" : "mobile"}
-                label="Téléphone portable"
-                error={name && errors[name] ? errors[name]['mobile'] : errors['mobile']}
+                name={name ? name + ".phone" : "phone"}
+                label="Téléphone"
+                error={name && errors[name] ? errors[name]['phone'] : errors['phone']}
                 register={register}
                 required={false}
             />
@@ -100,23 +100,6 @@ const MandatePatientFields = ({ name, errors, register }) => {
                 {Object.entries(cantons).map(([key, value]) => <option key={key} value={key}>{value}</option>)}
             </FormSelect>
 
-            <FormInput
-                type="text"
-                name={name ? name + ".avsNumber" : "avsNumber"}
-                label="Numéro AVS"
-                error={name && errors[name] ? errors[name]['avsNumber'] : errors['avsNumber']}
-                register={register}
-                required={true}
-            />
-
-            <FormInput
-                type="text"
-                name={name ? name + ".assuranceName" : "assuranceName"}
-                label="Assurance"
-                error={name && errors[name] ? errors[name]['assuranceName'] : errors['assuranceName']}
-                register={register}
-                required={false}
-            />
             <FormInput
                 type="text"
                 name={name ? name + ".assuranceNumber" : "assuranceNumber"}

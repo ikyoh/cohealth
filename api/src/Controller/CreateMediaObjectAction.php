@@ -4,20 +4,21 @@
 namespace App\Controller;
 
 use App\Entity\MediaObject;
-use App\Repository\MissionRepository;
 use App\Repository\MandateRepository;
+use App\Repository\MissionRepository;
+use ApiPlatform\Api\IriConverterInterface;
+use App\Repository\MandateGroupRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use ApiPlatform\Api\IriConverterInterface;
 
 #[AsController]
 final class CreateMediaObjectAction extends AbstractController
 {
 
-    public function __construct(private Security $security, private MissionRepository $missionRepository, private MandateRepository $mandateRepository, private IriConverterInterface $iriConverter)
+    public function __construct(private Security $security, private MissionRepository $missionRepository, private MandateRepository $mandateRepository, private MandateGroupRepository $mandateGroupRepository, private IriConverterInterface $iriConverter)
     {
     }
 
@@ -31,6 +32,10 @@ final class CreateMediaObjectAction extends AbstractController
         $mission = $this->missionRepository->findOneBy(['id' => $missionID]);
         $mandateID = $request->request->get('mandate');
         $mandate = $this->mandateRepository->findOneBy(['id' => $mandateID]);
+        $mandateID = $request->request->get('mandate');
+        $mandate = $this->mandateRepository->findOneBy(['id' => $mandateID]);
+        $mandategroupID = $request->request->get('mandateGroup');
+        $mandateGroup = $this->mandateGroupRepository->findOneBy(['id' => $mandategroupID]);
 
 
         if (!$uploadedFile) {
@@ -54,6 +59,9 @@ final class CreateMediaObjectAction extends AbstractController
         }
         if ($mandateID) {
             $mediaObject->setMandate($mandate);
+        }
+        if ($mandategroupID) {
+            $mediaObject->setMandateGroup($mandateGroup);
         }
 
         return $mediaObject;

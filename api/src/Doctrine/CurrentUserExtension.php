@@ -10,6 +10,7 @@ use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use App\Entity\Mandate;
+use App\Entity\MandateGroup;
 use App\Entity\UserOwnedInterface;
 use App\Entity\MediaObject;
 use App\Entity\Mission;
@@ -36,6 +37,15 @@ final class CurrentUserExtension implements QueryCollectionExtensionInterface, Q
 
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
+
+        if ($reflexionClass->implementsInterface(UserOwnedInterface::class) && $resourceClass === MandateGroup::class) {
+
+                return;
+            $queryBuilder->andWhere("$rootAlias.user = :user OR mandates.user = :user");
+            $queryBuilder->setParameter("user", $user);
+            $queryBuilder->leftJoin("$rootAlias.mandates", 'mandates');
+            return;
+        }
 
         if ($reflexionClass->implementsInterface(UserOwnedInterface::class) && $resourceClass === Mandate::class) {
             if (in_array("ROLE_COORDINATOR", $userRoles))
@@ -82,7 +92,7 @@ final class CurrentUserExtension implements QueryCollectionExtensionInterface, Q
         }
     }
 
-    //public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null): void;
+
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
         $this->addWhere($queryBuilder, $resourceClass);

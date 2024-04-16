@@ -14,6 +14,8 @@ import Homepage from './pages/Homepage'
 import LoginPage from './pages/LoginPage'
 import MandatePage from './pages/MandatePage'
 import MandatesPage from './pages/MandatesPage'
+import MandatesGroupPage from './pages/MandatesGroupPage'
+import MandateGroupPage from './pages/MandateGroupPage'
 import MissionPage from './pages/MissionPage'
 import MissionsPage from './pages/MissionsPage'
 import PartnersPage from './pages/PartnersPage'
@@ -60,6 +62,8 @@ const App = () => {
             <Route path='/doctors' element={<Layout><DoctorsPage /></Layout>} />
             <Route path='/login' element={<FrontLayout><LoginPage /></FrontLayout>} />
             <Route path='/users' element={<Layout><UsersPage /></Layout>} />
+            <Route path='/groupmandates/:id' element={<ProtectedRoute><Layout><MandateGroupPage /></Layout></ProtectedRoute>} />
+            <Route path='/groupmandates' element={<ProtectedRoute><Layout><MandatesGroupPage /></Layout></ProtectedRoute>} />
             <Route path='/mandates/:id' element={<ProtectedRoute><Layout><MandatePage /></Layout></ProtectedRoute>} />
             <Route path='/mandates' element={<ProtectedRoute><Layout><MandatesPage /></Layout></ProtectedRoute>} />
             <Route path='/missions/:id' element={<ProtectedRoute><Layout><MissionPage /></Layout></ProtectedRoute>} />

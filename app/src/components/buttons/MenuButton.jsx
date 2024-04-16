@@ -15,7 +15,7 @@ const MenuButton = ({ children, title = false, disabled = false, link = false, b
 				className={`scaledown font-light text-left w-full px-2 py-1 rounded-lg flex items-center gap-2 mb-1 ${link === location.pathname ? 'bg-primary text-white' : 'text-primary '} ${disabled ? "hover:bg-slate-400 cursor-not-allowed" : "hover:bg-action"}`}
 			>
 				{children}
-				<div className='grow'>
+				<div className=''>
 					{title}
 				</div>
 				{badge &&

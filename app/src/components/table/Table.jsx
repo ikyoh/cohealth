@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 export const Table = ({ children }) => {
     return (
-        <table className="w-full table-fixed text-left border-collapse bg-white text-sm">
+        <table className="table-shadow">
             {children}
         </table>
     )
@@ -12,7 +12,7 @@ export const Table = ({ children }) => {
 
 export const Thead = ({ children }) => {
     return (
-        <thead className='bg-slate-200 sticky top-24 z-10 hidden md:table-header-group'>
+        <thead className='hidden md:table-header-group'>
             <tr>
                 {children}
             </tr>
@@ -44,7 +44,7 @@ export const Th = ({ label, sortBy, sortValue, sortDirection, handleSort }) => {
             className={className}
             onClick={() => handleSort(sortBy)}
         >
-            <div className='flex justify-between px-3 py-2 border-b border-slate-200 h-[60px] items-center z-10'>
+            <div className='flex justify-between px-3 py-2 h-[60px] items-center z-10 text-slate-600 font-medium uppercase'>
                 <div className="">
                     {label}
                 </div>
@@ -62,7 +62,7 @@ export const Th = ({ label, sortBy, sortValue, sortDirection, handleSort }) => {
         <th
             className={className}
         >
-            <div className='px-2 py-2 border-b border-slate-200 h-[60px] items-center'>
+            <div className='flex justify-between px-3 py-2 h-[60px] items-center z-10 text-slate-600 font-medium uppercase'>
                 <div className="className">
                     {label}
                 </div>

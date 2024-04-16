@@ -14,8 +14,8 @@ export const useSearch = (props) => {
         searchValue,
         setValue,
         searchbar:
-            <div className='flex items-center rounded-full border px-4 h-12 text-primary gap-6 w-full md-w-auto bg-white max-w-sm'>
-                <BsSearch size={26} className="text-primary" />
+            <div className='flex items-center rounded-full px-4 h-10 text-primary gap-6 w-full md-w-auto bg-slate-100 max-w-sm'>
+                <BsSearch size={26} className="text-slate-400" />
                 <input
                     value={searchValue}
                     name='search'

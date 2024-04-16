@@ -37,6 +37,7 @@ const postData = form => {
     if (form.comment) formData.append('comment', form.comment)
     if (form.mission) formData.append('mission', form.mission)
     if (form.mandate) formData.append('mandate', form.mandate)
+    if (form.mandateGroup) formData.append('mandateGroup', form.mandateGroup)
     return request({ url: API, method: 'post', data: formData })
 }
 

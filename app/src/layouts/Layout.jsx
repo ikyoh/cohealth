@@ -19,7 +19,7 @@ const Layout = ({ children }) => {
         <div className='md:flex'>
             <Menu />
             <div className='w-full md:flex flex-col bg-slate-100'>
-                <div className='hidden md:block bg-slate-100 md:sticky md:top-0 px-10 z-10'>
+                {/* <div className='hidden md:block bg-slate-100 md:sticky md:top-0 px-10 z-10'>
                     <div className='h-16 md:h-24 flex justify-between items-center border-b'>
                         <div className='text-2xl font-extralight capitalize'>
                             {dayjs().format('dddd D MMMM YYYY')}
@@ -36,7 +36,7 @@ const Layout = ({ children }) => {
                             <p>{account.firstname} {account.lastname} {account.organization}</p>
                         </div>
                     </div>
-                </div>
+                </div> */}
                 <div className='md:px-10'>
                     {!account.isActive ?
                         <PageTitle title="Compte inactif. Veuillez contacter l'administrateur" icon={<FaSadTear size={40} />} />

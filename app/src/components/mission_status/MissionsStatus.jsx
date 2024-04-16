@@ -13,7 +13,7 @@ const MissionStatus = ({ mission, label, isAnimated }) => {
     }
 
     return (
-        <div className="flex flex-wrap items-center gap-3 text-black">
+        <div className="flex flex-wrap items-center gap-2 text-black">
 
             <span className="relative flex h-4 w-4">
                 {isAnimated &&

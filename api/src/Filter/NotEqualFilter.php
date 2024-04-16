@@ -50,7 +50,7 @@ final class NotEqualFilter extends AbstractFilter
 
         $queryBuilder
             ->andWhere(implode(' OR ', $orExpressions))
-            ->setParameter('notequal', "%$value%");
+            ->setParameter('notequal', "$value");
 
     }
 

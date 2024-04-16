@@ -9,6 +9,7 @@ export const API_CURRENT_USER = "/current_user";
 export const API_ASSURANCES = "/assurances";
 export const API_DOCTORS = "/doctors";
 export const API_MANDATES = "/mandates";
+export const API_MANDATE_GROUPS = "/mandate_groups";
 export const API_MEDIAS = "/media_objects";
 export const API_MISSIONS = "/missions";
 export const API_PATIENTS = "/patients";

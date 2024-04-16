@@ -1,35 +1,37 @@
-import { useState, useCallback } from 'react';
-import { GoSettings } from 'react-icons/go';
+import { useState } from "react";
+import { LuSettings2 } from "react-icons/lu";
 
 export const useFilterMissions = (props) => {
-
     const [filters, setFilters] = useState({
-        status: "en cours"
-    })
+        status: "en cours",
+    });
 
     const handleChangeInput = (e) => {
-        setFilters({ ...filters, [e.target.name]: e.target.value })
-    }
+        setFilters({ ...filters, [e.target.name]: e.target.value });
+    };
 
     const handleChangeCheckbox = (e) => {
-        setFilters({ ...filters, [e.target.name]: e.target.checked })
-    }
+        setFilters({ ...filters, [e.target.name]: e.target.checked });
+    };
 
     return {
         filters,
-        filter:
-            <div className="dropdown dropdown-left z-50">
+        filter: (
+            <div className="dropdown dropdown-left">
                 <label
                     tabIndex={0}
-                    className="hover:cursor-pointer scaledown rounded-full h-12 w-12 flex items-center justify-center bg-transparent hover:bg-slate-200 border"
-                    onClick={(e) => { e.stopPropagation() }}
+                    className="hover:cursor-pointer scaledown rounded-full h-10 w-10 flex items-center justify-center bg-action hover:bg-primary"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                    }}
                 >
-                    <GoSettings size={30} className="text-primary" />
+                    <LuSettings2 size={26} className="text-white" />
                 </label>
-                <div tabIndex={0} className="dropdown-content menu p-2 border border-primary bg-slate-100 rounded w-40">
-                    <p className='text-sm'>
-                        Statut
-                    </p>
+                <div
+                    tabIndex={0}
+                    className="dropdown-content menu p-2 border border-primary bg-slate-100 rounded w-40"
+                >
+                    <p className="text-sm">Statut</p>
                     <div className="form-control">
                         <label className="label cursor-pointer justify-start gap-3">
                             <input
@@ -84,5 +86,6 @@ export const useFilterMissions = (props) => {
                     </div>
                 </div>
             </div>
-    }
-}
+        ),
+    };
+};

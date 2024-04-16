@@ -163,13 +163,6 @@ export const doctorCategories = [
     "Autre"
 ]
 
-export const mandateCategories = [
-    "Soins infirmiers",
-    "Physiothérapie",
-    "Aide à la personne",
-    "Matériel"
-]
-
 export const cantons = {
     "Zurich": "Zurich (1)",
     "Berne": "Berne (2)",
@@ -203,8 +196,24 @@ export const roles = {
     "ROLE_ADMIN": "Administrateur",
     "ROLE_NURSE": "Infirmier",
     "ROLE_DOCTOR": "Médecin",
+    "ROLE_PHYSIO": "Physiothérapeute",
+    "ROLE_PHARMACY": "Pharmacie",
     "ROLE_ORGANIZATION_MANDATOR": "Organisation mandataire",
     "ROLE_ORGANIZATION_BENEFIT": "Organisation"
+}
+
+export const mandateCategories = [
+    "Soins infirmiers",
+    "Physiothérapie",
+    "Médicaments et matériel médical",
+    "Aide à la personne",
+]
+
+export const mandateCategoriesUsersRoles = {
+    "ROLE_NURSE" : "Soins infirmiers",
+    "ROLE_PHYSIO" : "Physiothérapie",
+    "ROLE_PHARMACY" : "Médicaments et matériel médical",
+    "ROLE_SUPPORT" : "Aide à la personne",
 }
 
 export const documentCategories = [
@@ -265,10 +274,4 @@ export const serviceCategoryColor = {
     "N": 'text-gray-400',
 }
 
-export const mandateCategoriesUsersRoles = {
-    "Soins infirmiers": "ROLE_NURSE",
-    "Physiothérapie": "ROLE_NONE",
-    "Aide à la personne": "ROLE_NONE",
-    "Matériel": "ROLE_NONE"
-}
 

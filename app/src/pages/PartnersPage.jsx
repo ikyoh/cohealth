@@ -98,7 +98,7 @@ const PartnersPage = () => {
                             <Table.Td label="Partenaire" text={data.partner.lastname + " " + data.partner.firstname}>
                                 {data.partner.avatar
                                     ? <img src={URL + data.partner.avatar.contentUrl} className='rounded-full object-cover h-10 w-10 mr-20' alt="profil" />
-                                    : <div className='rounded-full flex items-center h-10 justify-center w-10 bg-info mr-2'>
+                                    : <div className='rounded-full flex items-center h-10 justify-center w-10 bg-base-300 mr-2'>
                                         {data.partner.firstname && data.partner.firstname.charAt(0)}
                                         {data.partner.lastname && data.partner.lastname.charAt(0)}
                                         {data.partner.organization && data.partner.organization.charAt(0).toUpperCase()}

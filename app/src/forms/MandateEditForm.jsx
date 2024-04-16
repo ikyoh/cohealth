@@ -1,62 +1,57 @@
-import React, { useEffect } from 'react';
-import { useGetIRI, usePutData } from '../queryHooks/useMandate';
+import { yupResolver } from "@hookform/resolvers/yup";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import Loader from "../components/Loader";
 import Form from "../components/form/form/Form";
-import { yupResolver } from '@hookform/resolvers/yup';
-import { mandate as validationSchema } from '../utils/validationSchemas';
-import MandatePatientFields from '../fields/MandatePatientFields';
-import MandateServiceFields from '../fields/MandateServiceFields';
-import Loader from '../components/Loader';
+import MandateServiceFields from "../fields/MandateServiceFields";
+import { useGetIRI, usePutData } from "../queryHooks/useMandate";
+import { mandateEdit as validationSchema } from "../utils/validationSchemas";
 
 const MandateEditForm = ({ iri, handleCloseModal }) => {
+    const { isLoading, data } = useGetIRI(iri);
+    const { mutate, isLoading: isPending, isSuccess } = usePutData();
 
-    const { isLoading, data } = useGetIRI(iri)
-    const { mutate, isLoading: isPending, isSuccess } = usePutData()
-
-    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm({
         defaultValues: data,
-        resolver: yupResolver(validationSchema)
-    })
-
+        resolver: yupResolver(validationSchema),
+    });
 
     // Case update
     useEffect(() => {
         if (data) {
-            reset(data)
+            reset(data);
         }
-    }, [isLoading])
+    }, [isLoading]);
 
-
-    const onSubmit = form => {
-        mutate(form)
-    }
+    const onSubmit = (form) => {
+        mutate(form);
+    };
 
     useEffect(() => {
-        if (isSuccess) handleCloseModal()
-    }, [isSuccess])
+        if (isSuccess) handleCloseModal();
+    }, [isSuccess]);
 
-
-    if (isLoading) return <Loader />
+    if (isLoading) return <Loader />;
 
     return (
-        <Form onSubmit={handleSubmit(onSubmit)}
+        <Form
+            onSubmit={handleSubmit(onSubmit)}
             isLoading={isSubmitting || isPending}
             isDisabled={isSubmitting || isPending}
             errors={errors}
         >
-            <MandatePatientFields
-                name="content[patient]"
-                register={register}
-                errors={errors}
-            />
             <MandateServiceFields
-                name="content[service]"
                 register={register}
                 errors={errors}
+                edit={true}
             />
         </Form>
-    )
+    );
+};
 
-}
-
-export default MandateEditForm
+export default MandateEditForm;

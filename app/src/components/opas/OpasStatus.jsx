@@ -6,7 +6,7 @@ const OpasStatus = ({ opas }) => {
 
     return (
         <div className="flex flex-wrap items-center gap-2 text-black">
-            <div className={`h-5 w-5 rounded-full ${!opas ? 'bg-error' : opasStatus[opas.status]}`}>
+            <div className={`h-4 w-4 rounded-full ${!opas ? 'bg-error' : opasStatus[opas.status]}`}>
             </div>
             <div className='text-sm'>
                 {!opas

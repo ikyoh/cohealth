@@ -4,8 +4,8 @@ import './style.css'
 
 const AddButton = ({onClick}) => {
     return (
-        <button onClick={onClick} className='scaledown rounded-full group bg-action hover:bg-primary h-12 w-12 flex items-center justify-center'>
-            <AiOutlinePlus size={36} className="text-white group-hover:text-white" />
+        <button onClick={onClick} className='scaledown rounded-full group bg-action hover:bg-primary h-10 w-10 flex items-center justify-center'>
+            <AiOutlinePlus size={32} className="text-white group-hover:text-white" />
         </button>
     )
 }

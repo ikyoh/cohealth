@@ -1,21 +1,31 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useEffect, useState } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
-import uuid from "react-uuid";
 import * as Yup from "yup";
 import Form from "../components/form/form/Form";
-import { useGetIRI, usePostData } from "../queryHooks/useMandate";
+import { useGetCurrentAccount } from "../queryHooks/useAccount";
+import {
+    useGetAllDatas,
+    useGetIRI,
+    usePostData,
+} from "../queryHooks/useMandateGroup";
 import {
     mandatePatient as mandatePatientSchema,
     mandateServices as mandateServicesSchema,
 } from "../utils/validationSchemas";
 
+import dayjs from "dayjs";
 import MandatePatientFields from "../fields/MandatePatientFields";
 import MandateServiceFields from "../fields/MandateServiceFields";
 
-const MandateForm = ({ iri, handleCloseModal }) => {
+import uuid from "react-uuid";
+import { API_USERS, IRI } from "../config/api.config";
+
+const MandateGroupForm = ({ iri, handleCloseModal }) => {
     const { isLoading: isLoadingData, data, isError, error } = useGetIRI(iri);
     const { mutate: postData, isLoading: isPosting, isSuccess } = usePostData();
+    const { isLoading: isLoadingAccount, data: account } =
+        useGetCurrentAccount();
 
     const [currentStep, setCurrentStep] = useState(1);
 
@@ -32,14 +42,22 @@ const MandateForm = ({ iri, handleCloseModal }) => {
 
     const validationSchema = {
         1: Yup.object({ patient: mandatePatientSchema }),
-        2: Yup.object({ services: mandateServicesSchema }),
+        2: Yup.object({
+            mandates: mandateServicesSchema,
+        }),
     };
 
     const methods = useForm({
         shouldUnregister: false,
         defaultValues: {
             patient: { canton: "Genève" },
-            services: [{ category: "Soins infirmiers" }],
+            mandates: [
+                {
+                    category: "ROLE_NURSE",
+                    user: IRI + API_USERS + "/" + account.id,
+                    beginAt: dayjs().format("YYYY-MM-DD"),
+                },
+            ],
         },
         resolver: yupResolver(validationSchema[currentStep]),
         mode: "onChange",
@@ -58,7 +76,7 @@ const MandateForm = ({ iri, handleCloseModal }) => {
 
     const { fields, append, remove } = useFieldArray({
         control,
-        name: "services",
+        name: "mandates",
     });
 
     // Case update
@@ -68,22 +86,11 @@ const MandateForm = ({ iri, handleCloseModal }) => {
         }
     }, [isLoadingData, data]);
 
-    const onSubmit = async (form) => {
-        const groupingId = uuid();
-        await form.services.forEach(async (service) => {
-            let _form = {
-                groupingId: groupingId,
-                patient: form.patient,
-                service: service,
-                category: service.category,
-            };
-            await postData(_form);
-        });
-
+    const onSubmit = (form) => {
+        console.log("form", form);
+        postData(form);
         handleCloseModal();
     };
-
-    console.log("errors", errors);
 
     return (
         <>
@@ -99,11 +106,14 @@ const MandateForm = ({ iri, handleCloseModal }) => {
                     errors={errors}
                 >
                     {currentStep === 1 && (
-                        <MandatePatientFields
-                            register={register}
-                            errors={errors}
-                            name="patient"
-                        />
+                        <>
+                            <SelectPatient setValue={setValue} />
+                            <MandatePatientFields
+                                register={register}
+                                errors={errors}
+                                name="patient"
+                            />
+                        </>
                     )}
                     {currentStep === 2 && (
                         <>
@@ -126,7 +136,7 @@ const MandateForm = ({ iri, handleCloseModal }) => {
                                                 </button>
                                             )}
                                             <MandateServiceFields
-                                                name="services"
+                                                name="mandates"
                                                 index={index}
                                                 register={register}
                                                 errors={errors}
@@ -143,12 +153,17 @@ const MandateForm = ({ iri, handleCloseModal }) => {
                                     append(
                                         {
                                             category: "",
-                                            beginAt: "",
-                                            user: "",
                                             description: "",
+                                            user:
+                                                IRI +
+                                                API_USERS +
+                                                "/" +
+                                                account.id,
+                                            beginAt:
+                                                dayjs().format("YYYY-MM-DD"),
                                         },
                                         {
-                                            focusName: `services.${fields.length}.category`,
+                                            focusName: `mandates.${fields.length}.category`,
                                         }
                                     );
                                 }}
@@ -163,4 +178,34 @@ const MandateForm = ({ iri, handleCloseModal }) => {
     );
 };
 
-export default MandateForm;
+export default MandateGroupForm;
+
+const SelectPatient = ({ setValue }) => {
+    const { data, isLoading, isError, error } = useGetAllDatas();
+    if (isLoading) return <p>Chargement...</p>;
+    if (!isLoading && data && data["hydra:totalItems"] === 0)
+        return <p>Aucun patient trouvé</p>;
+    return (
+        <select
+            className="bg-gray-100 p-2 rounded"
+            onChange={(e) => {
+                console.log(
+                    'data["hydra:member"][e.target.value]',
+                    data["hydra:member"][e.target.value].patient
+                );
+                setValue(
+                    "patient",
+                    data["hydra:member"][e.target.value].patient
+                );
+            }}
+        >
+            <option value="">Choisir un patient</option>
+            {data["hydra:member"].map((item, index) => (
+                <option key={uuid()} value={index}>
+                    {item.patient.firstname} {item.patient.lastname} - AVS{" "}
+                    {item.patient.avsNumber}
+                </option>
+            ))}
+        </select>
+    );
+};

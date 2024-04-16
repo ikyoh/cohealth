@@ -1,17 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import _ from "lodash";
-import { API_USERS as API, itemsPerPage } from "../config/api.config";
+import { API_MANDATE_GROUPS as API, itemsPerPage } from "../config/api.config";
 import { request, requestIRI } from "../utils/axios.utils";
 
 /* CONFIG */
-const queryKey = "users";
+const queryKey = "mandateGroups";
 
 /* API REQUESTS */
 const fetchAllDatas = () => {
     return request({ url: API + "?pagination=false", method: "get" });
 };
 
-const fetchFilteredDatas = (sortValue, sortDirection, searchValue) => {
+const fetchFilteredDatas = (sortValue, sortDirection, searchValue, filters) => {
     return request({
         url:
             API +
@@ -31,7 +30,7 @@ const fetchPaginatedDatas = (
     sortValue,
     sortDirection,
     searchValue,
-    filters = false
+    filters
 ) => {
     let options =
         "?page=" +
@@ -43,7 +42,7 @@ const fetchPaginatedDatas = (
         "]=" +
         sortDirection;
     if (searchValue) options += "&search=" + searchValue;
-    if (filters.rcc) options += "&rcc=" + filters.rcc;
+    if (filters.status !== "all") options += "&status=" + filters.status;
     return request({ url: API + options, method: "get" });
 };
 
@@ -57,40 +56,30 @@ const fetchIRI = ({ queryKey }) => {
     return requestIRI({ url: iri, method: "get" });
 };
 
+const deleteIRI = (iri) => {
+    return requestIRI({ url: iri, method: "delete" });
+};
+
 const postData = (form) => {
-    return request({ url: API, method: "post", data: form });
+    const _form = { ...form };
+    return request({ url: API, method: "post", data: _form });
 };
 
 const putData = (form) => {
-    return request({ url: API + "/" + form.id, method: "put", data: form });
+    const _form = { ...form };
+    //if (form.content) form.patientFullname = form.content.patient.lastname + " " + form.content.patient.firstname
+    delete _form.createdAt;
+    delete _form.documents;
+    delete _form.mission;
+    delete _form.user;
+    return request({ url: API + "/" + form.id, method: "put", data: _form });
 };
 
 /* HOOKS */
-export const useGetAllDatas = (
-    search = "",
-    sortValue = "id",
-    sortDirection = "ASC",
-    enabled = true
-) => {
+export const useGetAllDatas = (enabled = true) => {
     return useQuery([queryKey], fetchAllDatas, {
         enabled: enabled ? true : false,
         staleTime: 60000,
-        select: (data) => {
-            if (search === "")
-                return _.orderBy(
-                    data["hydra:member"],
-                    sortValue,
-                    sortDirection
-                );
-            else
-                return _.orderBy(
-                    data["hydra:member"].filter((f) =>
-                        f.title.toLowerCase().includes(search.toLowerCase())
-                    ),
-                    sortValue,
-                    sortDirection
-                );
-        },
     });
 };
 
@@ -110,8 +99,7 @@ export const useGetPaginatedDatas = (
     sortValue,
     sortDirection,
     searchValue,
-    filters,
-    enabled = true
+    filters
 ) => {
     return useQuery({
         queryKey: [
@@ -132,7 +120,6 @@ export const useGetPaginatedDatas = (
             ),
         keepPreviousData: true,
         staleTime: 60000,
-        enabled: enabled,
         //select: data => {return data['hydra:member']}
     });
 };
@@ -153,33 +140,42 @@ export const useGetIRI = (iri) => {
     });
 };
 
-export const usePutData = (iri) => {
+export const usePostData = () => {
     const queryClient = useQueryClient();
-    return useMutation(putData, {
-        onMutate: async (updateData) => {
-            // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-            await queryClient.cancelQueries([queryKey, iri]);
-
-            // Snapshot the previous value
-            const previousData = queryClient.getQueryData([queryKey, iri]);
-
-            // Optimistically update to the new value
-            queryClient.setQueryData([queryKey, iri], {
-                ...previousData,
-                ...updateData,
-            });
-
-            // Return a context object with the snapshotted value
-            return { previousData, updateData };
-        },
-        onError: (err, updateData, context) => {
-            queryClient.setQueryData(
-                [[queryKey, iri], context.iri],
-                context.previousData
-            );
+    return useMutation(postData, {
+        onError: (error, _, context) => {
+            console.log("error", error);
         },
         onSettled: () => {
-            queryClient.invalidateQueries([queryKey]);
+            queryClient.invalidateQueries();
+        },
+    });
+};
+
+export const useDeleteIRI = () => {
+    const queryClient = useQueryClient();
+    return useMutation(deleteIRI, {
+        onError: (error, _, context) => {
+            console.log("error", error);
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries();
+        },
+    });
+};
+
+export const usePutData = () => {
+    const queryClient = useQueryClient();
+    return useMutation(putData, {
+        onError: (error, _, context) => {
+            console.log("error", error);
+            queryClient.setQueryData([queryKey], context.previousDatas);
+        },
+        onSettled: () => {
+            //queryClient.invalidateQueries()
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries();
         },
     });
 };

@@ -53,6 +53,18 @@ use App\Filter\MultipleFieldsSearchFilter;
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['rcc' => 'exact'])]
+
+#[ApiFilter(OrderFilter::class, properties: ['id', 'lastname', 'email', 'rcc', 'isActive'])]
+#[ApiFilter(MultipleFieldsSearchFilter::class, properties: [
+    "id",
+    "firstname",
+    "lastname",
+    "email",
+    "organization",
+    "rcc"
+])]
+
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -62,7 +74,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $id;
 
     #[ORM\Column(type: 'string', length: 180)]
-    #[Groups(["users:read", "user:read", "user:write", "partners:read"])]
+    #[Groups(["users:read", "user:read", "user:write", "partners:read", "mandate:read"])]
     #[Assert\Email(
         message: "L'Email {{ value }} n'est pas un Email valide.",
     )]
@@ -77,11 +89,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:read", "user:write", "missions:read", "mission:read", "partners:read", "mandates:read", "mandate:read"])]
+    #[Groups(["users:read", "user:read", "user:write", "missions:read", "mission:read", "partners:read", "mandates:read", "mandate:read", "mandates_group:read"])]
     private $firstname = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:read", "user:write", "missions:read", "mission:read", "partners:read", "mandates:read", "mandate:read"])]
+    #[Groups(["users:read", "user:read", "user:write", "missions:read", "mission:read", "partners:read", "mandates:read", "mandate:read", "mandates_group:read"])]
     private $lastname = null;
 
     #[ORM\Column(type: 'boolean')]
@@ -89,11 +101,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $isActive = false;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:read", "user:write"])]
+    #[Groups(["users:read", "user:read", "user:write", "mandate:read"])]
     private $organization = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:read", "user:write", "partners:read"])]
+    #[Groups(["users:read", "user:read", "user:write", "partners:read", "mandate:read"])]
     private $phone = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -101,7 +113,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $fax = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:read", "user:write", "partners:read"])]
+    #[Groups(["users:read", "user:read", "user:write", "partners:read", "mandate:read"])]
     private $mobile = null;
 
     #[ORM\Column(type: 'datetime')]
@@ -172,6 +184,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'mandateUser', targetEntity: Mandate::class)]
     private Collection $mandates;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: MandateGroup::class, orphanRemoval: true)]
+    private Collection $mandateGroups;
+
 
     public function __construct()
     {
@@ -179,6 +194,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->partners = new ArrayCollection();
         $this->mediaObjects = new ArrayCollection();
         $this->mandates = new ArrayCollection();
+        $this->mandateGroups = new ArrayCollection();
     }
 
     // Issue for Can't get a way to read the property "username" in class "App\Entity\User" from authentication
@@ -606,6 +622,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($mandate->getMandateUser() === $this) {
                 $mandate->setMandateUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MandateGroup>
+     */
+    public function getMandateGroups(): Collection
+    {
+        return $this->mandateGroups;
+    }
+
+    public function addMandateGroup(MandateGroup $mandateGroup): self
+    {
+        if (!$this->mandateGroups->contains($mandateGroup)) {
+            $this->mandateGroups->add($mandateGroup);
+            $mandateGroup->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMandateGroup(MandateGroup $mandateGroup): self
+    {
+        if ($this->mandateGroups->removeElement($mandateGroup)) {
+            // set the owning side to null (unless already changed)
+            if ($mandateGroup->getUser() === $this) {
+                $mandateGroup->setUser(null);
             }
         }
 

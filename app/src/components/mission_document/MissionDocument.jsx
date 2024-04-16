@@ -43,7 +43,7 @@ const MissionDocument = ({ iri, isMine }) => {
                     </div>
                 </div>
 
-                <div className='border-l-2 border-base-300 bg-gradient-to-r from-base-200 to-white rounded mb-3 pl-3 py-2 flex justify-between'>
+                <div className='rounded-lg mb-3 p-3 flex justify-between shadow-xl shadow-base-300/40'>
                     <div>
                         {data.type}
                         {

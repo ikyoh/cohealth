@@ -45,7 +45,7 @@ const MandateAgentForm = ({ iri, handleCloseModal }) => {
             >
 
 
-                {users?.filter(user => user.roles.includes(mandateCategoriesUsersRoles[data.category]))
+                {users?.filter(user => user.roles.includes(data.category))
                     .map(user =>
                         <div key={uuid()} className="form-control">
                             <input
@@ -64,7 +64,6 @@ const MandateAgentForm = ({ iri, handleCloseModal }) => {
                     )
 
                 }
-
 
             </Form>
         </>

@@ -22,7 +22,7 @@
   pre {
     font-family: 'Poppins', sans-serif;
   }
-  
+
 }
 
 
@@ -136,4 +136,33 @@
 
 .catN {
   @apply text-gray-400;
+}
+
+
+.card-shadow {
+  @apply bg-white p-5 rounded-xl shadow-2xl shadow-slate-300/40 flex flex-col gap-5;
+}
+
+.subcard-shadow {
+  @apply bg-white p-3 rounded-xl shadow-xl shadow-slate-200/20 flex flex-col gap-0;
+}
+
+.table-shadow {
+  @apply bg-white rounded-xl shadow-2xl shadow-slate-300/40 w-full table-fixed text-left border-collapse text-sm;
+}
+
+.card-title {
+  @apply text-xl font-bold flex gap-3 items-center;
+}
+
+.subcard-title {
+  @apply text-sm text-slate-500 flex gap-3 items-center;
+}
+
+.card-info {
+  @apply text-black text-lg ml-2;
+}
+
+.card-subtitle {
+  @apply font-bold flex items-center gap-3;
 }

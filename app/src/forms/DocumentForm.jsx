@@ -10,7 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 import { documentCategories } from '../utils/arrays'
 
-const DocumentForm = ({ iri, missionID, mandateID, handleCloseModal }) => {
+const DocumentForm = ({ iri, missionID, mandateID, mandateGroupID, handleCloseModal }) => {
 
     const { isLoading: isLoadingData, data, isError, error } = useGetIRI(iri)
     const { mutate: postData, isLoading: isPosting, isSuccess } = usePostData()
@@ -30,7 +30,8 @@ const DocumentForm = ({ iri, missionID, mandateID, handleCloseModal }) => {
         defaultValues: {
             file: null,
             mission: missionID,
-            mandate: mandateID
+            mandate: mandateID,
+            mandateGroup: mandateGroupID
         }
     })
 
@@ -49,6 +50,7 @@ const DocumentForm = ({ iri, missionID, mandateID, handleCloseModal }) => {
             const _form = { ...form }
             delete _form.mission
             delete _form.mandate
+            delete _form.mandateGroup
             delete _form.user
             delete _form.contentUrl
             delete _form.filePath

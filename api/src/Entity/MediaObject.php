@@ -59,7 +59,7 @@ class MediaObject implements UserOwnedInterface
     private ?int $id = null;
 
     #[ApiProperty(types: ['https://schema.org/contentUrl'])]
-    #[Groups(['media_object:read', 'users:read', 'user:read', 'mission:read', 'mandate:read'])]
+    #[Groups(['media_object:read', 'users:read', 'user:read', 'mission:read', 'mandate:read','mandate_group:read'])]
     public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: "media_object", fileNameProperty: "filePath")]
@@ -67,7 +67,7 @@ class MediaObject implements UserOwnedInterface
     public ?File $file = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['media_object:read', 'users:read', 'user:read', 'mission:read', 'mandate:read'])]
+    #[Groups(['media_object:read', 'users:read', 'user:read', 'mission:read', 'mandate:read', 'mandate_group:read'])]
     public ?string $filePath = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -93,11 +93,16 @@ class MediaObject implements UserOwnedInterface
     #[ORM\ManyToOne(targetEntity: Mandate::class, inversedBy: 'documents')]
     #[Groups(['media_object:read'])]
     private $mandate;
-
+    
+    #[ORM\ManyToOne(targetEntity: MandateGroup::class, inversedBy: 'documents')]
+    #[Groups(['media_object:read'])]
+    private $mandateGroup;
+    
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'mediaObjects')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['media_object:read'])]
     private $user;
+    
 
     public function __construct()
     {
@@ -195,6 +200,18 @@ class MediaObject implements UserOwnedInterface
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getMandateGroup(): ?MandateGroup
+    {
+        return $this->mandateGroup;
+    }
+
+    public function setMandateGroup(?MandateGroup $mandateGroup): self
+    {
+        $this->mandateGroup = $mandateGroup;
 
         return $this;
     }

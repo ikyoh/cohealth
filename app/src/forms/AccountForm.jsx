@@ -9,7 +9,7 @@ import { user } from '../utils/arrays';
 import { user as validationSchema } from '../utils/validationSchemas';
 
 
-const AccountForm = ({ iri, handleCloseModal }) => {
+const AccountForm = ({ iri, handleCloseModal, submitLabel }) => {
 
     const { isLoading: isLoadingData, data, isError, error } = useGetCurrentAccount()
     const { mutate: putData } = usePutData()
@@ -40,7 +40,7 @@ const AccountForm = ({ iri, handleCloseModal }) => {
 
 
     return (
-        <Form onSubmit={handleSubmit(onSubmit)}
+        <Form onSubmit={handleSubmit(onSubmit)} submitLabel={submitLabel}
             // isLoading={isSubmitting}
             // isDisabled={isSubmitting}
         >
