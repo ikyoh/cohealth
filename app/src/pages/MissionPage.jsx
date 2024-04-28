@@ -35,7 +35,7 @@ import { useModal } from "../hooks/useModal";
 import PageTitle from "../layouts/PageTitle";
 import { useGetIRI as Assurance } from "../queryHooks/useAssurance";
 import { useGetIRI as Doctor } from "../queryHooks/useDoctor";
-import { useGetDocument } from "../queryHooks/useDocument";
+import { useGetIRI } from "../queryHooks/useDocument";
 import { useGetOneData, usePutData } from "../queryHooks/useMission";
 import { missionStatus } from "../utils/arrays";
 import { calcNumberOfDays, downloadFile } from "../utils/functions";
@@ -721,7 +721,7 @@ const MissionPage = () => {
 export default MissionPage;
 
 const MandateDocuments = ({ iri }) => {
-    const { data } = useGetDocument(iri);
+    const { data } = useGetIRI(iri);
     const queryClient = useQueryClient();
     const account = queryClient.getQueryData(["account"]);
 
