@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { MdDashboard } from "react-icons/md";
+import Loader from "../components/Loader";
 import DashboardAdmin from "../dashboards/DashboardAdmin";
 import DashboardCoordinator from "../dashboards/DashboardCoordinator";
 import DashboardDoctor from "../dashboards/DashboardDoctor";
@@ -11,9 +12,8 @@ import PageTitle from "../layouts/PageTitle";
 import { useGetCurrentAccount } from "../queryHooks/useAccount";
 
 const DashboardPage = () => {
-    const { data: account } = useGetCurrentAccount();
-    const [filterButtonState, setFilterButtonState] = useState(0);
-    const [isLoading, setIsLoading] = useState(false);
+    const { data: account, isLoading } = useGetCurrentAccount();
+
     const Dashboard = () => {
         if (account.roles.includes("ROLE_ADMIN")) return <DashboardAdmin />;
         if (account.roles.includes("ROLE_ADMIN"))
@@ -27,13 +27,18 @@ const DashboardPage = () => {
         if (account.roles.includes("ROLE_USER")) return null;
     };
 
+    if (isLoading) return <Loader />;
     return (
         <Layout>
             <>
                 <PageTitle
                     title="Tableau de bord"
                     icon={<MdDashboard size={25} />}
-                />
+                >
+                    <div className="px-3">
+                        {account.firstname} {account.lastname}
+                    </div>
+                </PageTitle>
                 <Dashboard />
             </>
         </Layout>
