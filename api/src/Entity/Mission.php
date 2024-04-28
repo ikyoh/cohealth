@@ -110,9 +110,14 @@ class Mission implements UserOwnedInterface
     #[Groups(["missions:read", "mission:read", "mission:write"])]
     private ?Prescription $opas = null;
 
+    #[ORM\OneToMany(mappedBy: 'mission', targetEntity: Observation::class, orphanRemoval: true)]
+    #[Groups(["missions:read", "mission:read"])]
+    private Collection $observations;
+
     public function __construct()
     {
         $this->documents = new ArrayCollection();
+        $this->observations = new ArrayCollection();
     }
 
 
@@ -294,6 +299,36 @@ class Mission implements UserOwnedInterface
     public function setOpas(?Prescription $opas): self
     {
         $this->opas = $opas;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Observation>
+     */
+    public function getObservations(): Collection
+    {
+        return $this->observations;
+    }
+
+    public function addObservation(Observation $observation): self
+    {
+        if (!$this->observations->contains($observation)) {
+            $this->observations->add($observation);
+            $observation->setMission($this);
+        }
+
+        return $this;
+    }
+
+    public function removeObservation(Observation $observation): self
+    {
+        if ($this->observations->removeElement($observation)) {
+            // set the owning side to null (unless already changed)
+            if ($observation->getMission() === $this) {
+                $observation->setMission(null);
+            }
+        }
 
         return $this;
     }

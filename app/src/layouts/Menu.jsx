@@ -75,7 +75,7 @@ const Menu = () => {
     };
 
     return (
-        <div className="z-[100] md=z-0 h-screen fixed md:sticky md:top-0 px-2">
+        <div className="z-[100] h-screen fixed md:sticky md:top-0">
             <div className="md:hidden fixed bottom-0 bg-primary w-full text-center pt-2 pb-5">
                 <label className="rounded-full bg-white swap swap-rotate p-2">
                     {/* this hidden checkbox controls the state */}

@@ -1,23 +1,21 @@
-import React, { useState, useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import dayjs from 'dayjs';
+import React, { useEffect, useState } from 'react';
 import { MdPendingActions } from "react-icons/md";
-import PageTitle from '../layouts/PageTitle'
-import { useGetCollaborationPaginatedDatas } from '../queryHooks/useMission'
-import { useSearch } from '../hooks/useSearch'
-import { useSortBy } from '../hooks/useSortBy'
-import * as Table from '../components/table/Table'
-import Pagination from '../components/pagination/Pagination'
-import Dropdown from '../components/dropdown/Dropdown'
-import { API_MISSIONS } from '../config/api.config'
-import { calcNumberOfDays } from '../utils/functions'
-import dayjs from 'dayjs'
-import OpasStatus from '../components/opas/OpasStatus'
-import MissionStatus from '../components/mission_status/MissionsStatus'
-import Loader from '../components/Loader'
-import { useFilterMissions } from '../hooks/useFilterMissions';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Loader from '../components/Loader';
+import MissionStatus from '../components/mission_status/MissionsStatus';
+import OpasStatus from '../components/opas/OpasStatus';
+import Pagination from '../components/pagination/Pagination';
+import * as Table from '../components/table/Table';
+import { API_MISSIONS } from '../config/api.config';
 import { URL } from '../features/apiConfig';
+import { useFilterMissions } from '../hooks/useFilterMissions';
+import { useSearch } from '../hooks/useSearch';
+import { useSortBy } from '../hooks/useSortBy';
+import PageTitle from '../layouts/PageTitle';
+import { useGetCollaborationPaginatedDatas } from '../queryHooks/useMission';
+import { calcNumberOfDays } from '../utils/functions';
 
-import { HiChevronRight } from 'react-icons/hi'
 
 const CollaborationsPage = () => {
 
@@ -94,7 +92,7 @@ const CollaborationsPage = () => {
                     />
                     <Table.Th
                         label="OPAS"
-                        sortBy='prescriptions.status'
+                        sortBy='opas.status'
                         sortValue={sortValue}
                         sortDirection={sortDirection}
                         handleSort={handleSort}
@@ -127,7 +125,7 @@ const CollaborationsPage = () => {
                             <Table.Td label="Début" text={dayjs(data.beginAt).format('DD/MM/YYYY')} />
                             <Table.Td label="Fin" text={dayjs(data.endAt).format('DD/MM/YYYY')} />
                             <Table.Td label="Durée" text={calcNumberOfDays(data.beginAt, data.endAt) + " jours"} />
-                            <Table.Td label="Opas" children={<OpasStatus prescriptions={data.prescriptions} />} />
+                            <Table.Td label="Opas" children={<OpasStatus opas={data.opas} />} />
                             <Table.Td label="Statut" children={<MissionStatus mission={data} />} />
                         </Table.Tr>
                     )}

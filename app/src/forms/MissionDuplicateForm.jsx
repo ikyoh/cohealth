@@ -1,79 +1,79 @@
-import React, { useState, useEffect } from 'react'
-import { useGetIRI, usePostData } from '../queryHooks/useMission'
-import { useGetIRI as usePrescription, usePostData as usePostPrescription } from '../queryHooks/usePrescription'
-import { useGetCurrentAccount as useAccount } from '../queryHooks/useAccount'
-import { FormProvider, useForm } from "react-hook-form"
-import Form from "../components/form/form/Form"
-import * as Yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { mission } from '../utils/arrays'
-import MissionFields from '../fields/MissionFields'
-import AddButton from '../components/buttons/AddButton'
-import { mission as validationSchema } from '../utils/validationSchemas'
-import Loader from '../components/Loader'
-
+import { yupResolver } from "@hookform/resolvers/yup";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import Form from "../components/form/form/Form";
+import MissionFields from "../fields/MissionFields";
+import { useGetIRI, usePostData } from "../queryHooks/useMission";
+import { mission as validationSchema } from "../utils/validationSchemas";
 
 const MissionDuplicateForm = ({ iri, handleCloseModal }) => {
+    const { isLoading, data, isError, error } = useGetIRI(iri);
+    const {
+        isLoading: isLoadingPrescription,
+        data: dataOpas,
+        isError: isErrorPrescription,
+        error: errorPrescription,
+    } = useGetIRI(data && data.opas ? data.opas : null);
 
-    const { isLoading, data, isError, error } = useGetIRI(iri)
-    const { isLoading: isLoadingPrescription, data: dataPrescription, isError: isErrorPrescription, error: errorPrescription } = useGetIRI(data && data.prescriptions && data.prescriptions[0])
+    const {
+        mutate: postData,
+        data: responseData,
+        isLoading: isPosting,
+        isSuccess,
+    } = usePostData();
 
-    const { mutate: postData, data: responseData, isLoading: isPosting, isSuccess } = usePostData()
-
-    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm({
         resolver: yupResolver(validationSchema),
-        defaultValues: {}
-    })
+        defaultValues: {},
+    });
 
     // Case update
     useEffect(() => {
-
-        const _data = { prescriptions: [] }
-
         if (data) {
+            const _formData = {
+                description: data.description,
+                assurance: data.assurance,
+                doctor: data.doctor,
+                patient: data.patient["@id"],
+            };
 
-            _data.doctor = data.doctor
-            _data.assurance = data.assurance
-            _data.patient = data.patient
-            _data.status = "en cours"
-
+            if (data.opas && dataOpas) {
+                const _formDataOpas = {
+                    content: dataOpas.content,
+                    type: dataOpas.type,
+                    user: dataOpas.user,
+                };
+                _formData.opas = _formDataOpas;
+            }
+            reset(_formData);
         }
+    }, [isLoading, data, dataOpas, reset]);
 
-        if (dataPrescription) {
+    const onSubmit = (form) => {
+        postData(form);
+    };
 
-            _data.prescriptions.push({
-                user: dataPrescription.user,
-                content: dataPrescription.content,
-                status: "brouillon",
-                type: "opas"
-            })
-
+    useEffect(() => {
+        if (isSuccess) {
+            handleCloseModal();
         }
+    }, [isSuccess, handleCloseModal]);
 
-        reset(_data)
-
-    }, [isLoading, data, dataPrescription])
-
-
-    const onSubmit = form => {
-        console.log('form', form)
-        postData(form)
-        //handleCloseModal()
-    }
-
-
-    if (isLoading) return <Loader />
     return (
-
-        <Form onSubmit={handleSubmit(onSubmit)}
+        <Form
+            onSubmit={handleSubmit(onSubmit)}
             isLoading={isSubmitting}
             isDisabled={isSubmitting}
             errors={errors}
         >
             <MissionFields register={register} errors={errors} />
         </Form>
+    );
+};
 
-    )
-}
-
-export default MissionDuplicateForm
+export default MissionDuplicateForm;

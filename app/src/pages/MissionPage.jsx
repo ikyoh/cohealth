@@ -6,6 +6,8 @@ import { AiOutlineFolderOpen } from "react-icons/ai";
 import { FaHandshake } from "react-icons/fa";
 import { HiDownload, HiOutlinePaperClip } from "react-icons/hi";
 import { IoPersonCircleOutline } from "react-icons/io5";
+import { LuActivity } from "react-icons/lu";
+
 import {
     MdArrowBack,
     MdOutlineHealthAndSafety,
@@ -16,8 +18,10 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import uuid from "react-uuid";
 import Loader from "../components/Loader";
 import Button from "../components/buttons/Button";
+import ObservationChart from "../components/charts/ObservationChart";
 import Dropdown from "../components/dropdown/Dropdown";
 import MissionDocument from "../components/mission_document/MissionDocument";
+import MissionObservation from "../components/mission_observation/MissionObservation";
 import MissionPartner from "../components/mission_partner/MissionPartner";
 import MissionStatus from "../components/mission_status/MissionsStatus";
 import OpasCard from "../components/opas/OpasCard";
@@ -25,12 +29,13 @@ import { URL } from "../features/apiConfig";
 import DocumentForm from "../forms/DocumentForm";
 import MissionForm from "../forms/MissionForm";
 import MissionPartnerForm from "../forms/MissionPartnerForm";
+import ObservationForm from "../forms/ObservationForm";
 import PatientForm from "../forms/PatientForm";
 import { useModal } from "../hooks/useModal";
 import PageTitle from "../layouts/PageTitle";
 import { useGetIRI as Assurance } from "../queryHooks/useAssurance";
 import { useGetIRI as Doctor } from "../queryHooks/useDoctor";
-import { useGetIRI as mandate } from "../queryHooks/useMandate";
+import { useGetDocument } from "../queryHooks/useDocument";
 import { useGetOneData, usePutData } from "../queryHooks/useMission";
 import { missionStatus } from "../utils/arrays";
 import { calcNumberOfDays, downloadFile } from "../utils/functions";
@@ -39,7 +44,7 @@ const MissionPage = () => {
     const navigate = useNavigate();
     const { state: previousPageState } = useLocation();
     const { id } = useParams();
-    const { data } = useGetOneData(id);
+    const { data, isLoading } = useGetOneData(id);
     const { data: doctor, isLoading: isLoadingDoctor } = Doctor(
         data && data.doctor ? data.doctor : null
     );
@@ -306,6 +311,109 @@ const MissionPage = () => {
                             <MandateDocuments iri={data.mandate["@id"]} />
                         )}
                     </div>
+                    {data.observations.length !== 0 && (
+                        <div className="md:col-span-12">
+                            <div className="card-shadow">
+                                <div className="card-title">
+                                    <LuActivity size={30} />
+                                    Observations
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                    <div className="card-shadow h-48 overflow-y-auto">
+                                        {data.observations.filter(
+                                            (f) => f.category === "observation"
+                                        ).length !== 0 && (
+                                            <div className="grid grid-cols-1 divide-y">
+                                                {data.observations
+                                                    .sort(
+                                                        (a, b) =>
+                                                            new Date(
+                                                                b.createdAt
+                                                            ) -
+                                                            new Date(
+                                                                a.createdAt
+                                                            )
+                                                    )
+                                                    .filter(
+                                                        (f) =>
+                                                            f.category ===
+                                                            "observation"
+                                                    )
+                                                    .map((observation) => (
+                                                        <MissionObservation
+                                                            observation={
+                                                                observation
+                                                            }
+                                                            key={uuid()}
+                                                        />
+                                                    ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                    {data.observations
+                                        .sort(
+                                            (a, b) =>
+                                                new Date(a.createdAt) -
+                                                new Date(b.createdAt)
+                                        )
+                                        .filter((f) => f.category === "tension")
+                                        .length !== 0 && (
+                                        <div className="card-shadow h-48 !pb-5">
+                                            <ObservationChart
+                                                name="Tension"
+                                                color="#F472B6"
+                                                datas={data.observations.filter(
+                                                    (f) =>
+                                                        f.category === "tension"
+                                                )}
+                                            />
+                                        </div>
+                                    )}
+                                    {data.observations
+                                        .sort(
+                                            (a, b) =>
+                                                new Date(a.createdAt) -
+                                                new Date(b.createdAt)
+                                        )
+                                        .filter((f) => f.category === "poids")
+                                        .length !== 0 && (
+                                        <div className="card-shadow h-48">
+                                            <ObservationChart
+                                                name="Poids"
+                                                color="#F4B600"
+                                                datas={data.observations.filter(
+                                                    (f) =>
+                                                        f.category === "poids"
+                                                )}
+                                            />
+                                        </div>
+                                    )}
+                                    {data.observations
+                                        .sort(
+                                            (a, b) =>
+                                                new Date(a.createdAt) -
+                                                new Date(b.createdAt)
+                                        )
+                                        .filter(
+                                            (f) => f.category === "température"
+                                        ).length !== 0 && (
+                                        <div className="card-shadow h-48">
+                                            <ObservationChart
+                                                name="Température"
+                                                color="#0072B6"
+                                                datas={data.observations.filter(
+                                                    (f) =>
+                                                        f.category ===
+                                                        "température"
+                                                )}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             );
     };
@@ -318,7 +426,7 @@ const MissionPage = () => {
         return <h1>En cours de développement</h1>;
     };
 
-    if (!data || isLoadingAssurance || isLoadingDoctor) return <Loader />;
+    if (isLoading) return <Loader />;
     else
         return (
             <>
@@ -376,17 +484,16 @@ const MissionPage = () => {
                             </button>
                         </Dropdown>
                     )}
-                    {isMine && (
+                    {account.roles.includes("ROLE_NURSE") && (
                         <Dropdown type="button">
                             <button
                                 type="button"
                                 onClick={() =>
                                     handleOpenModal({
-                                        title: "Edition de la mission",
+                                        title: "Nouvelle observation",
                                         content: (
-                                            <MissionForm
-                                                action="mission"
-                                                iri={data["@id"]}
+                                            <ObservationForm
+                                                missionIRI={data["@id"]}
                                                 handleCloseModal={
                                                     handleCloseModal
                                                 }
@@ -395,139 +502,173 @@ const MissionPage = () => {
                                     })
                                 }
                             >
-                                <MdPendingActions size={20} />
-                                Éditer la mission
+                                <LuActivity size={16} />
+                                Ajouter une observation
                             </button>
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    handleOpenModal({
-                                        title: "édition du patient",
-                                        content: (
-                                            <PatientForm
-                                                iri={data.patient["@id"]}
-                                                handleCloseModal={
-                                                    handleCloseModal
-                                                }
-                                            />
-                                        ),
-                                    })
-                                }
-                            >
-                                <IoPersonCircleOutline size={20} />
-                                Éditer le patient
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    handleOpenModal({
-                                        title: "Edition du médecin",
-                                        content: (
-                                            <MissionForm
-                                                action="doctorIRI"
-                                                iri={data["@id"]}
-                                                handleCloseModal={
-                                                    handleCloseModal
-                                                }
-                                            />
-                                        ),
-                                    })
-                                }
-                            >
-                                <RiStethoscopeFill size={20} />
-                                Éditer le médecin mandant
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    handleOpenModal({
-                                        title: "Edition de l'assurance'",
-                                        content: (
-                                            <MissionForm
-                                                action="assuranceIRI"
-                                                iri={data["@id"]}
-                                                handleCloseModal={
-                                                    handleCloseModal
-                                                }
-                                            />
-                                        ),
-                                    })
-                                }
-                            >
-                                <MdOutlineHealthAndSafety size={20} />
-                                Éditer l'assurance
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    handleOpenModal({
-                                        title: "Partenaires",
-                                        content: (
-                                            <MissionPartnerForm
-                                                iri={data["@id"]}
-                                                partners={data.coworkers}
-                                                handleCloseModal={
-                                                    handleCloseModal
-                                                }
-                                            />
-                                        ),
-                                    })
-                                }
-                            >
-                                <FaHandshake size={20} />
-                                Éditer les partenaires
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    handleOpenModal({
-                                        title: "Nouveau document",
-                                        content: (
-                                            <DocumentForm
-                                                event={false}
-                                                missionID={data.id}
-                                                handleCloseModal={
-                                                    handleCloseModal
-                                                }
-                                            />
-                                        ),
-                                    })
-                                }
-                            >
-                                <AiOutlineFolderOpen size={20} />
-                                Ajouter un document
-                            </button>
-                            <p>Statut de la mission</p>
-                            <button
-                                type="button"
-                                className="flex items-center gap-2"
-                                onClick={() => handleChangeStatus("en cours")}
-                            >
-                                <div
-                                    className={`rounded-full w-4 h-4 ${missionStatus["en cours"]}`}
-                                ></div>
-                                En cours
-                            </button>
-                            <button
-                                type="button"
-                                className="flex items-center gap-2"
-                                onClick={() => handleChangeStatus("annulé")}
-                            >
-                                <div
-                                    className={`rounded-full w-4 h-4 ${missionStatus["annulé"]}`}
-                                ></div>
-                                Annulé
-                            </button>
-                            <button
-                                type="button"
-                                className="flex items-center gap-2"
-                                onClick={() => handleChangeStatus("archivé")}
-                            >
-                                <div
-                                    className={`rounded-full w-4 h-4 ${missionStatus["archivé"]}`}
-                                ></div>
-                                Archivé
-                            </button>
+                            {isMine && (
+                                <>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            handleOpenModal({
+                                                title: "Edition de la mission",
+                                                content: (
+                                                    <MissionForm
+                                                        action="mission"
+                                                        iri={data["@id"]}
+                                                        handleCloseModal={
+                                                            handleCloseModal
+                                                        }
+                                                    />
+                                                ),
+                                            })
+                                        }
+                                    >
+                                        <MdPendingActions size={20} />
+                                        Éditer la mission
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            handleOpenModal({
+                                                title: "édition du patient",
+                                                content: (
+                                                    <PatientForm
+                                                        iri={
+                                                            data.patient["@id"]
+                                                        }
+                                                        handleCloseModal={
+                                                            handleCloseModal
+                                                        }
+                                                    />
+                                                ),
+                                            })
+                                        }
+                                    >
+                                        <IoPersonCircleOutline size={20} />
+                                        Éditer le patient
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            handleOpenModal({
+                                                title: "Edition du médecin",
+                                                content: (
+                                                    <MissionForm
+                                                        action="doctorIRI"
+                                                        iri={data["@id"]}
+                                                        handleCloseModal={
+                                                            handleCloseModal
+                                                        }
+                                                    />
+                                                ),
+                                            })
+                                        }
+                                    >
+                                        <RiStethoscopeFill size={20} />
+                                        Éditer le médecin mandant
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            handleOpenModal({
+                                                title: "Edition de l'assurance'",
+                                                content: (
+                                                    <MissionForm
+                                                        action="assuranceIRI"
+                                                        iri={data["@id"]}
+                                                        handleCloseModal={
+                                                            handleCloseModal
+                                                        }
+                                                    />
+                                                ),
+                                            })
+                                        }
+                                    >
+                                        <MdOutlineHealthAndSafety size={20} />
+                                        Éditer l'assurance
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            handleOpenModal({
+                                                title: "Partenaires",
+                                                content: (
+                                                    <MissionPartnerForm
+                                                        iri={data["@id"]}
+                                                        partners={
+                                                            data.coworkers
+                                                        }
+                                                        handleCloseModal={
+                                                            handleCloseModal
+                                                        }
+                                                    />
+                                                ),
+                                            })
+                                        }
+                                    >
+                                        <FaHandshake size={20} />
+                                        Éditer les partenaires
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            handleOpenModal({
+                                                title: "Nouveau document",
+                                                content: (
+                                                    <DocumentForm
+                                                        event={false}
+                                                        missionID={data.id}
+                                                        handleCloseModal={
+                                                            handleCloseModal
+                                                        }
+                                                    />
+                                                ),
+                                            })
+                                        }
+                                    >
+                                        <AiOutlineFolderOpen size={20} />
+                                        Ajouter un document
+                                    </button>
+                                    <p>Statut de la mission</p>
+                                    <button
+                                        type="button"
+                                        className="flex items-center gap-2"
+                                        onClick={() =>
+                                            handleChangeStatus("en cours")
+                                        }
+                                    >
+                                        <div
+                                            className={`rounded-full w-4 h-4 ${missionStatus["en cours"]}`}
+                                        ></div>
+                                        En cours
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="flex items-center gap-2"
+                                        onClick={() =>
+                                            handleChangeStatus("annulé")
+                                        }
+                                    >
+                                        <div
+                                            className={`rounded-full w-4 h-4 ${missionStatus["annulé"]}`}
+                                        ></div>
+                                        Annulé
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="flex items-center gap-2"
+                                        onClick={() =>
+                                            handleChangeStatus("archivé")
+                                        }
+                                    >
+                                        <div
+                                            className={`rounded-full w-4 h-4 ${missionStatus["archivé"]}`}
+                                        ></div>
+                                        Archivé
+                                    </button>
+                                </>
+                            )}
                         </Dropdown>
                     )}
                 </PageTitle>
@@ -580,7 +721,7 @@ const MissionPage = () => {
 export default MissionPage;
 
 const MandateDocuments = ({ iri }) => {
-    const { data } = mandate(iri);
+    const { data } = useGetDocument(iri);
     const queryClient = useQueryClient();
     const account = queryClient.getQueryData(["account"]);
 

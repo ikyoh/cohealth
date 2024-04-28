@@ -13,14 +13,8 @@ const PageTitle = ({
 }) => {
     const { data: account, isLoading, error } = useGetCurrentAccount();
 
-    let countChildren = React.Children.toArray(children).filter(
-        (child) => child !== null && child !== undefined && child !== false
-    ).length;
-
-    console.log("countChildren", countChildren);
-
     return (
-        <div className="flex items-center py-7 bg-slate-100 sticky top-0 w-full z-10 gap-5">
+        <div className="px-3 md:px-0 flex flex-col md:flex-row md:items-center py-7 bg-slate-100 sticky top-0 w-full z-10 gap-5">
             <div className="flex items-center gap-3 grow">
                 <div>
                     <div className="text-sm font-light capitalize">
@@ -40,59 +34,54 @@ const PageTitle = ({
                     </div>
                 </div>
             </div>
-
-            {children && (
-                <div
-                    className={`bg-white flex p-2 rounded-full shadow-lg shadow-slate-400/40 ${
-                        countChildren > 1 && "gap-3"
-                    }`}
-                >
-                    <div className="w-full md:w-auto flex items-center justify-end gap-3 order-last md:order-2 grow">
-                        {children}
-                    </div>
+            <div className="bg-white md:bg-transparent flex p-2 rounded-full shadow-lg md:shadow-none shadow-slate-400/40 gap-3 justify-between">
+                <div className="md:bg-white grow flex md:p-2 rounded-full md:shadow-lg shadow-none shadow-slate-400/40 gap-3 justify-between">
+                    {children && (
+                        <div className="w-full md:w-auto flex items-center justify-between gap-3 grow">
+                            {children}
+                        </div>
+                    )}
                     {mainButton && (
-                        <div className="flex items-center justify-between grow-0 order-3 md:order-last">
+                        <div className="flex items-center justify-between grow-0">
                             {mainButton}
                         </div>
                     )}
                 </div>
-            )}
-
-            <div
-                className="flex items-center text-sm space-x-4 tooltip tooltip-left tooltip-neutral"
-                data-tip={
-                    account.organization
-                        ? account.organization
-                        : account.firstname + " " + account.lastname
-                }
-            >
-                {account.roles.includes("ROLE_ADMIN") ||
-                account.roles.includes("ROLE_COORDINATOR") ? (
-                    <button className="bg-white flex gap-3 p-2 rounded-full shadow-lg shadow-slate-400/40">
-                        <img
-                            src={ReactPicto}
-                            className="rounded-full object-cover h-10 w-10 overflow-hidden"
-                            style={{ width: "100%" }}
-                            alt="profil"
-                        />
-                    </button>
-                ) : account.avatar ? (
-                    <button className="bg-white flex gap-3 p-2 rounded-full shadow-lg shadow-slate-400/40">
-                        <img
-                            src={URL + account.avatar.contentUrl}
-                            className="rounded-full object-cover h-10 w-10"
-                            alt="profil"
-                        />
-                    </button>
-                ) : (
-                    <button className="rounded-full flex items-center h-10 justify-center w-10 bg-slate-300">
-                        {account.firstname && account.firstname.charAt(0)}
-                        {account.lastname && account.lastname.charAt(0)}
-                        {account.organization &&
-                            account.organization.charAt(0).toUpperCase()}
-                    </button>
-                )}
-                {/* <p>{account.firstname} {account.lastname} {account.organization}</p> */}
+                <div
+                    className="flex items-center text-sm space-x-4 tooltip tooltip-left tooltip-neutral"
+                    data-tip={
+                        account.organization
+                            ? account.organization
+                            : account.firstname + " " + account.lastname
+                    }
+                >
+                    {account.roles.includes("ROLE_ADMIN") ||
+                    account.roles.includes("ROLE_COORDINATOR") ? (
+                        <button className="bg-white flex gap-3 p-2 rounded-full shadow-lg shadow-slate-400/40">
+                            <img
+                                src={ReactPicto}
+                                className="rounded-full object-cover h-10 w-10 overflow-hidden"
+                                style={{ width: "100%" }}
+                                alt="profil"
+                            />
+                        </button>
+                    ) : account.avatar ? (
+                        <button className="bg-white flex gap-3 p-2 rounded-full shadow-lg shadow-slate-400/40">
+                            <img
+                                src={URL + account.avatar.contentUrl}
+                                className="rounded-full object-cover h-10 w-10"
+                                alt="profil"
+                            />
+                        </button>
+                    ) : (
+                        <button className="rounded-full flex items-center h-10 justify-center w-10 bg-slate-300">
+                            {account.firstname && account.firstname.charAt(0)}
+                            {account.lastname && account.lastname.charAt(0)}
+                            {account.organization &&
+                                account.organization.charAt(0).toUpperCase()}
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );
