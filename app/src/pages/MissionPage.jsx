@@ -24,6 +24,7 @@ import MissionDocument from "../components/mission_document/MissionDocument";
 import MissionObservation from "../components/mission_observation/MissionObservation";
 import MissionPartner from "../components/mission_partner/MissionPartner";
 import MissionStatus from "../components/mission_status/MissionsStatus";
+import NoData from "../components/no_data/NoData";
 import OpasCard from "../components/opas/OpasCard";
 import { URL } from "../features/apiConfig";
 import DocumentForm from "../forms/DocumentForm";
@@ -311,109 +312,6 @@ const MissionPage = () => {
                             <MandateDocuments iri={data.mandate["@id"]} />
                         )}
                     </div>
-                    {data.observations.length !== 0 && (
-                        <div className="md:col-span-12">
-                            <div className="card-shadow">
-                                <div className="card-title">
-                                    <LuActivity size={30} />
-                                    Observations
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                                    <div className="card-shadow h-48 overflow-y-auto">
-                                        {data.observations.filter(
-                                            (f) => f.category === "observation"
-                                        ).length !== 0 && (
-                                            <div className="grid grid-cols-1 divide-y">
-                                                {data.observations
-                                                    .sort(
-                                                        (a, b) =>
-                                                            new Date(
-                                                                b.createdAt
-                                                            ) -
-                                                            new Date(
-                                                                a.createdAt
-                                                            )
-                                                    )
-                                                    .filter(
-                                                        (f) =>
-                                                            f.category ===
-                                                            "observation"
-                                                    )
-                                                    .map((observation) => (
-                                                        <MissionObservation
-                                                            observation={
-                                                                observation
-                                                            }
-                                                            key={uuid()}
-                                                        />
-                                                    ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                    {data.observations
-                                        .sort(
-                                            (a, b) =>
-                                                new Date(a.createdAt) -
-                                                new Date(b.createdAt)
-                                        )
-                                        .filter((f) => f.category === "tension")
-                                        .length !== 0 && (
-                                        <div className="card-shadow h-48 !pb-5">
-                                            <ObservationChart
-                                                name="Tension"
-                                                color="#F472B6"
-                                                datas={data.observations.filter(
-                                                    (f) =>
-                                                        f.category === "tension"
-                                                )}
-                                            />
-                                        </div>
-                                    )}
-                                    {data.observations
-                                        .sort(
-                                            (a, b) =>
-                                                new Date(a.createdAt) -
-                                                new Date(b.createdAt)
-                                        )
-                                        .filter((f) => f.category === "poids")
-                                        .length !== 0 && (
-                                        <div className="card-shadow h-48">
-                                            <ObservationChart
-                                                name="Poids"
-                                                color="#F4B600"
-                                                datas={data.observations.filter(
-                                                    (f) =>
-                                                        f.category === "poids"
-                                                )}
-                                            />
-                                        </div>
-                                    )}
-                                    {data.observations
-                                        .sort(
-                                            (a, b) =>
-                                                new Date(a.createdAt) -
-                                                new Date(b.createdAt)
-                                        )
-                                        .filter(
-                                            (f) => f.category === "température"
-                                        ).length !== 0 && (
-                                        <div className="card-shadow h-48">
-                                            <ObservationChart
-                                                name="Température"
-                                                color="#0072B6"
-                                                datas={data.observations.filter(
-                                                    (f) =>
-                                                        f.category ===
-                                                        "température"
-                                                )}
-                                            />
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    )}
                 </div>
             );
     };
@@ -688,6 +586,16 @@ const MissionPage = () => {
                             </div>
                             <div
                                 className={`grow md:grow-0 md:px-8 py-3 text-center ${
+                                    tab === "observations"
+                                        ? "bg-action text-white rounded-xl"
+                                        : "cursor-pointer"
+                                }`}
+                                onClick={() => setTab("observations")}
+                            >
+                                Observations
+                            </div>
+                            <div
+                                className={`grow md:grow-0 md:px-8 py-3 text-center ${
                                     tab === "schedules"
                                         ? "bg-action text-white rounded-xl"
                                         : "cursor-pointer"
@@ -712,6 +620,11 @@ const MissionPage = () => {
                         {tab === "infos" && <MissionInfos />}
                         {tab === "schedules" && <MissionSchedules />}
                         {tab === "invoices" && <MissionInvoices />}
+                        {tab === "observations" && (
+                            <MissionObservations
+                                observations={data.observations}
+                            />
+                        )}
                     </div>
                 </div>
             </>
@@ -751,5 +664,102 @@ const MandateDocuments = ({ iri }) => {
                 </div>
             ))}
         </div>
+    );
+};
+
+const MissionObservations = ({ observations }) => {
+    if (observations.length === 0) return <NoData />;
+
+    return (
+        observations.length !== 0 && (
+            <div className="md:col-span-12">
+                <div className="card-shadow">
+                    <div className="card-title">
+                        <LuActivity size={30} />
+                        Observations
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <div className="card-shadow h-48 overflow-y-auto">
+                            {observations.filter(
+                                (f) => f.category === "observation"
+                            ).length !== 0 && (
+                                <div className="grid grid-cols-1 divide-y">
+                                    {observations
+                                        .sort(
+                                            (a, b) =>
+                                                new Date(b.createdAt) -
+                                                new Date(a.createdAt)
+                                        )
+                                        .filter(
+                                            (f) => f.category === "observation"
+                                        )
+                                        .map((observation) => (
+                                            <MissionObservation
+                                                observation={observation}
+                                                key={uuid()}
+                                            />
+                                        ))}
+                                </div>
+                            )}
+                        </div>
+                        {observations
+                            .sort(
+                                (a, b) =>
+                                    new Date(a.createdAt) -
+                                    new Date(b.createdAt)
+                            )
+                            .filter((f) => f.category === "tension").length !==
+                            0 && (
+                            <div className="card-shadow h-48 !pb-5">
+                                <ObservationChart
+                                    name="Tension"
+                                    color="#F472B6"
+                                    datas={observations.filter(
+                                        (f) => f.category === "tension"
+                                    )}
+                                />
+                            </div>
+                        )}
+                        {observations
+                            .sort(
+                                (a, b) =>
+                                    new Date(a.createdAt) -
+                                    new Date(b.createdAt)
+                            )
+                            .filter((f) => f.category === "poids").length !==
+                            0 && (
+                            <div className="card-shadow h-48">
+                                <ObservationChart
+                                    name="Poids"
+                                    color="#F4B600"
+                                    datas={observations.filter(
+                                        (f) => f.category === "poids"
+                                    )}
+                                />
+                            </div>
+                        )}
+                        {observations
+                            .sort(
+                                (a, b) =>
+                                    new Date(a.createdAt) -
+                                    new Date(b.createdAt)
+                            )
+                            .filter((f) => f.category === "température")
+                            .length !== 0 && (
+                            <div className="card-shadow h-48">
+                                <ObservationChart
+                                    name="Température"
+                                    color="#0072B6"
+                                    datas={observations.filter(
+                                        (f) => f.category === "température"
+                                    )}
+                                />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        )
     );
 };

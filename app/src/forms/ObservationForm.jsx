@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import React from "react";
 import { useForm } from "react-hook-form";
 import Form from "../components/form/form/Form";
@@ -39,7 +40,7 @@ const ObservationForm = ({ missionIRI, iri, handleCloseModal }) => {
         defaultValues: {
             user: IRI + API_USERS + "/" + user.id,
             mission: missionIRI,
-            createdAt: new Date(),
+            createdAt: dayjs().format("YYYY-MM-DDTHH:mm"),
             category: "observation",
         },
     });
@@ -53,7 +54,7 @@ const ObservationForm = ({ missionIRI, iri, handleCloseModal }) => {
 
     const onSubmit = (form) => {
         console.log("form", form);
-        if (!iri) postData(form);
+        //if (!iri) postData(form);
         // else {
         //     const datas = { ...form };
         //     delete datas.user;
@@ -62,7 +63,7 @@ const ObservationForm = ({ missionIRI, iri, handleCloseModal }) => {
         //     delete datas.patient;
         //     putData(datas);
         // }
-        handleCloseModal();
+        // handleCloseModal();
     };
 
     console.log("errors", errors);
@@ -150,6 +151,14 @@ const ObservationForm = ({ missionIRI, iri, handleCloseModal }) => {
                     required={true}
                 />
             )}
+            <FormInput
+                type="datetime-local"
+                name="createdAt"
+                label="Date"
+                error={errors["createdAt"] && errors["createdAt"]}
+                register={register}
+                required={true}
+            />
         </Form>
     );
 };
