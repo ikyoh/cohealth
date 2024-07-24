@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import _ from "lodash";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { MdArrowBack, MdContentCopy, MdEventNote } from "react-icons/md";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Loader from "../components/Loader";

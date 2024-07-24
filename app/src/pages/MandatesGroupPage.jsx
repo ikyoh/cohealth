@@ -16,11 +16,7 @@ import { useSearch } from "../hooks/useSearch";
 import { useSortBy } from "../hooks/useSortBy";
 import PageTitle from "../layouts/PageTitle";
 import { useGetCurrentAccount } from "../queryHooks/useAccount";
-import {
-    useDeleteIRI,
-    useGetPaginatedDatas,
-    usePutData,
-} from "../queryHooks/useMandateGroup";
+import { useGetPaginatedDatas } from "../queryHooks/useMandateGroup";
 import { mandateCategoriesUsersRoles } from "../utils/arrays";
 
 const MandatesGroupPage = () => {
@@ -52,7 +48,6 @@ const MandatesGroupPage = () => {
 
     const { data: account, isLoading: isLoadingAccount } =
         useGetCurrentAccount();
-    const { mutate } = usePutData();
 
     useEffect(() => {
         if (searchValue && !initialPageState) {
@@ -304,33 +299,34 @@ const MandatesGroupPage = () => {
 
 export default MandatesGroupPage;
 
-const MandateDelete = ({ iri, handleCloseModal }) => {
-    const { mutate, isLoading, isSuccess } = useDeleteIRI();
+// const MandateDelete = ({ iri, handleCloseModal }) => {
+//     const { mutate, isSuccess } = useDeleteIRI();
 
-    useEffect(() => {
-        if (isSuccess) handleCloseModal();
-    }, [isSuccess]);
+//     useEffect(() => {
+//         if (isSuccess) handleCloseModal();
+//          // eslint-disable-next-line
+//     }, [isSuccess]);
 
-    return (
-        <div className="p-8">
-            <p>
-                Attention cette opération est irréversible, voulez-vous
-                confirmer la suppression ?
-            </p>
-            <div className="flex items-center gap-5 justify-center p-5">
-                <button
-                    className="btn btn-outline"
-                    onClick={() => handleCloseModal()}
-                >
-                    Annuler
-                </button>
-                <button
-                    className="btn btn-error text-white"
-                    onClick={() => mutate(iri)}
-                >
-                    Confirmer
-                </button>
-            </div>
-        </div>
-    );
-};
+//     return (
+//         <div className="p-8">
+//             <p>
+//                 Attention cette opération est irréversible, voulez-vous
+//                 confirmer la suppression ?
+//             </p>
+//             <div className="flex items-center gap-5 justify-center p-5">
+//                 <button
+//                     className="btn btn-outline"
+//                     onClick={() => handleCloseModal()}
+//                 >
+//                     Annuler
+//                 </button>
+//                 <button
+//                     className="btn btn-error text-white"
+//                     onClick={() => mutate(iri)}
+//                 >
+//                     Confirmer
+//                 </button>
+//             </div>
+//         </div>
+//     );
+// };

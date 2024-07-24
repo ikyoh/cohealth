@@ -1,33 +1,33 @@
 import {
+    Document,
+    Font,
+    Image,
     Page,
+    PDFDownloadLink,
+    PDFViewer,
+    StyleSheet,
     Text,
     View,
-    Document,
-    StyleSheet,
-    PDFDownloadLink,
-    Image,
-    Font,
-    PDFViewer,
 } from "@react-pdf/renderer";
-import * as dayjs from "dayjs";
 import { nanoid } from "@reduxjs/toolkit";
+import * as dayjs from "dayjs";
+import { HiDownload } from "react-icons/hi";
+import RobotoBold from "../../assets/Roboto_Condensed/RobotoCondensed-Bold.ttf";
+import Roboto from "../../assets/Roboto_Condensed/RobotoCondensed-Regular.ttf";
+import { useGetIRI as Assurance } from "../../queryHooks/useAssurance";
+import { useGetIRI as Doctor } from "../../queryHooks/useDoctor";
+import { useGetIRI as Mandate } from "../../queryHooks/useMandate";
+import { useGetIRI as Mission } from "../../queryHooks/useMission";
+import { useGetAllDatas as Partners } from "../../queryHooks/usePartner";
+import { useGetIRI as Prescription } from "../../queryHooks/usePrescription";
+import { useGetIRI as Nurse } from "../../queryHooks/useUser";
 import {
-    calcNumberOfDays,
-    calcNumberOfWeeks,
-    calcNumberOfMonths,
     calcABCN,
     calcMinutestoHours,
+    calcNumberOfDays,
+    calcNumberOfMonths,
+    calcNumberOfWeeks,
 } from "../../utils/functions";
-import { useGetIRI as Mission } from "../../queryHooks/useMission";
-import { useGetIRI as Doctor } from "../../queryHooks/useDoctor";
-import { useGetIRI as Assurance } from "../../queryHooks/useAssurance";
-import { useGetIRI as Nurse } from "../../queryHooks/useUser";
-import { useGetIRI as Prescription } from "../../queryHooks/usePrescription";
-import { useGetIRI as Mandate } from "../../queryHooks/useMandate";
-import { useGetAllDatas as Partners } from "../../queryHooks/usePartner";
-import Roboto from "../../assets/Roboto_Condensed/RobotoCondensed-Regular.ttf";
-import RobotoBold from "../../assets/Roboto_Condensed/RobotoCondensed-Bold.ttf";
-import { HiDownload } from "react-icons/hi";
 import Loader from "../Loader";
 
 const OpasPDF = ({
@@ -390,7 +390,9 @@ const OpasPDF = ({
         }
 
         let doctorField = "";
-        doctorField += doctor.fullname + "\n" + "RCC : " + doctor.rcc;
+        doctorField += doctor.fullname;
+        doctorField += "\n";
+        doctorField += "RCC : " + doctor.rcc;
         doctorField += "\n";
         if (doctor.address1) doctorField += doctor.address1 + ", ";
         if (doctor.npa) doctorField += doctor.npa + ", ";

@@ -45,7 +45,7 @@ const ResetPasswordPage = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors, isLoading, isSubmitting },
+        formState: { errors, isSubmitting },
     } = useForm({
         resolver: yupResolver(validationSchema),
     });

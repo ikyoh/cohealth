@@ -26,7 +26,7 @@ const DoctorForm = ({ iri, handleCloseModal }) => {
         register,
         handleSubmit,
         reset,
-        formState: { errors, isSubmitting },
+        formState: { errors },
     } = useForm({
         resolver: yupResolver(validationSchema),
         defaultValues: doctor,

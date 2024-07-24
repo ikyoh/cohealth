@@ -3,14 +3,11 @@ import { FaSadTear } from "react-icons/fa";
 import Loader from "../components/Loader";
 import Menu from "../layouts/Menu";
 import PageTitle from "../layouts/PageTitle";
-import {
-    useGetCurrentAccount,
-    useLogoutAccount,
-} from "../queryHooks/useAccount";
+import { useGetCurrentAccount } from "../queryHooks/useAccount";
 
 const Layout = ({ children }) => {
-    const { data: account, isLoading, error } = useGetCurrentAccount();
-    const { mutate: logout } = useLogoutAccount();
+    const { data: account } = useGetCurrentAccount();
+    //const { mutate: logout } = useLogoutAccount();
 
     if (!account) return <Loader />;
     else

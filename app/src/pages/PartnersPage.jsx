@@ -215,6 +215,7 @@ const DeletePartner = ({ iri, handleCloseModal }) => {
 
     useEffect(() => {
         if (isSuccess) handleCloseModal();
+        // eslint-disable-next-line
     }, [isSuccess]);
 
     return (
