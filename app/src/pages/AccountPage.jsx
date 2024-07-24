@@ -2,7 +2,6 @@ import React from "react";
 import { MdOutlineSettings } from "react-icons/md";
 import banner from "../assets/img/banner.png";
 import Loader from "../components/Loader";
-import { URL } from "../config/api.config";
 import AccountForm from "../forms/AccountForm";
 import AccountMediaForm from "../forms/AccountMediaForm";
 import { useModal } from "../hooks/useModal";
@@ -31,7 +30,7 @@ const AccountPage = () => {
                         >
                             {account && account.avatar ? (
                                 <img
-                                    src={URL + account.avatar.contentUrl}
+                                    src={account.avatar.contentUrl}
                                     className="object-cover absolute -bottom-12 h-[87px] w-[87px] rounded-full border-[4px] border-white"
                                     alt="profil"
                                 />
@@ -80,7 +79,7 @@ const AccountPage = () => {
                             >
                                 {account && account.signature ? (
                                     <img
-                                        src={URL + account.signature.contentUrl}
+                                        src={account.signature.contentUrl}
                                         className="object-cover w-[250px] max-w-full"
                                         alt="profil"
                                     />
