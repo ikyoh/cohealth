@@ -1,37 +1,45 @@
-import React from 'react'
-import { useLoginAccount } from '../queryHooks/useAccount';
-import * as Yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup';
+import { yupResolver } from "@hookform/resolvers/yup";
+import React from "react";
 import { useForm } from "react-hook-form";
+import * as Yup from "yup";
 import Form from "../components/form/form/Form";
 import { FormInput } from "../components/form/input/FormInput";
+import { useLoginAccount } from "../queryHooks/useAccount";
 
 const LoginForm = ({ login, password }) => {
-
-    const { mutate: loginAccount, isLoading: isPosting, isSuccess, error } = useLoginAccount()
+    const {
+        mutate: loginAccount,
+        isLoading: isPosting,
+        error,
+    } = useLoginAccount();
 
     const initialValues = {
-        username: login ? login : '',
-        password: password ? password : ''
-    }
+        username: login ? login : "",
+        password: password ? password : "",
+    };
 
     const validationSchema = Yup.object({
-        username: Yup.string().required('Champ obligatoire'),
-        password: Yup.string().required('Champ obligatoire')
-    })
+        username: Yup.string().required("Champ obligatoire"),
+        password: Yup.string().required("Champ obligatoire"),
+    });
 
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useForm({
         resolver: yupResolver(validationSchema),
-        defaultValues: initialValues
-    })
+        defaultValues: initialValues,
+    });
 
-    const onSubmit = form => {
-        loginAccount(form)
-    }
+    const onSubmit = (form) => {
+        loginAccount(form);
+    };
 
     return (
         <>
-            <Form onSubmit={handleSubmit(onSubmit)}
+            <Form
+                onSubmit={handleSubmit(onSubmit)}
                 isLoading={isSubmitting || isPosting}
                 isDisabled={isSubmitting || isPosting}
                 submitLabel="Connexion"
@@ -40,7 +48,7 @@ const LoginForm = ({ login, password }) => {
                     type="text"
                     name="username"
                     label="Identifiant"
-                    error={errors['username']}
+                    error={errors["username"]}
                     register={register}
                     required={true}
                 />
@@ -48,14 +56,16 @@ const LoginForm = ({ login, password }) => {
                     type="password"
                     name="password"
                     label="Mot de passe"
-                    error={errors['password']}
+                    error={errors["password"]}
                     register={register}
                     required={true}
                 />
-                {error && <div className='text-error'>Problème de connexion</div>}
+                {error && (
+                    <div className="text-error">Problème de connexion</div>
+                )}
             </Form>
         </>
-    )
-}
+    );
+};
 
-export default LoginForm
+export default LoginForm;

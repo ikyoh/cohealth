@@ -6,14 +6,13 @@ import Form from "../components/form/form/Form";
 import { FormInput } from "../components/form/input/FormInput";
 import { FormTextarea } from "../components/form/textarea/FormTextarea";
 import { API_USERS, IRI } from "../config/api.config";
-import { usePostData } from "../queryHooks/useObservation";
 import { firstLetterUppercase } from "../utils/functions";
 
 const ObservationForm = ({ missionIRI, iri, handleCloseModal }) => {
     //     const { isLoading, data } = useGetIRI(iri ? iri : null);
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["account"]);
-    const { mutate: postData } = usePostData();
+    //const { mutate: postData } = usePostData();
     //     const { mutate: putData } = usePutData();
 
     //     const validationSchema = {
@@ -26,13 +25,10 @@ const ObservationForm = ({ missionIRI, iri, handleCloseModal }) => {
     //         assuranceIRI: assuranceIRISchema,
     //     };
 
-    console.log("user", user);
-
     const {
         register,
         handleSubmit,
         setValue,
-        reset,
         watch,
         formState: { errors, isSubmitting },
     } = useForm({

@@ -7,20 +7,10 @@ import { useGetIRI, usePostData } from "../queryHooks/useMission";
 import { mission as validationSchema } from "../utils/validationSchemas";
 
 const MissionDuplicateForm = ({ iri, handleCloseModal }) => {
-    const { isLoading, data, isError, error } = useGetIRI(iri);
-    const {
-        isLoading: isLoadingPrescription,
-        data: dataOpas,
-        isError: isErrorPrescription,
-        error: errorPrescription,
-    } = useGetIRI(data && data.opas ? data.opas : null);
+    const { isLoading, data } = useGetIRI(iri);
+    const { data: dataOpas } = useGetIRI(data && data.opas ? data.opas : null);
 
-    const {
-        mutate: postData,
-        data: responseData,
-        isLoading: isPosting,
-        isSuccess,
-    } = usePostData();
+    const { mutate: postData, isSuccess } = usePostData();
 
     const {
         register,

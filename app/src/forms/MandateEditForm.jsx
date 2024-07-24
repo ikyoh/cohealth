@@ -26,6 +26,7 @@ const MandateEditForm = ({ iri, handleCloseModal }) => {
         if (data) {
             reset(data);
         }
+        // eslint-disable-next-line
     }, [isLoading]);
 
     const onSubmit = (form) => {
@@ -34,6 +35,7 @@ const MandateEditForm = ({ iri, handleCloseModal }) => {
 
     useEffect(() => {
         if (isSuccess) handleCloseModal();
+        // eslint-disable-next-line
     }, [isSuccess]);
 
     if (isLoading) return <Loader />;

@@ -31,7 +31,7 @@ const MandateGroupPage = () => {
     const navigate = useNavigate();
     const { state: previousPageState } = useLocation();
     const { id } = useParams();
-    const { data, isLoading, isSuccess } = useMandateGroup(id);
+    const { data, isLoading } = useMandateGroup(id);
     const { Modal, handleOpenModal, handleCloseModal } = useModal();
 
     const queryClient = useQueryClient();
@@ -43,6 +43,7 @@ const MandateGroupPage = () => {
         if (data) {
             if (account.id === data.user.id) setIsMine(true);
         }
+        // eslint-disable-next-line
     }, [data]);
 
     if (isLoading) return <Loader />;
@@ -228,7 +229,7 @@ const MandateGroupPage = () => {
 export default MandateGroupPage;
 
 const Mandate = ({ iri, isMine }) => {
-    const { data, isLoading, isSuccess } = useMandate(iri);
+    const { data, isLoading } = useMandate(iri);
     console.log("data", data);
     const queryClient = useQueryClient();
     const account = queryClient.getQueryData(["account"]);

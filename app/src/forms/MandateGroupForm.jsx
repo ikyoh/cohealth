@@ -22,10 +22,9 @@ import uuid from "react-uuid";
 import { API_USERS, IRI } from "../config/api.config";
 
 const MandateGroupForm = ({ iri, handleCloseModal }) => {
-    const { isLoading: isLoadingData, data, isError, error } = useGetIRI(iri);
-    const { mutate: postData, isLoading: isPosting, isSuccess } = usePostData();
-    const { isLoading: isLoadingAccount, data: account } =
-        useGetCurrentAccount();
+    const { isLoading: isLoadingData, data } = useGetIRI(iri);
+    const { mutate: postData, isLoading: isPosting } = usePostData();
+    const { data: account } = useGetCurrentAccount();
 
     const [currentStep, setCurrentStep] = useState(1);
 
@@ -67,7 +66,6 @@ const MandateGroupForm = ({ iri, handleCloseModal }) => {
         register,
         handleSubmit,
         reset,
-        watch,
         control,
         setValue,
         trigger,
@@ -84,6 +82,7 @@ const MandateGroupForm = ({ iri, handleCloseModal }) => {
         if (iri && data) {
             reset(data.content);
         }
+        // eslint-disable-next-line
     }, [isLoadingData, data]);
 
     const onSubmit = (form) => {
@@ -181,7 +180,7 @@ const MandateGroupForm = ({ iri, handleCloseModal }) => {
 export default MandateGroupForm;
 
 const SelectPatient = ({ setValue }) => {
-    const { data, isLoading, isError, error } = useGetAllDatas();
+    const { data, isLoading } = useGetAllDatas();
     if (isLoading) return <p>Chargement...</p>;
     if (!isLoading && data && data["hydra:totalItems"] === 0)
         return <p>Aucun patient trouvé</p>;
@@ -189,10 +188,6 @@ const SelectPatient = ({ setValue }) => {
         <select
             className="bg-gray-100 p-2 rounded"
             onChange={(e) => {
-                console.log(
-                    'data["hydra:member"][e.target.value]',
-                    data["hydra:member"][e.target.value].patient
-                );
                 setValue(
                     "patient",
                     data["hydra:member"][e.target.value].patient

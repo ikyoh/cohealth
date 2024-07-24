@@ -58,6 +58,7 @@ const MandateAcceptForm = ({ iri }) => {
                     doctor: doctor["hydra:member"][0],
                 });
         }
+        // eslint-disable-next-line
     }, [
         isLoadingPatient,
         isLoadingDoctor,
@@ -76,6 +77,7 @@ const MandateAcceptForm = ({ iri }) => {
 
     useEffect(() => {
         if (isPutSuccess) postData(getValues());
+        // eslint-disable-next-line
     }, [isPutSuccess]);
 
     const {

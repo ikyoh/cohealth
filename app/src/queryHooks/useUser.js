@@ -57,9 +57,9 @@ const fetchIRI = ({ queryKey }) => {
     return requestIRI({ url: iri, method: "get" });
 };
 
-const postData = (form) => {
-    return request({ url: API, method: "post", data: form });
-};
+// const postData = (form) => {
+//     return request({ url: API, method: "post", data: form });
+// };
 
 const putData = (form) => {
     return request({ url: API + "/" + form.id, method: "put", data: form });

@@ -1,43 +1,47 @@
-import React, { useEffect } from 'react'
-import { useGetIRI, usePostData, usePutData } from '../queryHooks/useService';
+import { yupResolver } from "@hookform/resolvers/yup";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Form from "../components/form/form/Form";
-import { yupResolver } from '@hookform/resolvers/yup';
-import ServiceFields from '../fields/ServiceFields';
-import { service as defaultValues } from '../utils/arrays';
-import { service as validationSchema } from '../utils/validationSchemas';
+import ServiceFields from "../fields/ServiceFields";
+import { useGetIRI, usePostData, usePutData } from "../queryHooks/useService";
+import { service as defaultValues } from "../utils/arrays";
+import { service as validationSchema } from "../utils/validationSchemas";
 
 const ServiceForm = ({ iri, handleCloseModal }) => {
+    const { isLoading: isLoadingData, data } = useGetIRI(iri);
+    const { mutate: postData } = usePostData();
+    const { mutate: putData } = usePutData();
 
-    const { isLoading: isLoadingData, data, isError, error } = useGetIRI(iri)
-    const { mutate: postData, isLoading: isPosting, isSuccess } = usePostData()
-    const { mutate: putData } = usePutData()
-
-
-    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm({
         resolver: yupResolver(validationSchema),
-        defaultValues: defaultValues
-    })
+        defaultValues: defaultValues,
+    });
 
     // Case update
     useEffect(() => {
         if (iri && data) {
-            reset(data)
+            reset(data);
         }
-    }, [isLoadingData, data])
+        // eslint-disable-next-line
+    }, [isLoadingData, data]);
 
-    const onSubmit = form => {
-        if (!iri)
-            postData(form)
+    const onSubmit = (form) => {
+        if (!iri) postData(form);
         else {
-            putData(form)
+            putData(form);
         }
-        handleCloseModal()
-    }
+        handleCloseModal();
+    };
 
     return (
         <>
-            <Form onSubmit={handleSubmit(onSubmit)}
+            <Form
+                onSubmit={handleSubmit(onSubmit)}
                 isLoading={isSubmitting}
                 isDisabled={isSubmitting}
                 className="p-5"
@@ -45,8 +49,7 @@ const ServiceForm = ({ iri, handleCloseModal }) => {
                 <ServiceFields register={register} errors={errors} />
             </Form>
         </>
-    )
+    );
+};
 
-}
-
-export default ServiceForm
+export default ServiceForm;

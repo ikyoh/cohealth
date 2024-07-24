@@ -10,9 +10,9 @@ export const useFilterMissions = (props) => {
         setFilters({ ...filters, [e.target.name]: e.target.value });
     };
 
-    const handleChangeCheckbox = (e) => {
-        setFilters({ ...filters, [e.target.name]: e.target.checked });
-    };
+    // const handleChangeCheckbox = (e) => {
+    //     setFilters({ ...filters, [e.target.name]: e.target.checked });
+    // };
 
     return {
         filters,

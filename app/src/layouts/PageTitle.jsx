@@ -2,7 +2,7 @@ import * as dayjs from "dayjs";
 import React from "react";
 import ReactPicto from "../assets/picto.svg";
 
-import { URL } from "../features/apiConfig";
+import { URL } from "../config/api.config";
 import { useGetCurrentAccount } from "../queryHooks/useAccount";
 
 const PageTitle = ({
@@ -11,7 +11,7 @@ const PageTitle = ({
     children,
     mainButton = false,
 }) => {
-    const { data: account, isLoading, error } = useGetCurrentAccount();
+    const { data: account } = useGetCurrentAccount();
 
     return (
         <div className="px-3 md:px-0 flex flex-col md:flex-row md:items-center py-7 bg-slate-100 sticky top-0 w-full z-10 gap-5">

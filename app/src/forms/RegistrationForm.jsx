@@ -1,46 +1,64 @@
-import React, { useEffect } from 'react'
-import { usePostData } from '../queryHooks/useAccount';
-import { usePostData as usePostDoctor } from '../queryHooks/useDoctor';
+import { yupResolver } from "@hookform/resolvers/yup";
+import React from "react";
 import { useForm } from "react-hook-form";
+import * as Yup from "yup";
+import { FormCheckbox } from "../components/form/checkbox/FormCheckbox";
 import Form from "../components/form/form/Form";
-import * as Yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup';
-import { account, password } from '../utils/arrays';
-import { registration as registrationValidation, password as passwordValidation } from '../utils/validationSchemas';
-import { FormSelect } from '../components/form/select/FormSelect'
-import { FormCheckbox } from '../components/form/checkbox/FormCheckbox'
-import AccountFields from '../fields/AccountFields';
-import OrganizationFields from '../fields/OrganizationFields';
-import PasswordFields from '../fields/PasswordFields';
-import { doctorCategories } from '../utils/arrays';
+import { FormSelect } from "../components/form/select/FormSelect";
+import AccountFields from "../fields/AccountFields";
+import OrganizationFields from "../fields/OrganizationFields";
+import PasswordFields from "../fields/PasswordFields";
+import { usePostData } from "../queryHooks/useAccount";
+import { usePostData as usePostDoctor } from "../queryHooks/useDoctor";
+import { account, doctorCategories, password } from "../utils/arrays";
+import {
+    password as passwordValidation,
+    registration as registrationValidation,
+} from "../utils/validationSchemas";
 
 const RegistrationForm = () => {
+    const {
+        mutate: postData,
+        isLoading: isPosting,
+        error: mutateError,
+    } = usePostData();
+    const { mutate: postDoctor } = usePostDoctor();
 
-    const { mutate: postData, isLoading: isPosting, isSuccess, error: mutateError } = usePostData()
-    const { mutate: postDoctor, isLoading: isPostingDcotor, isSuccessDoctor, error: errorDoctor } = usePostDoctor()
+    const {
+        register,
+        handleSubmit,
+        watch,
+        reset,
+        control,
+        formState: { errors, isSubmitting },
+    } = useForm({
+        resolver: yupResolver(
+            Yup.object({ ...registrationValidation, ...passwordValidation })
+        ),
+        defaultValues: { ...account, ...password },
+    });
 
-    const { register, handleSubmit, watch, reset, control, formState: { errors, isSubmitting } } = useForm({
-        resolver: yupResolver(Yup.object({ ...registrationValidation, ...passwordValidation })),
-        defaultValues: { ...account, ...password }
-    })
+    const watchRole = watch(["roles[0]"]);
 
-    const watchRole = watch(['roles[0]'])
-
-    console.log('errors', errors)
+    console.log("errors", errors);
 
     const handleReset = (e) => {
-        reset({ ...account, ...password, roles: [e.target.value] })
-    }
+        reset({ ...account, ...password, roles: [e.target.value] });
+    };
 
-    const onSubmit = form => {
-        if (form.roles[0] === 'ROLE_DOCTOR')
-            postDoctor({ ...form, fullname: form.lastname + form.firstname, category : form.category })
-        postData(form)
-    }
+    const onSubmit = (form) => {
+        if (form.roles[0] === "ROLE_DOCTOR")
+            postDoctor({
+                ...form,
+                fullname: form.lastname + form.firstname,
+                category: form.category,
+            });
+        postData(form);
+    };
 
     return (
-
-        <Form onSubmit={handleSubmit(onSubmit)}
+        <Form
+            onSubmit={handleSubmit(onSubmit)}
             isLoading={isSubmitting || isPosting}
             isDisabled={isSubmitting || isPosting}
         >
@@ -60,14 +78,21 @@ const RegistrationForm = () => {
                 <option value="ROLE_ORGANIZATION_MANDATOR">Un hôpital / une clinique</option> */}
             </FormSelect>
 
-
-            {watchRole[0] === 'ROLE_NURSE' &&
-                <AccountFields register={register} errors={errors} control={control} />
-            }
-            {watchRole[0] === 'ROLE_PHYSIO' &&
-                <AccountFields register={register} errors={errors} control={control} />
-            }
-            {watchRole[0] === 'ROLE_DOCTOR' &&
+            {watchRole[0] === "ROLE_NURSE" && (
+                <AccountFields
+                    register={register}
+                    errors={errors}
+                    control={control}
+                />
+            )}
+            {watchRole[0] === "ROLE_PHYSIO" && (
+                <AccountFields
+                    register={register}
+                    errors={errors}
+                    control={control}
+                />
+            )}
+            {watchRole[0] === "ROLE_DOCTOR" && (
                 <>
                     <FormSelect
                         type="text"
@@ -78,22 +103,28 @@ const RegistrationForm = () => {
                         required={true}
                     >
                         <option value="">Choisir une catégorie</option>
-                        {doctorCategories.map(category =>
-                            <option key={category} value={category}>{category}</option>
-                        )}
+                        {doctorCategories.map((category) => (
+                            <option key={category} value={category}>
+                                {category}
+                            </option>
+                        ))}
                     </FormSelect>
-                    <AccountFields register={register} errors={errors} control={control} />
+                    <AccountFields
+                        register={register}
+                        errors={errors}
+                        control={control}
+                    />
                 </>
-            }
-            {watchRole[0] === 'ROLE_ORGANIZATION_BENEFIT' &&
+            )}
+            {watchRole[0] === "ROLE_ORGANIZATION_BENEFIT" && (
                 <OrganizationFields register={register} errors={errors} />
-            }
-            {watchRole[0] === 'ROLE_ORGANIZATION_MANDATOR' &&
+            )}
+            {watchRole[0] === "ROLE_ORGANIZATION_MANDATOR" && (
                 <OrganizationFields register={register} errors={errors} />
-            }
-            {watchRole[0] === 'ROLE_PHARMACY' &&
+            )}
+            {watchRole[0] === "ROLE_PHARMACY" && (
                 <OrganizationFields register={register} errors={errors} />
-            }
+            )}
 
             <PasswordFields register={register} errors={errors} />
 
@@ -101,24 +132,25 @@ const RegistrationForm = () => {
                 name="isOptin"
                 label="J'ai lu et j'accepte le règlement européen sur la protection des données (GDPR)"
                 register={register}
-                error={errors['isOptin']}
+                error={errors["isOptin"]}
             />
             <FormCheckbox
                 name="isApproved"
                 label="J'ai lu et j'accepte les conditions générales de vente (CGDV)"
                 register={register}
-                error={errors['isApproved']}
+                error={errors["isApproved"]}
             />
-            {
-                mutateError && mutateError.response && mutateError.response.data && mutateError.response.data.violations &&
-                mutateError.response.data.violations.map((violation, index) =>
-                    <p key={index} className="text-error">{violation.message}</p>)
-            }
+            {mutateError &&
+                mutateError.response &&
+                mutateError.response.data &&
+                mutateError.response.data.violations &&
+                mutateError.response.data.violations.map((violation, index) => (
+                    <p key={index} className="text-error">
+                        {violation.message}
+                    </p>
+                ))}
         </Form>
+    );
+};
 
-
-    )
-
-}
-
-export default RegistrationForm
+export default RegistrationForm;

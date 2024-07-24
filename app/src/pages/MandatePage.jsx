@@ -31,24 +31,22 @@ const PatientPage = () => {
     const navigate = useNavigate();
     const { state: previousPageState } = useLocation();
     const { id } = useParams();
-    const { data, isLoading, isSuccess } = useMandate(id);
-    const {
-        data: mandateGroup,
-        isLoading: isLoadingGroup,
-        isSuccess: isSuccessGroup,
-    } = useMandateGroup(data && data.mandateGroup ? data.mandateGroup : null);
+    const { data, isLoading } = useMandate(id);
+    const { data: mandateGroup, isLoading: isLoadingGroup } = useMandateGroup(
+        data && data.mandateGroup ? data.mandateGroup : null
+    );
     const { Modal, handleOpenModal, handleCloseModal } = useModal();
 
     const queryClient = useQueryClient();
     const account = queryClient.getQueryData(["account"]);
 
-    const [isMine, setIsMine] = useState(false);
+    //const [isMine, setIsMine] = useState(false);
 
-    useEffect(() => {
-        if (data) {
-            if (account.id === data.user.id) setIsMine(true);
-        }
-    }, [data]);
+    // useEffect(() => {
+    //     if (data) {
+    //         if (account.id === data.user.id) setIsMine(true);
+    //     }
+    // }, [data]);
 
     if (isLoading || isLoadingGroup) return <Loader />;
     else

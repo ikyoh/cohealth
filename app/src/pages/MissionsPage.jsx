@@ -70,6 +70,7 @@ const MissionsPage = () => {
         if (sortDirection && !initialPageState) {
             setPage(1);
         }
+        // eslint-disable-next-line
     }, [searchValue, sortValue]);
 
     const handleChangeStatus = (id, status) => {

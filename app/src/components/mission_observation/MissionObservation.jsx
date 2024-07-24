@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import React from "react";
-import { URL } from "../../features/apiConfig";
+import { URL } from "../../config/api.config";
 
 const MissionObservation = ({ observation }) => {
     return (

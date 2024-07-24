@@ -26,7 +26,7 @@ import MissionPartner from "../components/mission_partner/MissionPartner";
 import MissionStatus from "../components/mission_status/MissionsStatus";
 import NoData from "../components/no_data/NoData";
 import OpasCard from "../components/opas/OpasCard";
-import { URL } from "../features/apiConfig";
+import { URL } from "../config/api.config";
 import DocumentForm from "../forms/DocumentForm";
 import MissionForm from "../forms/MissionForm";
 import MissionPartnerForm from "../forms/MissionPartnerForm";
@@ -46,10 +46,8 @@ const MissionPage = () => {
     const { state: previousPageState } = useLocation();
     const { id } = useParams();
     const { data, isLoading } = useGetOneData(id);
-    const { data: doctor, isLoading: isLoadingDoctor } = Doctor(
-        data && data.doctor ? data.doctor : null
-    );
-    const { data: assurance, isLoadingAssurance } = Assurance(
+    const { data: doctor } = Doctor(data && data.doctor ? data.doctor : null);
+    const { data: assurance } = Assurance(
         data && data.assurance ? data.assurance : null
     );
     const { Modal, handleOpenModal, handleCloseModal } = useModal();
@@ -65,6 +63,7 @@ const MissionPage = () => {
         if (data) {
             if (account.id === data.user.id) setIsMine(true);
         }
+        // eslint-disable-next-line
     }, [data]);
 
     const handleChangeStatus = (status) => {

@@ -1,68 +1,54 @@
-import React, { useState, useEffect } from 'react'
-import { useGetIRI, usePostData, usePutData } from '../queryHooks/usePrescription'
-import { useGetIRI as useMission } from '../queryHooks/useMission'
-import { useGetAllDatas as useDoctors } from '../queryHooks/useDoctor'
-import { useGetCurrentAccount as useAccount } from '../queryHooks/useAccount'
-import { FormProvider, useForm } from "react-hook-form"
-import Form from "../components/form/form/Form"
-import * as Yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { opas } from '../utils/arrays'
-import OpasFields from '../fields/OpasFields'
-import { useSearch } from '../hooks/useSearch'
-
+import React, { useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import Form from "../components/form/form/Form";
+import OpasFields from "../fields/OpasFields";
+import { useGetCurrentAccount as useAccount } from "../queryHooks/useAccount";
+import { useGetIRI as useMission } from "../queryHooks/useMission";
 import {
-    mission as missionSchema,
-    patient as patientSchema,
-    assurance as assuranceSchema,
-    doctor as doctorSchema,
-    patientIRI as patientIRISchema,
-    doctorIRI as doctorIRISchema,
-    assuranceIRI as assuranceIRISchema,
-} from '../utils/validationSchemas'
-import Loader from '../components/Loader'
-import { API_URL, API_USERS } from '../config/api.config'
-import OpasServicesFields from '../fields/OpasServicesFields'
-import { calcABCN, calcMinutestoHours } from '../utils/functions'
+    useGetIRI,
+    usePostData,
+    usePutData,
+} from "../queryHooks/usePrescription";
+import { opas } from "../utils/arrays";
+
+import { API_URL, API_USERS } from "../config/api.config";
+import OpasServicesFields from "../fields/OpasServicesFields";
+import { calcABCN, calcMinutestoHours } from "../utils/functions";
 
 const OpasForm = ({ iri, missionIRI, handleCloseModal, action = "infos" }) => {
+    const [modalAction, setModalAction] = useState(action);
+    const { isLoading, data } = useGetIRI(iri);
+    const { data: mission } = useMission(missionIRI);
+    //const { data: doctors } = useDoctors('', 'fullname', 'asc', action === 'doctorIRI' ? true : false)
+    const { data: user } = useAccount();
+    const { mutate: postData } = usePostData();
+    const { mutate: putData } = usePutData();
 
-    const [modalAction, setModalAction] = useState(action)
-    const { isLoading, data, isError, error } = useGetIRI(iri)
-    const { isLoading: isLoadingMission, data: mission } = useMission(missionIRI)
-    const { isLoading: isLoadingDoctors, data: doctors } = useDoctors('', 'fullname', 'asc', action === 'doctorIRI' ? true : false)
-    const { data: user } = useAccount()
-    const { mutate: postData, isLoading: isPosting, isSuccess } = usePostData()
-    const { mutate: putData } = usePutData()
-
-    const [currentStep, setCurrentStep] = useState(1)
-    const steps = 2
+    const [currentStep, setCurrentStep] = useState(1);
+    const steps = 2;
 
     const handleNextStep = async () => {
         const isStepValid = await trigger();
         if (isStepValid) {
-            setCurrentStep(cur => cur + 1)
-            setModalAction("services")
+            setCurrentStep((cur) => cur + 1);
+            setModalAction("services");
         }
-    }
-
+    };
 
     const handlePrevStep = () => {
-        setCurrentStep(cur => cur - 1)
-        setModalAction("infos")
-    }
+        setCurrentStep((cur) => cur - 1);
+        setModalAction("infos");
+    };
 
-
-    const validationSchema = {
-        mission: missionSchema,
-        patient: Yup.object({ patient: patientSchema }),
-        doctor: Yup.object({ doctor: doctorSchema }),
-        assurance: Yup.object({ assurance: assuranceSchema }),
-        patientIRI: patientIRISchema,
-        doctorIRI: doctorIRISchema,
-        assuranceIRI: assuranceIRISchema,
-    }
-
+    // const validationSchema = {
+    //     mission: missionSchema,
+    //     patient: Yup.object({ patient: patientSchema }),
+    //     doctor: Yup.object({ doctor: doctorSchema }),
+    //     assurance: Yup.object({ assurance: assuranceSchema }),
+    //     patientIRI: patientIRISchema,
+    //     doctorIRI: doctorIRISchema,
+    //     assuranceIRI: assuranceIRISchema,
+    // };
 
     const methods = useForm({
         shouldUnregister: false,
@@ -71,44 +57,67 @@ const OpasForm = ({ iri, missionIRI, handleCloseModal, action = "infos" }) => {
         mode: "onChange",
     });
 
-    const { register, handleSubmit, reset, watch, setValue, trigger, formState: { errors, isSubmitting } } = methods
+    const {
+        register,
+        handleSubmit,
+        reset,
+        watch,
+        setValue,
+        trigger,
+        formState: { errors, isSubmitting },
+    } = methods;
 
-    const values = watch()
+    const values = watch();
 
-    const totalA = calcABCN("A", values.content.services, mission.beginAt, mission.endAt)
-    const totalAHours = calcMinutestoHours(totalA)
-    const totalB = calcABCN("B", values.content.services, mission.beginAt, mission.endAt)
-    const totalBHours = calcMinutestoHours(totalB)
-    const totalC = calcABCN("C", values.content.services, mission.beginAt, mission.endAt)
-    const totalCHours = calcMinutestoHours(totalC)
-
-
+    const totalA = calcABCN(
+        "A",
+        values.content.services,
+        mission.beginAt,
+        mission.endAt
+    );
+    const totalAHours = calcMinutestoHours(totalA);
+    const totalB = calcABCN(
+        "B",
+        values.content.services,
+        mission.beginAt,
+        mission.endAt
+    );
+    const totalBHours = calcMinutestoHours(totalB);
+    const totalC = calcABCN(
+        "C",
+        values.content.services,
+        mission.beginAt,
+        mission.endAt
+    );
+    const totalCHours = calcMinutestoHours(totalC);
 
     // Case update
     useEffect(() => {
         if (iri && data) {
-            reset(data)
+            reset(data);
         }
-    }, [isLoading, data])
+        // eslint-disable-next-line
+    }, [isLoading, data]);
 
     useEffect(() => {
-        if (modalAction === "patient" && user) setValue("patient.user", API_URL + API_USERS + "/" + user.id)
-    }, [modalAction])
+        if (modalAction === "patient" && user)
+            setValue("patient.user", API_URL + API_USERS + "/" + user.id);
+        // eslint-disable-next-line
+    }, [modalAction]);
 
-
-    const onSubmit = form => {
-        if (!iri)
-            postData(form)
+    const onSubmit = (form) => {
+        if (!iri) postData(form);
         else {
-            putData(form)
+            putData(form);
         }
-        handleCloseModal()
-    }
+        handleCloseModal();
+    };
 
     return (
         <>
             <FormProvider {...methods}>
-                <Form onSubmit={handleSubmit(onSubmit)}
+                <Form
+                    onSubmit={handleSubmit(onSubmit)}
                     steps={steps || null}
                     handleNextStep={handleNextStep}
                     handlePrevStep={handlePrevStep}
@@ -118,27 +127,35 @@ const OpasForm = ({ iri, missionIRI, handleCloseModal, action = "infos" }) => {
                     errors={errors}
                     className=""
                 >
-                    {steps &&
+                    {steps && (
                         <div>
                             <ul className="steps w-full border-b">
                                 <li
-                                    data-content={`${currentStep === 1 ? "●" : ""}`}
-                                    className="step step-primary w-full">
+                                    data-content={`${
+                                        currentStep === 1 ? "●" : ""
+                                    }`}
+                                    className="step step-primary w-full"
+                                >
                                     Informations
                                 </li>
                                 <li
-                                    data-content={`${currentStep === 2 ? "●" : ""}`}
-                                    className={`step w-full ${currentStep === 2 && "step-primary"}`}>
+                                    data-content={`${
+                                        currentStep === 2 ? "●" : ""
+                                    }`}
+                                    className={`step w-full ${
+                                        currentStep === 2 && "step-primary"
+                                    }`}
+                                >
                                     Prescriptions
                                 </li>
                             </ul>
                         </div>
-                    }
+                    )}
 
-                    {modalAction === 'infos' &&
+                    {modalAction === "infos" && (
                         <OpasFields errors={errors} register={register} />
-                    }
-                    {modalAction === 'services' &&
+                    )}
+                    {modalAction === "services" && (
                         <OpasServicesFields
                             errors={errors}
                             register={register}
@@ -148,11 +165,11 @@ const OpasForm = ({ iri, missionIRI, handleCloseModal, action = "infos" }) => {
                             beginAt={mission.beginAt}
                             endAt={mission.endAt}
                         />
-                    }
+                    )}
                 </Form>
             </FormProvider>
         </>
-    )
-}
+    );
+};
 
-export default OpasForm
+export default OpasForm;

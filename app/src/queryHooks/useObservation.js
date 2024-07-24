@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import _ from "lodash";
+//import _ from "lodash";
 import { API_OBSERVATIONS as API, itemsPerPage } from "../config/api.config";
 import { request, requestIRI } from "../utils/axios.utils";
 

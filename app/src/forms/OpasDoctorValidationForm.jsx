@@ -1,40 +1,46 @@
-import React, { useEffect } from 'react'
-import { useGetIRI, usePutData } from '../queryHooks/usePrescription';
+import dayjs from "dayjs";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { FormCheckbox } from "../components/form/checkbox/FormCheckbox";
 import Form from "../components/form/form/Form";
-import { yupResolver } from '@hookform/resolvers/yup';
-import { FormTextarea } from '../components/form/textarea/FormTextarea'
-import { FormCheckbox } from '../components/form/checkbox/FormCheckbox'
-import dayjs from 'dayjs';
-
+import { FormTextarea } from "../components/form/textarea/FormTextarea";
+import { useGetIRI, usePutData } from "../queryHooks/usePrescription";
 
 const OpasDoctorValidationForm = ({ iri, handleCloseModal }) => {
+    const { isLoading: isLoadingData, data } = useGetIRI(iri);
+    const { mutate: putData } = usePutData();
 
- console.log('iri', iri)
-
-    const { isLoading: isLoadingData, data, isError, error } = useGetIRI(iri)
-    const { mutate: putData } = usePutData()
-
-    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm({
         //resolver: yupResolver(validationSchema),
         //defaultValues: {signedAt : dayjs() }
-    })
+    });
 
     useEffect(() => {
         if (iri && data) {
-            reset({...data, signedAt : dayjs(), status : "validé par le médecin"})
+            reset({
+                ...data,
+                signedAt: dayjs(),
+                status: "validé par le médecin",
+            });
         }
-    }, [isLoadingData, data])
+        // eslint-disable-next-line
+    }, [isLoadingData, data]);
 
-    const onSubmit = form => {
-        console.log('form', form)
-        putData(form)
-        handleCloseModal()
-    }
+    const onSubmit = (form) => {
+        console.log("form", form);
+        putData(form);
+        handleCloseModal();
+    };
 
     return (
         <>
-            <Form onSubmit={handleSubmit(onSubmit)}
+            <Form
+                onSubmit={handleSubmit(onSubmit)}
                 isLoading={isSubmitting}
                 isDisabled={isSubmitting}
                 className="p-5"
@@ -51,12 +57,11 @@ const OpasDoctorValidationForm = ({ iri, handleCloseModal }) => {
                     name="isSigned"
                     label="Accord"
                     register={register}
-                    error={errors['isDoctorSigned']}
+                    error={errors["isDoctorSigned"]}
                 />
             </Form>
         </>
-    )
+    );
+};
 
-}
-
-export default OpasDoctorValidationForm
+export default OpasDoctorValidationForm;

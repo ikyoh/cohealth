@@ -15,7 +15,7 @@ import { roles } from "../utils/arrays";
 
 const UsersPage = () => {
     const { state: initialPageState } = useLocation();
-    const { Modal, handleOpenModal, handleCloseModal } = useModal();
+    const { Modal } = useModal();
 
     const { searchValue, searchbar } = useSearch(
         initialPageState ? initialPageState.searchValue : ""
@@ -31,11 +31,12 @@ const UsersPage = () => {
               }
             : ""
     );
-    const {
-        data = [],
-        isLoading,
-        error,
-    } = useGetPaginatedDatas(page, sortValue, sortDirection, searchValue);
+    const { data = [], isLoading } = useGetPaginatedDatas(
+        page,
+        sortValue,
+        sortDirection,
+        searchValue
+    );
     const { mutate } = usePutData();
 
     useEffect(() => {
@@ -48,7 +49,7 @@ const UsersPage = () => {
         if (sortDirection && !initialPageState) {
             setPage(1);
         }
-    }, [searchValue, sortValue]);
+    }, [searchValue, sortValue, initialPageState, sortDirection]);
 
     const handleUpdateStatus = (data) => {
         mutate({ ...data, isActive: !data.isActive });

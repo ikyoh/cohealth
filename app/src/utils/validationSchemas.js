@@ -30,13 +30,13 @@ const rcc = () =>
     Yup.string()
         .matches(/^[a-zA-Z]\d{4}\.\d{2}$/, "Numéro incorrect")
         .required("Champ obligatoire");
-const assuranceNumber = () => Yup.string().required("Champ obligatoire");
+//const assuranceNumber = () => Yup.string().required("Champ obligatoire");
 const avsNumber = () => Yup.string().matches(/^\d{13}$/, "Numéro incorrect");
-const avsNumberRequired = () =>
-    Yup.string()
-        .matches(/^\d{13}$/, "Numéro incorrect")
-        .required("Champ obligatoire");
-const npa = () => Yup.string().matches(/^\d{4}$/, "Numéro incorrect");
+//const avsNumberRequired = () =>
+Yup.string()
+    .matches(/^\d{13}$/, "Numéro incorrect")
+    .required("Champ obligatoire");
+//const npa = () => Yup.string().matches(/^\d{4}$/, "Numéro incorrect");
 const npaRequired = () =>
     Yup.string()
         .matches(/^\d{4}$/, "Numéro incorrect")
@@ -121,7 +121,7 @@ export const password = {
     password: Yup.string()
         .required("Champ obligatoire")
         .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
             "Doit contenir 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial ! @ # % & *"
         ),
     checkpassword: Yup.string()
@@ -136,7 +136,6 @@ export const service = Yup.object({
     title: string("Choix obligatoire"),
     act: Yup.number().required(),
     time: Yup.number().required().min(0).integer(),
-    opas: string("Champ obligatoire"),
 });
 
 export const doctor = Yup.object({

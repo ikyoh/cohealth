@@ -49,7 +49,7 @@ const PatientPage = () => {
     };
 
     const AssuranceCard = ({ iri }) => {
-        const { data, isLoading, error } = Assurance(iri ? iri : null);
+        const { data, isLoading } = Assurance(iri ? iri : null);
 
         if (isLoading) return <Loader />;
         if (!data) return null;

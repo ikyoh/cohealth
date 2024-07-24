@@ -30,7 +30,7 @@ const AssurancesPage = () => {
               }
             : ""
     );
-    const { data, isLoading, error } = useGetPaginatedDatas(
+    const { data, isLoading } = useGetPaginatedDatas(
         page,
         sortValue,
         sortDirection,
@@ -47,6 +47,7 @@ const AssurancesPage = () => {
         if (sortDirection && !initialPageState) {
             setPage(1);
         }
+        // eslint-disable-next-line
     }, [searchValue, sortValue]);
 
     if (isLoading) return <Loader />;

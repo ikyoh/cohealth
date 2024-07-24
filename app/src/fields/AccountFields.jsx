@@ -1,20 +1,30 @@
-import React from "react"
-import { Controller } from "react-hook-form";
-import { FormInput } from '../components/form/input/FormInput'
-import { FormMaskInput } from '../components/form/maskInput/FormMaskInput'
-import InputMask from 'react-input-mask';
+import React from "react";
+import { FormInput } from "../components/form/input/FormInput";
+import { FormMaskInput } from "../components/form/maskInput/FormMaskInput";
 
-const AccountFields = ({ name, errors, register, registration = true, control }) => {
-
-
+const AccountFields = ({
+    name,
+    errors,
+    register,
+    registration = true,
+    control,
+}) => {
     return (
-        <div className={`grid gap-3 ${registration ? "grid grid-cols-1 gap-3" : "grid-cols-2"}`}>
+        <div
+            className={`grid gap-3 ${
+                registration ? "grid grid-cols-1 gap-3" : "grid-cols-2"
+            }`}
+        >
             <FormInput
                 type="text"
                 name={name ? name + ".lastname" : "lastname"}
                 label="Nom"
                 placeholder="Nom"
-                error={name && errors[name] ? errors[name]['lastname'] : errors['lastname']}
+                error={
+                    name && errors[name]
+                        ? errors[name]["lastname"]
+                        : errors["lastname"]
+                }
                 register={register}
                 required={true}
             />
@@ -23,7 +33,11 @@ const AccountFields = ({ name, errors, register, registration = true, control })
                 name={name ? name + ".firstname" : "firstname"}
                 label="Prénom"
                 placeholder="Prénom"
-                error={name && errors[name] ? errors[name]['firstname'] : errors['firstname']}
+                error={
+                    name && errors[name]
+                        ? errors[name]["firstname"]
+                        : errors["firstname"]
+                }
                 register={register}
                 required={true}
             />
@@ -32,7 +46,11 @@ const AccountFields = ({ name, errors, register, registration = true, control })
                 name={name ? name + ".mobile" : "mobile"}
                 label="Numéro de mobile"
                 placeholder="Numéro de mobile"
-                error={name && errors[name] ? errors[name]['mobile'] : errors['mobile']}
+                error={
+                    name && errors[name]
+                        ? errors[name]["mobile"]
+                        : errors["mobile"]
+                }
                 register={register}
                 required={true}
             />
@@ -41,7 +59,11 @@ const AccountFields = ({ name, errors, register, registration = true, control })
                 name={name ? name + ".email" : "email"}
                 label="Email"
                 placeholder="Adresse Email"
-                error={name && errors[name] ? errors[name]['email'] : errors['email']}
+                error={
+                    name && errors[name]
+                        ? errors[name]["email"]
+                        : errors["email"]
+                }
                 register={register}
                 required={true}
             />
@@ -50,17 +72,23 @@ const AccountFields = ({ name, errors, register, registration = true, control })
                 name={name ? name + ".rcc" : "rcc"}
                 mask="a9999.99"
                 label="Numéro RCC"
-                error={name && errors[name] ? errors[name]['rcc'] : errors['rcc']}
+                error={
+                    name && errors[name] ? errors[name]["rcc"] : errors["rcc"]
+                }
                 register={register}
                 required={true}
             />
-            {!registration &&
+            {!registration && (
                 <>
                     <FormInput
                         type="text"
                         name={name ? name + ".fax" : "fax"}
                         label="Fax"
-                        error={name && errors[name] ? errors[name]['fax'] : errors['fax']}
+                        error={
+                            name && errors[name]
+                                ? errors[name]["fax"]
+                                : errors["fax"]
+                        }
                         register={register}
                         required={false}
                     />
@@ -68,7 +96,11 @@ const AccountFields = ({ name, errors, register, registration = true, control })
                         type="text"
                         name={name ? name + ".address1" : "address1"}
                         label="Adresse"
-                        error={name && errors[name] ? errors[name]['address1'] : errors['address1']}
+                        error={
+                            name && errors[name]
+                                ? errors[name]["address1"]
+                                : errors["address1"]
+                        }
                         register={register}
                         required={false}
                     />
@@ -76,7 +108,11 @@ const AccountFields = ({ name, errors, register, registration = true, control })
                         type="text"
                         name={name ? name + ".address2" : "address2"}
                         label="Complément d'adresse"
-                        error={name && errors[name] ? errors[name]['address2'] : errors['address2']}
+                        error={
+                            name && errors[name]
+                                ? errors[name]["address2"]
+                                : errors["address2"]
+                        }
                         register={register}
                         required={false}
                     />
@@ -84,7 +120,11 @@ const AccountFields = ({ name, errors, register, registration = true, control })
                         type="text"
                         name={name ? name + ".npa" : "npa"}
                         label="Code postal"
-                        error={name && errors[name] ? errors[name]['npa'] : errors['npa']}
+                        error={
+                            name && errors[name]
+                                ? errors[name]["npa"]
+                                : errors["npa"]
+                        }
                         register={register}
                         required={false}
                     />
@@ -92,13 +132,16 @@ const AccountFields = ({ name, errors, register, registration = true, control })
                         type="text"
                         name={name ? name + ".city" : "city"}
                         label="Ville"
-                        error={name && errors[name] ? errors[name]['city'] : errors['city']}
+                        error={
+                            name && errors[name]
+                                ? errors[name]["city"]
+                                : errors["city"]
+                        }
                         register={register}
                         required={false}
                     />
                 </>
-            }
-
+            )}
 
             {/* <div>
                 <label htmlFor="rcc">rcc Number</label>
@@ -115,7 +158,6 @@ const AccountFields = ({ name, errors, register, registration = true, control })
                 />
                 {errors.rcc && <span>{errors.rcc.message}</span>}
             </div> */}
-
 
             {/* <Controller
                 name="rcc"
@@ -135,9 +177,8 @@ const AccountFields = ({ name, errors, register, registration = true, control })
                     </InputMask>
                 )}
             /> */}
-
         </div>
-    )
-}
+    );
+};
 
-export default AccountFields
+export default AccountFields;

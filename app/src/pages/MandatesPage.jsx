@@ -71,6 +71,7 @@ const MandatesPage = () => {
         if (sortDirection && !initialPageState) {
             setPage(1);
         }
+        // eslint-disable-next-line
     }, [searchValue, sortValue]);
 
     const handleChangeStatus = ({ id, status }) => {
@@ -401,10 +402,11 @@ const MandatesPage = () => {
 export default MandatesPage;
 
 const MandateDelete = ({ iri, handleCloseModal }) => {
-    const { mutate, isLoading, isSuccess } = useDeleteIRI();
+    const { mutate, isSuccess } = useDeleteIRI();
 
     useEffect(() => {
         if (isSuccess) handleCloseModal();
+        // eslint-disable-next-line
     }, [isSuccess]);
 
     return (
