@@ -22,7 +22,7 @@ const Layout = ({ children }) => {
                         </div>
                         <div className='flex items-center text-sm space-x-4'>
                             {account.avatar
-                                ? <img src={URL + account.avatar.contentUrl} className='rounded-full object-cover h-10 w-10' alt="profil" />
+                                ? <img src={account.avatar.contentUrl} className='rounded-full object-cover h-10 w-10' alt="profil" />
                                 : <div className='rounded-full flex items-center h-10 justify-center w-10 bg-info'>
                                     {account.firstname && account.firstname.charAt(0)}
                                     {account.lastname && account.lastname.charAt(0)}

@@ -1,7 +1,6 @@
 import { Field } from "formik";
 import React from "react";
 import { useSelector } from "react-redux";
-import { URL } from "../../config/api.config";
 import { getAccount } from "../../features/account/accountSlice";
 
 const FormComment = ({
@@ -22,7 +21,7 @@ const FormComment = ({
             <div className="flex items-center gap-3">
                 {account && account.avatar ? (
                     <img
-                        src={URL + account.avatar.contentUrl}
+                        src={account.avatar.contentUrl}
                         className="rounded-full object-cover h-10 w-10"
                         alt="profil"
                     />

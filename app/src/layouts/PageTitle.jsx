@@ -2,7 +2,6 @@ import * as dayjs from "dayjs";
 import React from "react";
 import ReactPicto from "../assets/picto.svg";
 
-import { URL } from "../config/api.config";
 import { useGetCurrentAccount } from "../queryHooks/useAccount";
 
 const PageTitle = ({
@@ -68,7 +67,7 @@ const PageTitle = ({
                     ) : account.avatar ? (
                         <button className="bg-white flex gap-3 p-2 rounded-full shadow-lg shadow-slate-400/40">
                             <img
-                                src={URL + account.avatar.contentUrl}
+                                src={account.avatar.contentUrl}
                                 className="rounded-full object-cover h-10 w-10"
                                 alt="profil"
                             />

@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { FormTextarea } from "../components/form/textarea/FormTextarea";
-import { URL } from "../config/api.config";
 import { useGetCurrentAccount } from "../queryHooks/useAccount";
 import {
     useGetAssuranceComment,
@@ -63,7 +62,7 @@ const CommentForm = ({ iri, doctor, assurance }) => {
             <div className="flex gap-2 items-center">
                 {account && account.avatar ? (
                     <img
-                        src={URL + account.avatar.contentUrl}
+                        src={account.avatar.contentUrl}
                         className="rounded-full object-cover h-10 w-10"
                         alt="profil"
                     />
