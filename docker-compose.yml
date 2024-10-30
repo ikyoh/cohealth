@@ -4,7 +4,7 @@ services:
         container_name: ${APP_NAME}-caddy
         build:
             context: ./caddy
-        #   target: caddy
+            target: caddy
         restart: unless-stopped
         ports:
             - "80:80"

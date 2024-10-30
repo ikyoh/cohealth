@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import _ from "lodash";
-import React from "react";
+import React, { useEffect } from "react";
 import { MdArrowBack, MdContentCopy, MdEventNote } from "react-icons/md";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Loader from "../components/Loader";
@@ -13,7 +13,7 @@ import MandateAgentForm from "../forms/MandateAgentForm";
 import MandateEditForm from "../forms/MandateEditForm";
 import { useModal } from "../hooks/useModal";
 import PageTitle from "../layouts/PageTitle";
-import { useGetOneData as useMandate } from "../queryHooks/useMandate";
+import { usePutData as putMandate, useGetIRI, useGetOneData as useMandate } from "../queryHooks/useMandate";
 import { useGetIRI as useMandateGroup } from "../queryHooks/useMandateGroup";
 import { mandateCategoriesUsersRoles } from "../utils/arrays";
 import { mandateStatus } from "../utils/translations";
@@ -25,6 +25,7 @@ import {
     HiOutlinePaperClip,
     HiOutlineRefresh,
 } from "react-icons/hi";
+import { TiDelete } from "react-icons/ti";
 import uuid from "react-uuid";
 
 const PatientPage = () => {
@@ -76,25 +77,46 @@ const PatientPage = () => {
                 >
                     <Dropdown type="button">
                         {account.roles.includes("ROLE_NURSE") &&
-                            data.status === "attribué" && (
-                                <button
-                                    onClick={() =>
-                                        handleOpenModal({
-                                            title: "Accepter le mandat",
-                                            content: (
-                                                <MandateAcceptForm
-                                                    iri={data["@id"]}
-                                                    handleCloseModal={
-                                                        handleCloseModal
-                                                    }
-                                                />
-                                            ),
-                                        })
-                                    }
-                                >
-                                    <HiCheckCircle size={20} />
-                                    Accepter le mandat
-                                </button>
+                            data.status === "DEFAULT-attribué" && (
+                                <>
+                                    <button
+                                        onClick={() =>
+                                            handleOpenModal({
+                                                title: "Accepter le mandat",
+                                                content: (
+                                                    <MandateAcceptForm
+                                                        iri={data["@id"]}
+                                                        handleCloseModal={
+                                                            handleCloseModal
+                                                        }
+                                                    />
+                                                ),
+                                            })
+                                        }
+                                    >
+                                        <HiCheckCircle size={20} />
+                                        Accepter le mandat
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            handleOpenModal({
+                                                title: "Refus du mandat",
+                                                size: "small",
+                                                content: (
+                                                    <RefuseMandate
+                                                        iri={data["@id"]}
+                                                        handleCloseModal={
+                                                            handleCloseModal
+                                                        }
+                                                    />
+                                                ),
+                                            })
+                                        }
+                                    >
+                                        <TiDelete size={20} />
+                                        Refuser le mandat
+                                    </button>
+                                </>
                             )}
 
                         {account.roles.includes("ROLE_COORDINATOR") &&
@@ -121,46 +143,46 @@ const PatientPage = () => {
                         {(account.roles.includes("ROLE_DOCTOR") ||
                             (account.roles.includes("ROLE_COORDINATOR") &&
                                 data.status === "édité")) && (
-                            <>
-                                <button
-                                    onClick={() =>
-                                        handleOpenModal({
-                                            title: "Édition du mandat",
-                                            content: (
-                                                <MandateEditForm
-                                                    iri={data["@id"]}
-                                                    handleCloseModal={
-                                                        handleCloseModal
-                                                    }
-                                                />
-                                            ),
-                                        })
-                                    }
-                                >
-                                    <HiDotsCircleHorizontal size={20} />
-                                    Éditer le mandat
-                                </button>
-                                <button
-                                    onClick={() =>
-                                        handleOpenModal({
-                                            title: "Nouveau document",
-                                            content: (
-                                                <DocumentForm
-                                                    event={false}
-                                                    mandateID={data.id}
-                                                    handleCloseModal={
-                                                        handleCloseModal
-                                                    }
-                                                />
-                                            ),
-                                        })
-                                    }
-                                >
-                                    <AiOutlineFolderOpen size={20} />
-                                    Ajouter un document
-                                </button>
-                            </>
-                        )}
+                                <>
+                                    <button
+                                        onClick={() =>
+                                            handleOpenModal({
+                                                title: "Édition du mandat",
+                                                content: (
+                                                    <MandateEditForm
+                                                        iri={data["@id"]}
+                                                        handleCloseModal={
+                                                            handleCloseModal
+                                                        }
+                                                    />
+                                                ),
+                                            })
+                                        }
+                                    >
+                                        <HiDotsCircleHorizontal size={20} />
+                                        Éditer le mandat
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            handleOpenModal({
+                                                title: "Nouveau document",
+                                                content: (
+                                                    <DocumentForm
+                                                        event={false}
+                                                        mandateID={data.id}
+                                                        handleCloseModal={
+                                                            handleCloseModal
+                                                        }
+                                                    />
+                                                ),
+                                            })
+                                        }
+                                    >
+                                        <AiOutlineFolderOpen size={20} />
+                                        Ajouter un document
+                                    </button>
+                                </>
+                            )}
                     </Dropdown>
                 </PageTitle>
 
@@ -243,7 +265,7 @@ const PatientPage = () => {
                                 <div className="subcard-shadow" key={uuid()}>
                                     {
                                         mandateCategoriesUsersRoles[
-                                            mandate.category
+                                        mandate.category
                                         ]
                                     }
                                 </div>
@@ -278,3 +300,44 @@ const PatientPage = () => {
 };
 
 export default PatientPage;
+
+
+
+const RefuseMandate = ({ iri, handleCloseModal }) => {
+
+    const { data } = useGetIRI(iri);
+    const { mutate, isSuccess } = putMandate(iri);
+
+    useEffect(() => {
+        if (isSuccess) handleCloseModal();
+        // eslint-disable-next-line
+    }, [isSuccess]);
+
+    return (
+        <div className="p-8">
+            <p>
+                Attention cette opération est irréversible, voulez-vous
+                confirmer la refus ?
+            </p>
+            <div className="flex items-center gap-5 justify-center p-5">
+                <button
+                    type="button"
+                    className="btn btn-outline"
+                    onClick={() => handleCloseModal()}
+                >
+                    Annuler
+                </button>
+                <button
+                    type="button"
+                    className="btn btn-error text-white"
+                    onClick={() => mutate({ id: data.id, status: "DEFAULT-refusé" })}
+                >
+                    Confirmer
+                </button>
+            </div>
+        </div>
+    )
+
+
+
+}

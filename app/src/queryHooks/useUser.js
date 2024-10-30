@@ -26,6 +26,13 @@ const fetchFilteredDatas = (sortValue, sortDirection, searchValue) => {
     });
 };
 
+const fetchDatasByRole = (role) => {
+    return request({
+        url: API + "?pagination=false&search=" + role,
+        method: "get",
+    });
+};
+
 const fetchPaginatedDatas = (
     page,
     sortValue,
@@ -102,6 +109,17 @@ export const useGetFilteredDatas = (sortValue, sortDirection, searchValue) => {
         keepPreviousData: true,
         staleTime: 60000,
         //select: data => {return data['hydra:member']}
+    });
+};
+
+export const useGetDatasByRoles = (role) => {
+    return useQuery({
+        queryKey: [queryKey, role],
+        queryFn: () =>
+            fetchDatasByRole(role),
+        keepPreviousData: true,
+        staleTime: 60000,
+        enabled: role ? true : false,
     });
 };
 

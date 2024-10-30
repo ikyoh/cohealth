@@ -14,6 +14,9 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Delete;
 use App\Entity\UserOwnedInterface;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+
 
 #[ORM\Entity(repositoryClass: MandateGroupRepository::class)]
 #[ApiResource(
@@ -28,6 +31,7 @@ use App\Entity\UserOwnedInterface;
         new Delete(),
     ]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['status' => 'partial'])]
 
 class MandateGroup implements UserOwnedInterface
 {
@@ -51,8 +55,12 @@ class MandateGroup implements UserOwnedInterface
     private Collection $mandates;
 
     #[ORM\OneToMany(mappedBy: 'mandateGroup', targetEntity: MediaObject::class)]
-    #[Groups(["mandates_group:read", "mandate_group:read", "mandate_group:write", "mission_group:read", "mandate_group:write"])]
+    #[Groups(["mandates_group:read", "mandate_group:read", "mandate_group:write", "mission_group:read"])]
     private $documents;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(["mandates_group:read", "mandate_group:read", "mandate_group:write", "mission_group:read"])]
+    private ?string $status = "DEFAULT-édité";
 
 
     public function __construct()
@@ -146,6 +154,18 @@ class MandateGroup implements UserOwnedInterface
                 $document->setMandateGroup(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

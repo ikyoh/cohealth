@@ -10,11 +10,15 @@ import {
     HiOutlineRefresh,
 } from "react-icons/hi";
 import { MdArrowBack, MdContentCopy, MdEventNote } from "react-icons/md";
+
+import { MdCancel } from "react-icons/md";
+
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import uuid from "react-uuid";
 import Loader from "../components/Loader";
 import Button from "../components/buttons/Button";
 import Dropdown from "../components/dropdown/Dropdown";
+import Form from "../components/form/form/Form";
 import MissionDocument from "../components/mission_document/MissionDocument";
 import DocumentForm from "../forms/DocumentForm";
 import MandateAcceptForm from "../forms/MandateAcceptForm";
@@ -22,7 +26,7 @@ import MandateAgentForm from "../forms/MandateAgentForm";
 import MandateEditForm from "../forms/MandateEditForm";
 import { useModal } from "../hooks/useModal";
 import PageTitle from "../layouts/PageTitle";
-import { useGetIRI as useMandate } from "../queryHooks/useMandate";
+import { useGetIRI as useMandate, usePutData } from "../queryHooks/useMandate";
 import { useGetOneData as useMandateGroup } from "../queryHooks/useMandateGroup";
 import { mandateCategoriesUsersRoles } from "../utils/arrays";
 import { mandateStatus } from "../utils/translations";
@@ -79,7 +83,7 @@ const MandateGroupPage = () => {
                 >
                     <Dropdown type="button">
                         {account.roles.includes("ROLE_NURSE") &&
-                            data.status === "attribué" && (
+                            data.status === "DEFAULT-attribué" && (
                                 <button
                                     onClick={() =>
                                         handleOpenModal({
@@ -101,7 +105,7 @@ const MandateGroupPage = () => {
                             )}
 
                         {account.roles.includes("ROLE_COORDINATOR") &&
-                            data.status === "édité" && (
+                            data.status === "DEFAULT-édité" && (
                                 <button
                                     onClick={() =>
                                         handleOpenModal({
@@ -123,47 +127,29 @@ const MandateGroupPage = () => {
                             )}
                         {(account.roles.includes("ROLE_DOCTOR") ||
                             (account.roles.includes("ROLE_COORDINATOR") &&
-                                data.status === "édité")) && (
-                            <>
-                                <button
-                                    onClick={() =>
-                                        handleOpenModal({
-                                            title: "Édition du mandat",
-                                            content: (
-                                                <MandateEditForm
-                                                    iri={data["@id"]}
-                                                    handleCloseModal={
-                                                        handleCloseModal
-                                                    }
-                                                />
-                                            ),
-                                        })
-                                    }
-                                >
-                                    <HiDotsCircleHorizontal size={20} />
-                                    Éditer le mandat
-                                </button>
-                                <button
-                                    onClick={() =>
-                                        handleOpenModal({
-                                            title: "Nouveau document",
-                                            content: (
-                                                <DocumentForm
-                                                    event={false}
-                                                    mandateGroupID={data.id}
-                                                    handleCloseModal={
-                                                        handleCloseModal
-                                                    }
-                                                />
-                                            ),
-                                        })
-                                    }
-                                >
-                                    <AiOutlineFolderOpen size={20} />
-                                    Ajouter un document
-                                </button>
-                            </>
-                        )}
+                                data.status === "DEFAULT-édité")) && (
+                                <>
+                                    <button
+                                        onClick={() =>
+                                            handleOpenModal({
+                                                title: "Nouveau document",
+                                                content: (
+                                                    <DocumentForm
+                                                        event={false}
+                                                        mandateGroupID={data.id}
+                                                        handleCloseModal={
+                                                            handleCloseModal
+                                                        }
+                                                    />
+                                                ),
+                                            })
+                                        }
+                                    >
+                                        <AiOutlineFolderOpen size={20} />
+                                        Ajouter un document
+                                    </button>
+                                </>
+                            )}
                     </Dropdown>
                 </PageTitle>
 
@@ -230,7 +216,6 @@ export default MandateGroupPage;
 
 const Mandate = ({ iri, isMine }) => {
     const { data, isLoading } = useMandate(iri);
-    console.log("data", data);
     const queryClient = useQueryClient();
     const account = queryClient.getQueryData(["account"]);
 
@@ -239,167 +224,220 @@ const Mandate = ({ iri, isMine }) => {
     if (isLoading) return <Loader />;
     return (
         <div className="col-span-8 card-shadow relative">
-            <Dropdown type="card">
-                {account.roles.includes("ROLE_NURSE") &&
-                    data.status === "attribué" && (
-                        <button
-                            onClick={() =>
-                                handleOpenModal({
-                                    title: "Accepter le mandat",
-                                    content: (
-                                        <MandateAcceptForm
-                                            iri={data["@id"]}
-                                            handleCloseModal={handleCloseModal}
-                                        />
-                                    ),
-                                })
-                            }
-                        >
-                            <HiCheckCircle size={20} />
-                            Accepter le mandat
-                        </button>
-                    )}
+            {(data.status !== "annulé" || data.mission) && (
+                <Dropdown type="card">
+                    {account.roles.includes("ROLE_NURSE") &&
+                        data.status === "DEFAULT-attribué" && (
+                            <button
+                                onClick={() =>
+                                    handleOpenModal({
+                                        title: "Accepter le mandat",
+                                        content: (
+                                            <MandateAcceptForm
+                                                iri={data["@id"]}
+                                                handleCloseModal={handleCloseModal}
+                                            />
+                                        ),
+                                    })
+                                }
+                            >
+                                <HiCheckCircle size={20} />
+                                Accepter le mandat
+                            </button>
+                        )}
 
-                {account.roles.includes("ROLE_COORDINATOR") &&
-                    data.status === "édité" && (
-                        <button
-                            onClick={() =>
-                                handleOpenModal({
-                                    title: "Choix du mandataire",
-                                    content: (
-                                        <MandateAgentForm
-                                            iri={data["@id"]}
-                                            handleCloseModal={handleCloseModal}
-                                        />
-                                    ),
-                                })
-                            }
-                        >
-                            <HiOutlineRefresh size={20} />
-                            Choisir le mandataire
-                        </button>
-                    )}
-                {(account.roles.includes("ROLE_DOCTOR") ||
-                    (account.roles.includes("ROLE_COORDINATOR") &&
-                        data.status === "édité")) && (
-                    <>
-                        <button
-                            onClick={() =>
-                                handleOpenModal({
-                                    title: "Édition du mandat",
-                                    content: (
-                                        <MandateEditForm
-                                            iri={data["@id"]}
-                                            handleCloseModal={handleCloseModal}
-                                        />
-                                    ),
-                                })
-                            }
-                        >
-                            <HiDotsCircleHorizontal size={20} />
-                            Éditer le mandat
-                        </button>
-                        <button
-                            onClick={() =>
-                                handleOpenModal({
-                                    title: "Nouveau document",
-                                    content: (
-                                        <DocumentForm
-                                            event={false}
-                                            mandateID={data.id}
-                                            handleCloseModal={handleCloseModal}
-                                        />
-                                    ),
-                                })
-                            }
-                        >
-                            <AiOutlineFolderOpen size={20} />
-                            Ajouter un document
-                        </button>
-                    </>
-                )}
-            </Dropdown>
-            {isLoading ? (
-                <Loader />
-            ) : (
-                <>
-                    <Modal />
-                    <div className="grid grid-cols-12 gap-5">
-                        <div className="col-span-8 flex flex-col gap-3">
-                            <div className="card-title">
-                                {mandateCategoriesUsersRoles[data.category]}
-                            </div>
-                            <div>
-                                <div className="subcard-title">Description</div>
-                                <div className="whitespace-pre-line">
-                                    {data.description}
-                                </div>
-                            </div>
-                            <div>
-                                <div className="subcard-title mb-1">
-                                    Intervenant
-                                </div>
-                                <div className="flex md:flex-row flex-col md:gap-5 md:items-center">
-                                    <div className="badge badge-neutral">
-                                        {data.mandateUser
-                                            ? data.mandateUser.firstname +
-                                              " " +
-                                              data.mandateUser.lastname
-                                            : "non attribué"}
-                                    </div>
-                                    {data.mandateUser && (
-                                        <>
-                                            <div>
-                                                Tél :{" "}
-                                                {data.mandateUser.mobile
-                                                    ? data.mandateUser.mobile
-                                                    : data.mandateUser.phone}
-                                            </div>
-                                            <div>
-                                                Email : {data.mandateUser.email}
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-span-4 place-self-start w-full flex flex-col gap-5">
-                            <div className="subcard-shadow">
-                                <div className="card-title">
-                                    <HiOutlinePaperClip size={30} />
-                                    Statut
-                                </div>
-                                {account.roles.includes("ROLE_DOCTOR") &&
-                                    mandateStatus["doctor"][data.status]}
-                                {account.roles.includes("ROLE_NURSE") &&
-                                    mandateStatus["nurse"][data.status]}
-                                {account.roles.includes("ROLE_COORDINATOR") &&
-                                    mandateStatus["coordinator"][data.status]}
-                            </div>
-
-                            <div className="subcard-shadow ">
-                                <div className="card-title">
-                                    <AiOutlineFolderOpen size={30} />
-                                    Documents
-                                </div>
-                                {data.documents.length === 0 && (
-                                    <div className="subcard-title">
-                                        Aucun document
-                                    </div>
-                                )}
-                                {data.documents.map((document) => (
-                                    <MissionDocument
-                                        key={document["@id"]}
-                                        iri={document["@id"]}
-                                        isMine={isMine}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </>
+                    {account.roles.includes("ROLE_COORDINATOR") &&
+                        (data.status === "DEFAULT-édité" || data.status === "DEFAULT-refusé") && (
+                            <button
+                                onClick={() =>
+                                    handleOpenModal({
+                                        title: "Choix du mandataire",
+                                        content: (
+                                            <MandateAgentForm
+                                                iri={data["@id"]}
+                                                handleCloseModal={handleCloseModal}
+                                            />
+                                        ),
+                                    })
+                                }
+                            >
+                                <HiOutlineRefresh size={20} />
+                                Choisir le mandataire
+                            </button>
+                        )}
+                    {(account.roles.includes("ROLE_DOCTOR") ||
+                        (account.roles.includes("ROLE_COORDINATOR") &&
+                            data.status === "DEFAULT-édité")) && (
+                            <>
+                                <button
+                                    onClick={() =>
+                                        handleOpenModal({
+                                            title: "Édition du mandat",
+                                            content: (
+                                                <MandateEditForm
+                                                    iri={data["@id"]}
+                                                    handleCloseModal={handleCloseModal}
+                                                />
+                                            ),
+                                        })
+                                    }
+                                >
+                                    <HiDotsCircleHorizontal size={20} />
+                                    Éditer le mandat
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        handleOpenModal({
+                                            title: "Nouveau document",
+                                            content: (
+                                                <DocumentForm
+                                                    event={false}
+                                                    mandateID={data.id}
+                                                    handleCloseModal={handleCloseModal}
+                                                />
+                                            ),
+                                        })
+                                    }
+                                >
+                                    <AiOutlineFolderOpen size={20} />
+                                    Ajouter un document
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        handleOpenModal({
+                                            title: "Annulation du mandat",
+                                            content: (
+                                                <CancelModal
+                                                    mandateID={data.id}
+                                                    handleCloseModal={handleCloseModal}
+                                                />
+                                            ),
+                                            size: "small",
+                                        })
+                                    }
+                                >
+                                    <MdCancel size={20} />
+                                    Annuler le mandat
+                                </button>
+                            </>
+                        )}
+                </Dropdown>
             )}
-        </div>
+            {
+                isLoading ? (
+                    <Loader />
+                ) : (
+                    <>
+                        <Modal />
+                        <div className="grid grid-cols-12 gap-5">
+                            <div className="col-span-8 flex flex-col gap-3">
+                                <div className="card-title">
+                                    {mandateCategoriesUsersRoles[data.category]}
+                                </div>
+                                <div>
+                                    <div className="subcard-title">Description</div>
+                                    <div className="whitespace-pre-line">
+                                        {data.description}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="subcard-title mb-1">
+                                        Intervenant
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <div className="badge badge-neutral">
+                                            {data.mandateUser
+                                                ? data.mandateUser.firstname +
+                                                " " +
+                                                data.mandateUser.lastname
+                                                : "non attribué"}
+                                        </div>
+                                        {data.mandateUser && (
+                                            <>
+                                                <div>
+                                                    Tél :{" "}
+                                                    {data.mandateUser.mobile
+                                                        ? data.mandateUser.mobile
+                                                        : data.mandateUser.phone}
+                                                </div>
+                                                <div>
+                                                    Email : {data.mandateUser.email}
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-span-4 place-self-start w-full flex flex-col gap-5">
+                                <div className="subcard-shadow">
+                                    <div className="card-title">
+                                        <HiOutlinePaperClip size={30} />
+                                        Statut
+                                    </div>
+                                    {account.roles.includes("ROLE_DOCTOR") &&
+                                        mandateStatus["doctor"][data.status]}
+                                    {account.roles.includes("ROLE_NURSE") &&
+                                        mandateStatus["nurse"][data.status]}
+                                    {account.roles.includes("ROLE_COORDINATOR") &&
+                                        mandateStatus["coordinator"][data.status]}
+                                </div>
+
+                                <div className="subcard-shadow ">
+                                    <div className="card-title">
+                                        <AiOutlineFolderOpen size={30} />
+                                        Documents
+                                    </div>
+                                    {data.documents.length === 0 && (
+                                        <div className="subcard-title">
+                                            Aucun document
+                                        </div>
+                                    )}
+                                    {data.documents.map((document) => (
+                                        <MissionDocument
+                                            key={document["@id"]}
+                                            iri={document["@id"]}
+                                            isMine={isMine}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )
+            }
+        </div >
     );
 };
+
+
+const CancelModal = ({ handleCloseModal, mandateID }) => {
+
+    const { mutate, isLoading, isSuccess, isSubmitting } = usePutData();
+
+    const handleSubmit = () => {
+        mutate({
+            id: mandateID,
+            status: "annulé",
+        });
+    }
+
+
+    useEffect(() => {
+        if (isSuccess) handleCloseModal();
+        // eslint-disable-next-line
+    }, [isSuccess])
+
+
+
+    return (
+        <Form
+            onSubmit={() => handleSubmit}
+            isDisabled={isSubmitting || isLoading}
+            isLoading={isSubmitting || isLoading}
+        >
+            Etes-vous sûr de vouloir annuler ce mandat ?
+            Attention cette opération est irréversible.
+        </Form>
+    )
+}

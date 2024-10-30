@@ -40,9 +40,9 @@ const Menu = () => {
 
     const mandateDefaultStatus = () => {
         if (isSuccessAccount) {
-            if (account.roles.includes("ROLE_DOCTOR")) return "édité";
+            if (account.roles.includes("ROLE_DOCTOR")) return "DEFAULT";
             if (account.roles.includes("ROLE_NURSE")) return "attribué";
-            if (account.roles.includes("ROLE_COORDINATOR")) return "édité";
+            if (account.roles.includes("ROLE_COORDINATOR")) return "DEFAULT";
         } else return null;
     };
 
@@ -95,9 +95,8 @@ const Menu = () => {
                 </label>
             </div>
             <div
-                className={`w-screen md:w-64 h-screen md:h-auto md:sticky md:top-0 ${
-                    show ? "block" : "hidden md:block"
-                }`}
+                className={`w-screen md:w-64 h-screen md:h-auto md:sticky md:top-0 ${show ? "block" : "hidden md:block"
+                    }`}
             >
                 <div className="flex justify-between items-center p-3 md:h-[146px]">
                     <NavLink className="" to="/dashboard">

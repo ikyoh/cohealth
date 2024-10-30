@@ -7,7 +7,7 @@ import Form from "../components/form/form/Form";
 import { useGetIRI, usePostData } from "../queryHooks/useMandate";
 import {
     mandatePatient as mandatePatientSchema,
-    mandateServices as mandateServicesSchema,
+    mandateServices as mandateServicesSchema
 } from "../utils/validationSchemas";
 
 import MandatePatientFields from "../fields/MandatePatientFields";
@@ -130,6 +130,7 @@ const MandateForm = ({ iri, handleCloseModal }) => {
                                                 index={index}
                                                 register={register}
                                                 errors={errors}
+                                                watch={watch}
                                             />
                                         </li>
                                     );
@@ -142,9 +143,9 @@ const MandateForm = ({ iri, handleCloseModal }) => {
                                 onClick={() => {
                                     append(
                                         {
+                                            mandateUser: null,
                                             category: "",
                                             beginAt: "",
-                                            user: "",
                                             description: "",
                                         },
                                         {

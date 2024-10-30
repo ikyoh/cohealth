@@ -11,14 +11,20 @@ export const FormSelect = ({
     required,
     children,
     className,
+    onChange,
     disabled = false,
 }) => (
     <div className={`form-input ${className ? className : ""}`}>
         <div className="grid grid-cols-2 gap-3">
             <Label name={name} label={label} required={required} />
-            <select {...register(name)} disabled={disabled}>
-                {children}
-            </select>
+            {onChange ?
+                <select {...register(name)} onChange={onChange} disabled={disabled} >
+                    {children}
+                </select>
+                : <select {...register(name)} disabled={disabled} >
+                    {children}
+                </select>
+            }
         </div>
         <Error error={error} />
     </div>

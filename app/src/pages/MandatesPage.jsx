@@ -44,9 +44,9 @@ const MandatesPage = () => {
     const { sortValue, sortDirection, handleSort } = useSortBy(
         initialPageState
             ? {
-                  value: initialPageState.sortValue,
-                  direction: initialPageState.sortDirection,
-              }
+                value: initialPageState.sortValue,
+                direction: initialPageState.sortDirection,
+            }
             : ""
     );
     const { data, isLoading } = useGetPaginatedDatas(
@@ -136,7 +136,7 @@ const MandatesPage = () => {
                                 handleSort={handleSort}
                             />
                         )}
-                        {!account.roles.includes("ROLE_NURSE") ||
+                        {!account.roles.includes("ROLE_NURSE") &&
                             (!account.roles.includes("ROLE_PHYSIO") && (
                                 <Table.Th
                                     label="Mandataire"
@@ -146,13 +146,16 @@ const MandatesPage = () => {
                                     handleSort={handleSort}
                                 />
                             ))}
-                        <Table.Th
-                            label="Prestation"
-                            sortBy="doctor.fullname"
-                            sortValue={sortValue}
-                            sortDirection={sortDirection}
-                            handleSort={handleSort}
-                        />
+                        {!account.roles.includes("ROLE_NURSE") &&
+                            (!account.roles.includes(
+                                "ROLE_PHYSIO"
+                            ) && (
+                                    <Table.Th
+                                        label="Prestation"
+                                        sortValue={sortValue}
+                                        sortDirection={sortDirection}
+                                    />
+                                ))}
                         <Table.Th
                             label="Début le"
                             sortBy="beginAt"
@@ -200,31 +203,36 @@ const MandatesPage = () => {
                                             }
                                         />
                                     )}
-                                    {!account.roles.includes("ROLE_NURSE") ||
+                                    {!account.roles.includes("ROLE_NURSE") &&
                                         (!account.roles.includes(
                                             "ROLE_PHYSIO"
                                         ) && (
-                                            <Table.Td
-                                                label="Mandataire"
-                                                text={
-                                                    data.mandateUser
-                                                        ? data.mandateUser
-                                                              .lastname +
-                                                          " " +
-                                                          data.mandateUser
-                                                              .firstname
-                                                        : "..."
-                                                }
-                                            />
-                                        ))}
-                                    <Table.Td
-                                        label="Prestations"
-                                        text={
-                                            mandateCategoriesUsersRoles[
-                                                data.category
-                                            ]
-                                        }
-                                    />
+                                                <Table.Td
+                                                    label="Mandataire"
+                                                    text={
+                                                        data.mandateUser
+                                                            ? data.mandateUser
+                                                                .lastname +
+                                                            " " +
+                                                            data.mandateUser
+                                                                .firstname
+                                                            : "..."
+                                                    }
+                                                />
+                                            ))}
+                                    {!account.roles.includes("ROLE_NURSE") &&
+                                        (!account.roles.includes(
+                                            "ROLE_PHYSIO"
+                                        ) && (
+                                                <Table.Td
+                                                    label="Prestations"
+                                                    text={
+                                                        mandateCategoriesUsersRoles[
+                                                        data.category
+                                                        ]
+                                                    }
+                                                />
+                                            ))}
                                     <Table.Td
                                         label="Débute le"
                                         text={dayjs(data.beginAt).format(
@@ -236,7 +244,7 @@ const MandatesPage = () => {
                                             "ROLE_DOCTOR"
                                         ) &&
                                             mandateStatus["doctor"][
-                                                data.status
+                                            data.status
                                             ]}
                                         {account.roles.includes("ROLE_NURSE") &&
                                             mandateStatus["nurse"][data.status]}
@@ -248,112 +256,112 @@ const MandatesPage = () => {
                                             "ROLE_COORDINATOR"
                                         ) &&
                                             mandateStatus["coordinator"][
-                                                data.status
+                                            data.status
                                             ]}
                                     </Table.Td>
                                     <Table.Td label="" text="">
                                         {account.roles.includes(
                                             "ROLE_DOCTOR"
                                         ) && (
-                                            <Dropdown type="table">
-                                                {data.status === "édité" && (
-                                                    <button
-                                                        onClick={() =>
-                                                            handleOpenModal({
-                                                                title: "Édition du mandat",
-                                                                content: (
-                                                                    <MandateEditForm
-                                                                        iri={
-                                                                            data[
-                                                                                "@id"
-                                                                            ]
-                                                                        }
-                                                                        handleCloseModal={
-                                                                            handleCloseModal
-                                                                        }
-                                                                    />
-                                                                ),
-                                                            })
-                                                        }
-                                                    >
-                                                        <HiDotsCircleHorizontal
-                                                            size={20}
-                                                        />
-                                                        Éditer le mandat
-                                                    </button>
-                                                )}
-                                                {data.status !== "annulé" && (
-                                                    <button
-                                                        onClick={() =>
-                                                            handleOpenModal({
-                                                                title: "Édition du mandat",
-                                                                content: (
-                                                                    <MandateEditForm
-                                                                        iri={
-                                                                            data[
-                                                                                "@id"
-                                                                            ]
-                                                                        }
-                                                                        handleCloseModal={
-                                                                            handleCloseModal
-                                                                        }
-                                                                    />
-                                                                ),
-                                                            })
-                                                        }
-                                                    >
-                                                        <AiOutlineFolderOpen
-                                                            size={20}
-                                                        />
-                                                        Ajouter un document
-                                                    </button>
-                                                )}
-                                                {data.status !== "édité" &&
-                                                    data.mission.length !==
-                                                        0 && (
+                                                <Dropdown type="table">
+                                                    {data.status === "édité" && (
                                                         <button
                                                             onClick={() =>
-                                                                handleChangeStatus(
-                                                                    {
-                                                                        id: data.id,
-                                                                        status: "annulé",
-                                                                    }
-                                                                )
+                                                                handleOpenModal({
+                                                                    title: "Édition du mandat",
+                                                                    content: (
+                                                                        <MandateEditForm
+                                                                            iri={
+                                                                                data[
+                                                                                "@id"
+                                                                                ]
+                                                                            }
+                                                                            handleCloseModal={
+                                                                                handleCloseModal
+                                                                            }
+                                                                        />
+                                                                    ),
+                                                                })
                                                             }
                                                         >
-                                                            <TiDelete
+                                                            <HiDotsCircleHorizontal
                                                                 size={20}
                                                             />
-                                                            Annuler le mandat
+                                                            Éditer le mandat
                                                         </button>
                                                     )}
-                                                {data.status === "édité" && (
-                                                    <button
-                                                        onClick={() =>
-                                                            handleOpenModal({
-                                                                title: "Supprimer le mandat",
-                                                                size: "small",
-                                                                content: (
-                                                                    <MandateDelete
-                                                                        iri={
-                                                                            data[
+                                                    {data.status !== "annulé" && (
+                                                        <button
+                                                            onClick={() =>
+                                                                handleOpenModal({
+                                                                    title: "Édition du mandat",
+                                                                    content: (
+                                                                        <MandateEditForm
+                                                                            iri={
+                                                                                data[
                                                                                 "@id"
-                                                                            ]
+                                                                                ]
+                                                                            }
+                                                                            handleCloseModal={
+                                                                                handleCloseModal
+                                                                            }
+                                                                        />
+                                                                    ),
+                                                                })
+                                                            }
+                                                        >
+                                                            <AiOutlineFolderOpen
+                                                                size={20}
+                                                            />
+                                                            Ajouter un document
+                                                        </button>
+                                                    )}
+                                                    {data.status !== "édité" &&
+                                                        data.mission.length !==
+                                                        0 && (
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleChangeStatus(
+                                                                        {
+                                                                            id: data.id,
+                                                                            status: "annulé",
                                                                         }
-                                                                        handleCloseModal={
-                                                                            handleCloseModal
-                                                                        }
-                                                                    />
-                                                                ),
-                                                            })
-                                                        }
-                                                    >
-                                                        <TiDelete size={20} />
-                                                        Supprimer le mandat
-                                                    </button>
-                                                )}
-                                            </Dropdown>
-                                        )}
+                                                                    )
+                                                                }
+                                                            >
+                                                                <TiDelete
+                                                                    size={20}
+                                                                />
+                                                                Annuler le mandat
+                                                            </button>
+                                                        )}
+                                                    {data.status === "édité" && (
+                                                        <button
+                                                            onClick={() =>
+                                                                handleOpenModal({
+                                                                    title: "Supprimer le mandat",
+                                                                    size: "small",
+                                                                    content: (
+                                                                        <MandateDelete
+                                                                            iri={
+                                                                                data[
+                                                                                "@id"
+                                                                                ]
+                                                                            }
+                                                                            handleCloseModal={
+                                                                                handleCloseModal
+                                                                            }
+                                                                        />
+                                                                    ),
+                                                                })
+                                                            }
+                                                        >
+                                                            <TiDelete size={20} />
+                                                            Supprimer le mandat
+                                                        </button>
+                                                    )}
+                                                </Dropdown>
+                                            )}
 
                                         {account.roles.includes(
                                             "ROLE_COORDINATOR"
@@ -368,7 +376,7 @@ const MandatesPage = () => {
                                                                     <MandateAgentForm
                                                                         iri={
                                                                             data[
-                                                                                "@id"
+                                                                            "@id"
                                                                             ]
                                                                         }
                                                                         handleCloseModal={

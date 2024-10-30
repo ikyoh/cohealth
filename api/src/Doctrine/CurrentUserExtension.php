@@ -39,11 +39,18 @@ final class CurrentUserExtension implements QueryCollectionExtensionInterface, Q
         $rootAlias = $queryBuilder->getRootAliases()[0];
 
         if ($reflexionClass->implementsInterface(UserOwnedInterface::class) && $resourceClass === MandateGroup::class) {
-
+            if (in_array("ROLE_COORDINATOR", $userRoles))
                 return;
-            $queryBuilder->andWhere("$rootAlias.user = :user OR mandates.user = :user");
-            $queryBuilder->setParameter("user", $user);
             $queryBuilder->leftJoin("$rootAlias.mandates", 'mandates');
+            $queryBuilder->andWhere("$rootAlias.user = :user OR mandates.mandateUser = :user");
+            // $queryBuilder->orWhere('mandates.mandateUser = :user');
+            $queryBuilder->setParameter("user", $user);
+
+            // ->leftJoin('mg.mandates', 'm') // Jointure pour accéder aux Mandates de chaque MandateGroup
+            // ->andWhere('mg.user = :user OR m.user = :user') // Conditions pour les deux types de relation avec l'utilisateur
+            // ->setParameter('user', $user)
+
+
             return;
         }
 
@@ -76,7 +83,7 @@ final class CurrentUserExtension implements QueryCollectionExtensionInterface, Q
 
         if ($reflexionClass->implementsInterface(UserOwnedInterface::class) && $resourceClass === MediaObject::class) {
             if (in_array("ROLE_COORDINATOR", $userRoles))
-            return;
+                return;
             $queryBuilder->andWhere("$rootAlias.user = :user OR mandate.mandateUser = :user OR mission.coworkers LIKE :userId");
             $queryBuilder->setParameter("user", $user);
             $queryBuilder->setParameter('userId', '%' . $user->getId() . '%');

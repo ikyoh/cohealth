@@ -8,8 +8,6 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
-
 use Symfony\Component\HttpFoundation\Request;
 
 
@@ -20,21 +18,20 @@ class UserOwnedDenormalizer implements DenormalizerInterface, DenormalizerAwareI
 
     private const ALREADY_CALLED_DENORMALIZER = 'UserOwnedDenormalizerCalled';
 
-    public function __construct(private Security $security)
-    {
-    }
+    public function __construct(private Security $security) {}
 
 
     public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
     {
         $reflexionClass = new \ReflectionClass($type);
-        $alreadyCalled = $context[self::ALREADY_CALLED_DENORMALIZER] ?? false;
+        $alreadyCalled = $context[$this->getAlreadyCalledKey($type)] ?? false;
         return $reflexionClass->implementsInterface(UserOwnedInterface::class) && $alreadyCalled === false;
     }
 
     public function denormalize(mixed $data, string $type, ?string $format = null, array $context = [])
     {
-        $context[self::ALREADY_CALLED_DENORMALIZER] = true;
+
+        $context[$this->getAlreadyCalledKey($type)] = true;
         /** @var UserOwnedInterface $obj */
 
         $obj = $this->denormalizer->denormalize($data, $type, $format, $context);
@@ -47,5 +44,11 @@ class UserOwnedDenormalizer implements DenormalizerInterface, DenormalizerAwareI
         }
 
         return $obj;
+    }
+
+
+    private function getAlreadyCalledKey(string $type)
+    {
+        return self::ALREADY_CALLED_DENORMALIZER . $type;
     }
 }

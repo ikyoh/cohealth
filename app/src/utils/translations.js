@@ -1,24 +1,24 @@
 export const mandateStatus = {
     nurse: {
-        "édité": "Edité",
+        "DEFAULT-édité": "Edité",
         "annulé": "Annulé",
         "accepté": "Accepté",
-        "refusé": "Refusé",
-        "attribué": "Demande de mandat"
+        "DEFAULT-refusé": "Refusé",
+        "DEFAULT-attribué": "Demande de mandat"
 
     },
     doctor: {
-        "édité": "En attente coordination",
+        "DEFAULT-édité": "En attente coordination",
+        "DEFAULT-refusé": "En attente validation",
         "annulé": "Annulé",
         "accepté": "Accepté",
-        "refusé": "En attente coordination",
-        "attribué": "En attente coordination"
+        "DEFAULT-attribué": "En attente validation",
     },
     coordinator: {
-        "édité": "En attente coordination",
+        "DEFAULT-édité": "A coordonner",
         "annulé": "Annulé",
         "accepté": "Accepté",
-        "refusé": "Refusé",
-        "attribué": "Attribué"
+        "DEFAULT-refusé": "Refusé",
+        "DEFAULT-attribué": "Attribué"
     }
 }

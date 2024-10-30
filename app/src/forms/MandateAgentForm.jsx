@@ -39,6 +39,7 @@ const MandateAgentForm = ({ iri, handleCloseModal }) => {
 
     if (isLoadingData || isLoadingUsers) return <Loader />;
 
+
     return (
         <>
             <Form
@@ -48,8 +49,8 @@ const MandateAgentForm = ({ iri, handleCloseModal }) => {
                 className="p-5 grid grid-cols-2"
             >
                 {users
-                    ?.filter((user) => user.roles.includes(data.category))
-                    .map((user) => (
+                    .filter(user => user.roles.includes(data.category))
+                    .map(user => (
                         <div key={uuid()} className="form-control">
                             <input
                                 type="radio"

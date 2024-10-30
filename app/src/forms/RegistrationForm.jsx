@@ -50,7 +50,7 @@ const RegistrationForm = () => {
         if (form.roles[0] === "ROLE_DOCTOR")
             postDoctor({
                 ...form,
-                fullname: form.lastname + form.firstname,
+                fullname: form.lastname + " " + form.firstname,
                 category: form.category,
             });
         postData(form);

@@ -18,9 +18,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\UserOwnedInterface;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use App\EntityListener\MandateListener;
 
 #[ORM\Entity(repositoryClass: MandateRepository::class)]
-#[ORM\EntityListeners(['App\EntityListener\MandateListener'])]
+#[ORM\EntityListeners([MandateListener::class])]
 #[ApiResource(
     paginationClientEnabled: true,
     normalizationContext: ['groups' => ['mandates:read']],
@@ -33,7 +34,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
         new Delete(),
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['status' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['status' => 'partial'])]
 
 
 class Mandate implements UserOwnedInterface
@@ -57,7 +58,7 @@ class Mandate implements UserOwnedInterface
     //édité / annulé / accepté / refusé / attribué
     #[ORM\Column(length: 255)]
     #[Groups(["mandates:read", "mandate:read", "mandate:write", "mandate_group:write"])]
-    private ?string $status = 'édité';
+    private ?string $status = 'DEFAULT-édité';
 
     #[ORM\Column]
     #[Groups(["mandates:read", "mandate:read", "mandate:write", "mandate_group:write"])]

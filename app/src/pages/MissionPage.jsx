@@ -38,7 +38,7 @@ import { useGetIRI as Assurance } from "../queryHooks/useAssurance";
 import { useGetIRI as Doctor } from "../queryHooks/useDoctor";
 import { useGetIRI } from "../queryHooks/useDocument";
 import { useGetOneData, usePutData } from "../queryHooks/useMission";
-import { missionStatus } from "../utils/arrays";
+import { mandateCategoriesUsersRoles, missionStatus } from "../utils/arrays";
 import { calcNumberOfDays, downloadFile } from "../utils/functions";
 
 const MissionPage = () => {
@@ -84,13 +84,13 @@ const MissionPage = () => {
                         <div className="card-info">
                             {data.beginAt &&
                                 "Du " +
-                                    dayjs(data.beginAt).format("DD/MM/YYYY")}
+                                dayjs(data.beginAt).format("DD/MM/YYYY")}
                             {data.endAt &&
                                 " au " + dayjs(data.endAt).format("DD/MM/YYYY")}
                             {data.beginAt && data.endAt
                                 ? " (" +
-                                  calcNumberOfDays(data.beginAt, data.endAt) +
-                                  " jours)"
+                                calcNumberOfDays(data.beginAt, data.endAt) +
+                                " jours)"
                                 : null}
                         </div>
                         <div className="subcard-shadow">
@@ -332,7 +332,7 @@ const MissionPage = () => {
                     title={
                         !account.roles.includes("ROLE_DOCTOR")
                             ? "Mission"
-                            : data.mandate.category
+                            : mandateCategoriesUsersRoles[data.mandate.category]
                     }
                     icon={<MdPendingActions size={40} />}
                     mainButton={
@@ -574,41 +574,37 @@ const MissionPage = () => {
                     {!account.roles.includes("ROLE_DOCTOR") && (
                         <div className="bg-slate-200 flex border rounded-xl mb-5">
                             <div
-                                className={`grow md:grow-0 md:px-8 py-3 text-center ${
-                                    tab === "infos"
-                                        ? "bg-action text-white rounded-xl"
-                                        : "cursor-pointer"
-                                }`}
+                                className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "infos"
+                                    ? "bg-action text-white rounded-xl"
+                                    : "cursor-pointer"
+                                    }`}
                                 onClick={() => setTab("infos")}
                             >
                                 Informations
                             </div>
                             <div
-                                className={`grow md:grow-0 md:px-8 py-3 text-center ${
-                                    tab === "observations"
-                                        ? "bg-action text-white rounded-xl"
-                                        : "cursor-pointer"
-                                }`}
+                                className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "observations"
+                                    ? "bg-action text-white rounded-xl"
+                                    : "cursor-pointer"
+                                    }`}
                                 onClick={() => setTab("observations")}
                             >
                                 Observations
                             </div>
                             <div
-                                className={`grow md:grow-0 md:px-8 py-3 text-center ${
-                                    tab === "schedules"
-                                        ? "bg-action text-white rounded-xl"
-                                        : "cursor-pointer"
-                                }`}
+                                className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "schedules"
+                                    ? "bg-action text-white rounded-xl"
+                                    : "cursor-pointer"
+                                    }`}
                                 onClick={() => setTab("schedules")}
                             >
                                 Planning
                             </div>
                             <div
-                                className={`grow md:grow-0 md:px-8 py-3 text-center ${
-                                    tab === "invoices"
-                                        ? "bg-action text-white rounded-xl"
-                                        : "cursor-pointer"
-                                }`}
+                                className={`grow md:grow-0 md:px-8 py-3 text-center ${tab === "invoices"
+                                    ? "bg-action text-white rounded-xl"
+                                    : "cursor-pointer"
+                                    }`}
                                 onClick={() => setTab("invoices")}
                             >
                                 Facturation
@@ -683,24 +679,24 @@ const MissionObservations = ({ observations }) => {
                             {observations.filter(
                                 (f) => f.category === "observation"
                             ).length !== 0 && (
-                                <div className="grid grid-cols-1 divide-y">
-                                    {observations
-                                        .sort(
-                                            (a, b) =>
-                                                new Date(b.createdAt) -
-                                                new Date(a.createdAt)
-                                        )
-                                        .filter(
-                                            (f) => f.category === "observation"
-                                        )
-                                        .map((observation) => (
-                                            <MissionObservation
-                                                observation={observation}
-                                                key={uuid()}
-                                            />
-                                        ))}
-                                </div>
-                            )}
+                                    <div className="grid grid-cols-1 divide-y">
+                                        {observations
+                                            .sort(
+                                                (a, b) =>
+                                                    new Date(b.createdAt) -
+                                                    new Date(a.createdAt)
+                                            )
+                                            .filter(
+                                                (f) => f.category === "observation"
+                                            )
+                                            .map((observation) => (
+                                                <MissionObservation
+                                                    observation={observation}
+                                                    key={uuid()}
+                                                />
+                                            ))}
+                                    </div>
+                                )}
                         </div>
                         {observations
                             .sort(
@@ -710,16 +706,16 @@ const MissionObservations = ({ observations }) => {
                             )
                             .filter((f) => f.category === "tension").length !==
                             0 && (
-                            <div className="card-shadow h-48 !pb-5">
-                                <ObservationChart
-                                    name="Tension"
-                                    color="#F472B6"
-                                    datas={observations.filter(
-                                        (f) => f.category === "tension"
-                                    )}
-                                />
-                            </div>
-                        )}
+                                <div className="card-shadow h-48 !pb-5">
+                                    <ObservationChart
+                                        name="Tension"
+                                        color="#F472B6"
+                                        datas={observations.filter(
+                                            (f) => f.category === "tension"
+                                        )}
+                                    />
+                                </div>
+                            )}
                         {observations
                             .sort(
                                 (a, b) =>
@@ -728,16 +724,16 @@ const MissionObservations = ({ observations }) => {
                             )
                             .filter((f) => f.category === "poids").length !==
                             0 && (
-                            <div className="card-shadow h-48">
-                                <ObservationChart
-                                    name="Poids"
-                                    color="#F4B600"
-                                    datas={observations.filter(
-                                        (f) => f.category === "poids"
-                                    )}
-                                />
-                            </div>
-                        )}
+                                <div className="card-shadow h-48">
+                                    <ObservationChart
+                                        name="Poids"
+                                        color="#F4B600"
+                                        datas={observations.filter(
+                                            (f) => f.category === "poids"
+                                        )}
+                                    />
+                                </div>
+                            )}
                         {observations
                             .sort(
                                 (a, b) =>
@@ -746,16 +742,16 @@ const MissionObservations = ({ observations }) => {
                             )
                             .filter((f) => f.category === "température")
                             .length !== 0 && (
-                            <div className="card-shadow h-48">
-                                <ObservationChart
-                                    name="Température"
-                                    color="#0072B6"
-                                    datas={observations.filter(
-                                        (f) => f.category === "température"
-                                    )}
-                                />
-                            </div>
-                        )}
+                                <div className="card-shadow h-48">
+                                    <ObservationChart
+                                        name="Température"
+                                        color="#0072B6"
+                                        datas={observations.filter(
+                                            (f) => f.category === "température"
+                                        )}
+                                    />
+                                </div>
+                            )}
                     </div>
                 </div>
             </div>

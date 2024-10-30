@@ -11,7 +11,7 @@ export const request = async ({ ...options }) => {
         return response.data;
     };
     const onError = (error) => {
-        //console.log('Axios utils error', error)
+        console.log('Axios utils error', error)
         return Promise.reject(error);
     };
 
@@ -32,7 +32,7 @@ export const requestIRI = async ({ ...options }) => {
         return response.data;
     };
     const onError = (error) => {
-        //console.log('Axios utils error', error)
+        console.log('Axios utils error', error)
         return Promise.reject(error);
     };
 

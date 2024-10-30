@@ -15,6 +15,7 @@ const MandateEditForm = ({ iri, handleCloseModal }) => {
         register,
         handleSubmit,
         reset,
+        setValue,
         formState: { errors, isSubmitting },
     } = useForm({
         defaultValues: data,
@@ -51,6 +52,8 @@ const MandateEditForm = ({ iri, handleCloseModal }) => {
                 register={register}
                 errors={errors}
                 edit={true}
+                setValue={setValue}
+                fields={[data]}
             />
         </Form>
     );

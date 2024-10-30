@@ -55,12 +55,11 @@ const PageTitle = ({
                     }
                 >
                     {account.roles.includes("ROLE_ADMIN") ||
-                    account.roles.includes("ROLE_COORDINATOR") ? (
+                        account.roles.includes("ROLE_COORDINATOR") ? (
                         <button className="bg-white flex gap-3 p-2 rounded-full shadow-lg shadow-slate-400/40">
                             <img
                                 src={ReactPicto}
                                 className="rounded-full object-cover h-10 w-10 overflow-hidden"
-                                style={{ width: "100%" }}
                                 alt="profil"
                             />
                         </button>

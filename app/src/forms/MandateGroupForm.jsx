@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import * as Yup from "yup";
 import Form from "../components/form/form/Form";
-import { useGetCurrentAccount } from "../queryHooks/useAccount";
 import {
     useGetAllDatas,
     useGetIRI,
@@ -18,13 +17,15 @@ import dayjs from "dayjs";
 import MandatePatientFields from "../fields/MandatePatientFields";
 import MandateServiceFields from "../fields/MandateServiceFields";
 
+
 import uuid from "react-uuid";
-import { API_USERS, IRI } from "../config/api.config";
+import AddButton from "../components/buttons/AddButton";
+import { FormSelect } from "../components/form/select/FormSelect";
 
 const MandateGroupForm = ({ iri, handleCloseModal }) => {
     const { isLoading: isLoadingData, data } = useGetIRI(iri);
     const { mutate: postData, isLoading: isPosting } = usePostData();
-    const { data: account } = useGetCurrentAccount();
+    //const { data: account } = useGetCurrentAccount();
 
     const [currentStep, setCurrentStep] = useState(1);
 
@@ -53,8 +54,10 @@ const MandateGroupForm = ({ iri, handleCloseModal }) => {
             mandates: [
                 {
                     category: "ROLE_NURSE",
-                    user: IRI + API_USERS + "/" + account.id,
+                    mandateUser: null,
+                    mandateSelectUser: "",
                     beginAt: dayjs().format("YYYY-MM-DD"),
+                    status: "DEFAULT-édité",
                 },
             ],
         },
@@ -69,8 +72,11 @@ const MandateGroupForm = ({ iri, handleCloseModal }) => {
         control,
         setValue,
         trigger,
+        watch,
+        getValues,
         formState: { errors, isSubmitting },
     } = methods;
+
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -86,10 +92,11 @@ const MandateGroupForm = ({ iri, handleCloseModal }) => {
     }, [isLoadingData, data]);
 
     const onSubmit = (form) => {
-        console.log("form", form);
         postData(form);
         handleCloseModal();
     };
+
+    //const watchedMandates = watch("mandates");
 
     return (
         <>
@@ -106,7 +113,7 @@ const MandateGroupForm = ({ iri, handleCloseModal }) => {
                 >
                     {currentStep === 1 && (
                         <>
-                            <SelectPatient setValue={setValue} />
+                            <SelectPatient setValue={setValue} register={register} />
                             <MandatePatientFields
                                 register={register}
                                 errors={errors}
@@ -121,54 +128,43 @@ const MandateGroupForm = ({ iri, handleCloseModal }) => {
                                     return (
                                         <li
                                             key={item.id}
-                                            className="flex flex-col gap-3"
+                                            className="flex flex-col gap-3 mb-4"
                                         >
-                                            {fields.length !== 1 && (
-                                                <button
-                                                    type="button"
-                                                    className="btn"
-                                                    onClick={() =>
-                                                        remove(index)
-                                                    }
-                                                >
-                                                    Retirer la prestation
-                                                </button>
-                                            )}
                                             <MandateServiceFields
+                                                fields={fields}
                                                 name="mandates"
                                                 index={index}
                                                 register={register}
                                                 errors={errors}
+                                                watch={watch}
+                                                setValue={setValue}
+                                                remove={remove}
                                             />
                                         </li>
                                     );
                                 })}
                             </ul>
 
-                            <button
-                                type="button"
-                                className="btn"
-                                onClick={() => {
-                                    append(
-                                        {
-                                            category: "",
-                                            description: "",
-                                            user:
-                                                IRI +
-                                                API_USERS +
-                                                "/" +
-                                                account.id,
-                                            beginAt:
-                                                dayjs().format("YYYY-MM-DD"),
-                                        },
-                                        {
-                                            focusName: `mandates.${fields.length}.category`,
-                                        }
-                                    );
-                                }}
-                            >
-                                AJOUTER
-                            </button>
+
+                            <div className="flex justify-center">
+                                <AddButton
+                                    onClick={() => {
+                                        append(
+                                            {
+                                                category: "",
+                                                description: "",
+                                                mandateUser: null,
+                                                mandateSelectUser: "",
+                                                beginAt:
+                                                    dayjs().format("YYYY-MM-DD"),
+                                            },
+                                            {
+                                                focusName: `mandates.${fields.length}.category`,
+                                            }
+                                        );
+                                    }} />
+                            </div>
+
                         </>
                     )}
                 </Form>
@@ -179,28 +175,34 @@ const MandateGroupForm = ({ iri, handleCloseModal }) => {
 
 export default MandateGroupForm;
 
-const SelectPatient = ({ setValue }) => {
+const SelectPatient = ({ setValue, register }) => {
     const { data, isLoading } = useGetAllDatas();
-    if (isLoading) return <p>Chargement...</p>;
+    if (isLoading) return <p className="py-2">Chargement de la liste des patients</p>;
     if (!isLoading && data && data["hydra:totalItems"] === 0)
-        return <p>Aucun patient trouvé</p>;
+        return <p className="py-2">Aucun patient trouvé</p>;
     return (
-        <select
-            className="bg-gray-100 p-2 rounded"
+        <FormSelect
+            label="Liste des patients"
+            name="choosePatient"
+            register={register}
             onChange={(e) => {
-                setValue(
-                    "patient",
-                    data["hydra:member"][e.target.value].patient
-                );
-            }}
-        >
+                let mandates = data["hydra:member"].filter(f => Number(f.id) === Number(e.target.value));
+                setValue("patient", mandates[0].patient);
+            }}>
             <option value="">Choisir un patient</option>
-            {data["hydra:member"].map((item, index) => (
-                <option key={uuid()} value={index}>
-                    {item.patient.firstname} {item.patient.lastname} - AVS{" "}
-                    {item.patient.avsNumber}
-                </option>
-            ))}
-        </select>
+            {data["hydra:member"].reduce((accumulator, current) => {
+                if (!accumulator.find((item) => item.patient.avsNumber === current.patient.avsNumber)) {
+                    accumulator.push(current);
+                }
+                return accumulator;
+            }, [])
+                .map((item) => (
+                    <option key={uuid()} value={item.id}>
+                        {item.patient.firstname} {item.patient.lastname} - AVS{" "}
+                        {item.patient.avsNumber}
+                    </option>
+                ))}
+        </FormSelect>
+
     );
 };

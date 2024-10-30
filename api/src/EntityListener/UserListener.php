@@ -19,6 +19,13 @@ class UserListener
         $this->mailer = $mailer;
     }
 
+
+    /**
+     * Encode password before persisting user
+     * and send mail to Admin to inform about new user
+     * @param User $user
+     * @return void
+     */
     public function prePersist(User $user)
     {
         $this->encodePassword($user);

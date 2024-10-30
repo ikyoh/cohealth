@@ -19,6 +19,11 @@ const MandateAcceptForm = ({ iri }) => {
     const { isLoadingMandataGroup, data: mandateGroup } = useGetMandateGroup(
         data ? data.mandateGroup : null
     );
+
+
+    console.log('mandateGroup'
+        , mandateGroup)
+
     const { data: user, isLoading: isLoadingUser } = useAccount();
     const { data: patient, isLoading: isLoadingPatient } =
         useGetDatasByAvsNumber(data ? mandateGroup.patient.avsNumber : null);
@@ -30,6 +35,7 @@ const MandateAcceptForm = ({ iri }) => {
         { rcc: mandateGroup ? mandateGroup.user.rcc : null },
         mandateGroup ? mandateGroup.user.rcc : false
     );
+    console.log('doctor', doctor)
 
     const { mutate: postData, isLoading: isPosting } = usePostData();
     const {
@@ -37,6 +43,7 @@ const MandateAcceptForm = ({ iri }) => {
         isSuccess: isPutSuccess,
         isLoading: isPutting,
     } = usePutData();
+
 
     useEffect(() => {
         if (patient && doctor && !isLoading) {

@@ -1,17 +1,18 @@
-import React from 'react'
-import { FormInput } from '../components/form/input/FormInput'
-import { FormSelect } from '../components/form/select/FormSelect'
-import { FormTextarea } from '../components/form/textarea/FormTextarea'
+import React from 'react';
+import { FormInput } from '../components/form/input/FormInput';
+import { FormSelect } from '../components/form/select/FormSelect';
+import { FormTextarea } from '../components/form/textarea/FormTextarea';
 import { cantons } from '../utils/arrays';
 
 
 const MandatePatientFields = ({ name, errors, register }) => {
 
+    console.log(errors)
+
     return (
         <>
             <p className='text-xl font-semibold'>Patient</p>
             <FormSelect
-                type="text"
                 name={name ? name + ".gender" : "gender"}
                 label="Sexe"
                 error={name && errors[name] ? errors[name]['gender'] : errors['gender']}

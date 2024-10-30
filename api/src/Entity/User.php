@@ -52,7 +52,7 @@ use App\Filter\MultipleFieldsSearchFilter;
         ),
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['rcc' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['rcc' => 'exact', 'roles' => 'partial'])]
 
 #[ApiFilter(OrderFilter::class, properties: ['id', 'lastname', 'email', 'rcc', 'isActive'])]
 #[ApiFilter(MultipleFieldsSearchFilter::class, properties: [
@@ -61,7 +61,8 @@ use App\Filter\MultipleFieldsSearchFilter;
     "lastname",
     "email",
     "organization",
-    "rcc"
+    "rcc",
+    "roles",
 ])]
 
 
@@ -76,7 +77,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 180)]
     #[Groups(["users:read", "user:read", "user:write", "partners:read", "mandate:read"])]
     #[Assert\Email(
-        message: "L'Email {{ value }} n'est pas un Email valide.",
+        message: "L'email {{ value }} n'est pas un email valide.",
     )]
     private $email;
 
@@ -131,7 +132,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $isOptin = false;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["users:read", "user:read", "user:write", "missions:read", "partners:read", "mandate:read"])]
+    #[Groups(["users:read", "user:read", "user:write", "missions:read", "partners:read", "mandate:read", "mandate_group:read"])]
     private $rcc = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]

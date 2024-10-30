@@ -20,7 +20,7 @@ final class UsersSecurityExtension implements QueryCollectionExtensionInterface,
     {
         $this->security = $security;
     }
-    
+
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
 
@@ -32,12 +32,16 @@ final class UsersSecurityExtension implements QueryCollectionExtensionInterface,
 
         if ($resourceClass === User::class) {
 
-                $excludedDomain = '@cohealth.ch';
+            $excludedDomain = '@cohealth.ch';
 
-                $queryBuilder->andWhere(
-                    $queryBuilder->expr()->notLike("$rootAlias.email", $queryBuilder->expr()->literal('%' . $excludedDomain))
-                );
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->notLike("$rootAlias.email", $queryBuilder->expr()->literal('%' . $excludedDomain))
+            );
 
+            if (!in_array('ROLE_ADMIN', $userRoles)) {
+                $queryBuilder->andWhere("$rootAlias.isActive = :isActive")
+                    ->setParameter('isActive', true);
+            }
         }
     }
 

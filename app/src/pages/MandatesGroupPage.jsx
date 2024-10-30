@@ -3,12 +3,10 @@ import { MdEventNote } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import uuid from "react-uuid";
 import AddButton from "../components/buttons/AddButton";
-import Dropdown from "../components/dropdown/Dropdown";
 import Loader from "../components/Loader";
 import NoData from "../components/no_data/NoData";
 import Pagination from "../components/pagination/Pagination";
 import * as Table from "../components/table/Table";
-import MandateAgentForm from "../forms/MandateAgentForm";
 import MandateGroupForm from "../forms/MandateGroupForm";
 import { useFilterMandates } from "../hooks/useFilterMandates";
 import { useModal } from "../hooks/useModal";
@@ -18,6 +16,7 @@ import PageTitle from "../layouts/PageTitle";
 import { useGetCurrentAccount } from "../queryHooks/useAccount";
 import { useGetPaginatedDatas } from "../queryHooks/useMandateGroup";
 import { mandateCategoriesUsersRoles } from "../utils/arrays";
+import { mandateStatus } from "../utils/translations";
 
 const MandatesGroupPage = () => {
     const { state: initialPageState } = useLocation();
@@ -33,9 +32,9 @@ const MandatesGroupPage = () => {
     const { sortValue, sortDirection, handleSort } = useSortBy(
         initialPageState
             ? {
-                  value: initialPageState.sortValue,
-                  direction: initialPageState.sortDirection,
-              }
+                value: initialPageState.sortValue,
+                direction: initialPageState.sortDirection,
+            }
             : ""
     );
     const { data, isLoading } = useGetPaginatedDatas(
@@ -152,6 +151,13 @@ const MandatesGroupPage = () => {
                             sortDirection={sortDirection}
                             handleSort={handleSort}
                         /> */}
+                        <Table.Th
+                            label="Statut"
+                            sortBy="status"
+                            sortValue={sortValue}
+                            sortDirection={sortDirection}
+                            handleSort={handleSort}
+                        />
                         <Table.Th label="" style={{ width: 10 }} />
                     </Table.Thead>
                     <Table.Tbody>
@@ -193,94 +199,34 @@ const MandatesGroupPage = () => {
                                         (!account.roles.includes(
                                             "ROLE_PHYSIO"
                                         ) && (
-                                            <Table.Td
-                                                label="Mandataire"
-                                                text={
-                                                    data.mandateUser
-                                                        ? data.mandateUser
-                                                              .lastname +
-                                                          " " +
-                                                          data.mandateUser
-                                                              .firstname
-                                                        : "..."
-                                                }
-                                            />
-                                        ))}
-                                    {/* <Table.Td label="Prestations" text={mandateCategoriesUsersRoles[data.category]} />
-                                <Table.Td label="Créé le" text={dayjs(data.createdAt).format('L')} />
-                                <Table.Td label="Statut">
-                                    {account.roles.includes('ROLE_DOCTOR') && mandateStatus["doctor"][data.status]}
-                                    {account.roles.includes('ROLE_NURSE') && mandateStatus["nurse"][data.status]}
-                                    {account.roles.includes('ROLE_PHYSIO') && mandateStatus["nurse"][data.status]}
-                                    {account.roles.includes('ROLE_COORDINATOR') && mandateStatus["coordinator"][data.status]}
-                                </Table.Td> */}
+                                                <Table.Td
+                                                    label="Mandataire"
+                                                    text={
+                                                        data.mandateUser
+                                                            ? data.mandateUser
+                                                                .lastname +
+                                                            " " +
+                                                            data.mandateUser
+                                                                .firstname
+                                                            : "..."
+                                                    }
+                                                />
+                                            ))}
+
                                     <Table.Td label="" text="">
                                         {data.mandates.map((mandate) => (
                                             <div key={uuid()} className="mr-3">
                                                 {
                                                     mandateCategoriesUsersRoles[
-                                                        mandate.category
+                                                    mandate.category
                                                     ]
                                                 }
                                             </div>
                                         ))}
-                                        {/* {account.roles.includes('ROLE_DOCTOR') &&
-                                        <Dropdown type='table'>
-                                            {data.status === "édité" &&
-                                                <button onClick={() => handleOpenModal({ title: 'Édition du mandat', content: <MandateEditForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
-                                                    <HiDotsCircleHorizontal size={20} />
-                                                    Éditer le mandat
-                                                </button>
-                                            }
-                                            {data.status !== "annulé" &&
-                                                <button onClick={() => handleOpenModal({ title: 'Édition du mandat', content: <MandateEditForm iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
-                                                    <AiOutlineFolderOpen size={20} />
-                                                    Ajouter un document
-                                                </button>
-                                            }
-                                            {(data.status !== "édité" && data.mission.length !== 0) &&
-                                                <button onClick={() => handleChangeStatus({ id: data.id, status: 'annulé' })}>
-                                                    <TiDelete size={20}/>
-                                                    Annuler le mandat
-                                                </button>
-                                            }
-                                            {data.status === "édité" &&
-                                                <button onClick={() => handleOpenModal({ title: 'Supprimer le mandat', size: "small", content: <MandateDelete iri={data['@id']} handleCloseModal={handleCloseModal} /> })}>
-                                                    <TiDelete size={20}/>
-                                                    Supprimer le mandat
-                                                </button>
-                                            }
-                                        </Dropdown>
-                                    } */}
-
-                                        {account.roles.includes(
-                                            "ROLE_COORDINATOR"
-                                        ) &&
-                                            data.status === "édité" && (
-                                                <Dropdown type="table">
-                                                    <button
-                                                        onClick={() =>
-                                                            handleOpenModal({
-                                                                title: "Choix du mandataire",
-                                                                content: (
-                                                                    <MandateAgentForm
-                                                                        iri={
-                                                                            data[
-                                                                                "@id"
-                                                                            ]
-                                                                        }
-                                                                        handleCloseModal={
-                                                                            handleCloseModal
-                                                                        }
-                                                                    />
-                                                                ),
-                                                            })
-                                                        }
-                                                    >
-                                                        Choisir le mandataire
-                                                    </button>
-                                                </Dropdown>
-                                            )}
+                                    </Table.Td>
+                                    <Table.Td label="Statut">
+                                        {account.roles.includes('ROLE_DOCTOR') && mandateStatus["doctor"][data.status]}
+                                        {account.roles.includes('ROLE_COORDINATOR') && mandateStatus["coordinator"][data.status]}
                                     </Table.Td>
                                 </Table.Tr>
                             ))}
@@ -299,34 +245,3 @@ const MandatesGroupPage = () => {
 
 export default MandatesGroupPage;
 
-// const MandateDelete = ({ iri, handleCloseModal }) => {
-//     const { mutate, isSuccess } = useDeleteIRI();
-
-//     useEffect(() => {
-//         if (isSuccess) handleCloseModal();
-//          // eslint-disable-next-line
-//     }, [isSuccess]);
-
-//     return (
-//         <div className="p-8">
-//             <p>
-//                 Attention cette opération est irréversible, voulez-vous
-//                 confirmer la suppression ?
-//             </p>
-//             <div className="flex items-center gap-5 justify-center p-5">
-//                 <button
-//                     className="btn btn-outline"
-//                     onClick={() => handleCloseModal()}
-//                 >
-//                     Annuler
-//                 </button>
-//                 <button
-//                     className="btn btn-error text-white"
-//                     onClick={() => mutate(iri)}
-//                 >
-//                     Confirmer
-//                 </button>
-//             </div>
-//         </div>
-//     );
-// };

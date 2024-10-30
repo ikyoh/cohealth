@@ -209,10 +209,10 @@ export const usePutData = () => {
             queryClient.setQueryData([queryKey], context.previousDatas);
         },
         onSettled: () => {
-            //queryClient.invalidateQueries()
+            queryClient.invalidateQueries("mandates");
+            queryClient.invalidateQueries("mandateGroups");
         },
         onSuccess: () => {
-            queryClient.invalidateQueries();
         },
     });
 };
