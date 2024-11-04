@@ -26,9 +26,9 @@ const UsersPage = () => {
     const { sortValue, sortDirection, handleSort } = useSortBy(
         initialPageState
             ? {
-                  value: initialPageState.sortValue,
-                  direction: initialPageState.sortDirection,
-              }
+                value: initialPageState.sortValue,
+                direction: initialPageState.sortDirection,
+            }
             : ""
     );
     const { data = [], isLoading } = useGetPaginatedDatas(
@@ -52,7 +52,7 @@ const UsersPage = () => {
     }, [searchValue, sortValue, initialPageState, sortDirection]);
 
     const handleUpdateStatus = (data) => {
-        mutate({ ...data, isActive: !data.isActive });
+        mutate({ id: data.id, isActive: !data.isActive });
     };
 
     if (isLoading) return <Loader />;
