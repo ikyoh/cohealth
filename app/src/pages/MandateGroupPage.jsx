@@ -188,7 +188,7 @@ const MandateGroupPage = () => {
                     <div className="col-span-4 card-shadow">
                         <div className="card-title">
                             <AiOutlineFolderOpen size={30} />
-                            Documents
+                            Documents partagés
                         </div>
                         {data.documents.length === 0 && "Aucun document"}
                         {data.documents.map((document) => (
@@ -335,7 +335,7 @@ const Mandate = ({ iri, isMine }) => {
                                     {mandateCategoriesUsersRoles[data.category]}
                                 </div>
                                 <div>
-                                    <div className="subcard-title">Description</div>
+                                    <div className="subcard-title">Motif du mandat</div>
                                     <div className="whitespace-pre-line">
                                         {data.description}
                                     </div>

@@ -26,7 +26,6 @@ import MissionPartner from "../components/mission_partner/MissionPartner";
 import MissionStatus from "../components/mission_status/MissionsStatus";
 import NoData from "../components/no_data/NoData";
 import OpasCard from "../components/opas/OpasCard";
-import { URL } from "../config/api.config";
 import DocumentForm from "../forms/DocumentForm";
 import MissionForm from "../forms/MissionForm";
 import MissionPartnerForm from "../forms/MissionPartnerForm";
@@ -244,7 +243,6 @@ const MissionPage = () => {
                                     {data.user.avatar ? (
                                         <img
                                             src={
-                                                URL +
                                                 data.user.avatar.contentUrl
                                             }
                                             className="rounded-full object-cover h-10 w-10"
@@ -645,18 +643,27 @@ const MandateDocuments = ({ iri }) => {
             </div>
 
             {data.documents.map((document) => (
-                <div
-                    key={uuid()}
-                    className="flex justify-between items-center border-l-2 border-base-300 bg-gradient-to-r from-base-200 to-white rounded mb-3 pl-3 py-2"
-                >
-                    {document.type}
-                    <button
-                        className="btn btn-sm btn-circle btn-primary"
-                        onClick={() => downloadFile(document)}
+                <>
+                    <div
+                        key={uuid()}
+                        className="flex justify-between flex-wrap items-center border-l-2 border-base-300 bg-gradient-to-r from-base-200 to-white rounded mb-3 pl-3 py-2"
                     >
-                        <HiDownload />
-                    </button>
-                </div>
+                        {document.type}
+
+                        <button
+                            className="btn btn-sm btn-circle btn-primary"
+                            onClick={() => downloadFile(document)}
+                        >
+                            <HiDownload />
+                        </button>
+                        {
+                            document.comment &&
+                            <div className="text-sm basis-full">
+                                {document.comment}
+                            </div>
+                        }
+                    </div>
+                </>
             ))}
         </div>
     );
