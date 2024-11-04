@@ -1,19 +1,21 @@
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import React from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Form from "../components/form/form/Form";
 import { FormInput } from "../components/form/input/FormInput";
 import { FormTextarea } from "../components/form/textarea/FormTextarea";
 import { API_USERS, IRI } from "../config/api.config";
+import { usePostData } from "../queryHooks/useObservation";
 import { firstLetterUppercase } from "../utils/functions";
 
+
 const ObservationForm = ({ missionIRI, iri, handleCloseModal }) => {
-    //     const { isLoading, data } = useGetIRI(iri ? iri : null);
+
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["account"]);
-    //const { mutate: postData } = usePostData();
-    //     const { mutate: putData } = usePutData();
+    const { mutate: postData, isSuccess, isLoading } = usePostData();
+    //const { mutate: putData } = usePutData();
 
     //     const validationSchema = {
     //         mission: missionSchema,
@@ -41,16 +43,16 @@ const ObservationForm = ({ missionIRI, iri, handleCloseModal }) => {
         },
     });
 
-    //     // Case update
-    //     useEffect(() => {
-    //         if (iri && data) {
-    //             reset(data);
-    //         }
-    //     }, [isLoading, data]);
+    // Case update
+    // useEffect(() => {
+    //     if (iri && data) {
+    //         reset(data);
+    //     }
+    // }, [isLoading, data]);
 
     const onSubmit = (form) => {
-        console.log("form", form);
-        //if (!iri) postData(form);
+        //console.log("form", form);
+        postData(form);
         // else {
         //     const datas = { ...form };
         //     delete datas.user;
@@ -62,24 +64,30 @@ const ObservationForm = ({ missionIRI, iri, handleCloseModal }) => {
         // handleCloseModal();
     };
 
-    console.log("errors", errors);
+
+    useEffect(() => {
+        if (isSuccess) {
+            handleCloseModal();
+        }
+    }, [isSuccess, handleCloseModal])
+
+
     const watchedCategory = watch("category");
 
     return (
         <Form
             onSubmit={handleSubmit(onSubmit)}
-            isLoading={isSubmitting}
-            isDisabled={isSubmitting}
+            isLoading={isSubmitting || isLoading}
+            isDisabled={isSubmitting || isLoading}
             errors={errors}
         >
             <div className="grid grid-cols-4 gap-3">
                 <button
                     type="button"
-                    className={`btn ${
-                        watchedCategory === "observation"
-                            ? "btn-primary"
-                            : "btn-base-300"
-                    }`}
+                    className={`btn ${watchedCategory === "observation"
+                        ? "btn-primary"
+                        : "btn-base-300"
+                        }`}
                     onClick={() => {
                         setValue("category", "observation");
                     }}
@@ -88,11 +96,10 @@ const ObservationForm = ({ missionIRI, iri, handleCloseModal }) => {
                 </button>
                 <button
                     type="button"
-                    className={`btn ${
-                        watchedCategory === "poids"
-                            ? "btn-primary"
-                            : "btn-base-300"
-                    }`}
+                    className={`btn ${watchedCategory === "poids"
+                        ? "btn-primary"
+                        : "btn-base-300"
+                        }`}
                     onClick={() => {
                         setValue("category", "poids");
                     }}
@@ -101,11 +108,10 @@ const ObservationForm = ({ missionIRI, iri, handleCloseModal }) => {
                 </button>
                 <button
                     type="button"
-                    className={`btn ${
-                        watchedCategory === "tension"
-                            ? "btn-primary"
-                            : "btn-base-300"
-                    }`}
+                    className={`btn ${watchedCategory === "tension"
+                        ? "btn-primary"
+                        : "btn-base-300"
+                        }`}
                     onClick={() => {
                         setValue("category", "tension");
                     }}
@@ -114,11 +120,10 @@ const ObservationForm = ({ missionIRI, iri, handleCloseModal }) => {
                 </button>
                 <button
                     type="button"
-                    className={`btn ${
-                        watchedCategory === "température"
-                            ? "btn-primary"
-                            : "btn-base-300"
-                    }`}
+                    className={`btn ${watchedCategory === "température"
+                        ? "btn-primary"
+                        : "btn-base-300"
+                        }`}
                     onClick={() => {
                         setValue("category", "température");
                     }}

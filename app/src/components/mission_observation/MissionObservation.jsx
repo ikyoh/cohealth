@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import React from "react";
-import { URL } from "../../config/api.config";
 
 const MissionObservation = ({ observation }) => {
     return (
@@ -8,7 +7,7 @@ const MissionObservation = ({ observation }) => {
             {observation.user.avatar ? (
                 <div className="bg-white flex gap-3 rounded-full">
                     <img
-                        src={URL + observation.user.avatar.contentUrl}
+                        src={observation.user.avatar.contentUrl}
                         className="rounded-full object-cover h-8 w-8"
                         alt="profil"
                     />
