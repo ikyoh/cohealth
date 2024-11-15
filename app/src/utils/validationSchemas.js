@@ -39,8 +39,8 @@ Yup.string()
 //const npa = () => Yup.string().matches(/^\d{4}$/, "Numéro incorrect");
 const npaRequired = () =>
     Yup.string()
-        .matches(/^\d{4}$/, "Numéro incorrect")
-        .required("Champ obligatoire");
+    .matches(/^\d{4,5}$/, "Numéro incorrect")
+    .required("Champ obligatoire");
 
 const roleSingle = () =>
     Yup.string().when("roles", {
@@ -82,6 +82,7 @@ export const account = Yup.object({
 });
 
 export const registration = {
+    npa: npaRequired(),
     roles: Yup.array()
         .min(1, "Champ obligatoire")
         .required("Champ obligatoire"),

@@ -1,7 +1,7 @@
-import React from 'react'
-import { FormInput } from '../components/form/input/FormInput'
-import { FormSelect } from '../components/form/select/FormSelect'
-import { FormTextarea } from '../components/form/textarea/FormTextarea'
+import React from 'react';
+import { FormInput } from '../components/form/input/FormInput';
+import { FormSelect } from '../components/form/select/FormSelect';
+import { FormTextarea } from '../components/form/textarea/FormTextarea';
 import { cantons } from '../utils/arrays';
 
 
@@ -113,6 +113,7 @@ const PatientFields = ({ name, errors, register }) => {
             >
                 <option value="">Choisir un canton</option>
                 {Object.entries(cantons).map(([key, value]) => <option key={key} value={key}>{value}</option>)}
+                <option value="FRANCE">Résident français</option>
             </FormSelect>
             <FormInput
                 type="text"

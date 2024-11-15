@@ -75,11 +75,12 @@ const PatientForm = ({ iri, handleCloseModal, action = "patient" }) => {
                 isLoading={isSubmitting}
                 isDisabled={isSubmitting}
             >
-                {modalAction === "patient" && (
-                    <>
-                        <PatientFields errors={errors} register={register} />
-                    </>
-                )}
+                {modalAction === "patient" &&
+                    <PatientFields
+                        errors={errors}
+                        register={register}
+                    />
+                }
                 {modalAction === "doctorIRI" && (
                     <>
                         <div className="flex justify-between">
