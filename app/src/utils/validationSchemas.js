@@ -82,7 +82,7 @@ export const account = Yup.object({
 });
 
 export const registration = {
-    npa: npaRequired(),
+    //npa: npaRequired(),
     roles: Yup.array()
         .min(1, "Champ obligatoire")
         .required("Champ obligatoire"),

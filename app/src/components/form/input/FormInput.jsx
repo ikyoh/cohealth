@@ -16,6 +16,7 @@ export const FormInput = ({
     min,
     max,
     step,
+    isDisabled = false,
 }) => (
     <div className={`form-input ${className ? className : ""}`}>
         <div className="grid grid-rows-1 md:grid-cols-2 gap-3">
@@ -27,6 +28,7 @@ export const FormInput = ({
                 placeholder={placeholder}
                 {...(step && { step: step })}
                 {...register(name, validationSchema)}
+                disabled={isDisabled}
             />
         </div>
         <Error error={error} />

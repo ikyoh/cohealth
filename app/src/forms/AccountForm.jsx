@@ -8,7 +8,7 @@ import AccountFields from "../fields/AccountFields";
 import { user } from "../utils/arrays";
 import { user as validationSchema } from "../utils/validationSchemas";
 
-const AccountForm = ({ iri, handleCloseModal, submitLabel }) => {
+const AccountForm = ({ isEdit, submitLabel }) => {
     const { isLoading: isLoadingData, data } = useGetCurrentAccount();
     const { mutate: putData } = usePutData();
 
@@ -44,10 +44,11 @@ const AccountForm = ({ iri, handleCloseModal, submitLabel }) => {
         <Form
             onSubmit={handleSubmit(onSubmit)}
             submitLabel={submitLabel}
-            // isLoading={isSubmitting}
-            // isDisabled={isSubmitting}
+        // isLoading={isSubmitting}
+        // isDisabled={isSubmitting}
         >
             <AccountFields
+                isEdit={isEdit}
                 register={register}
                 errors={errors}
                 registration={false}

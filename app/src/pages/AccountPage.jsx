@@ -142,7 +142,7 @@ const AccountPage = () => {
                     </div>
 
                     <div className="card-shadow col-span-8">
-                        <AccountForm submitLabel="Modifier mon profil" />
+                        <AccountForm isEdit={true} submitLabel="Modifier mon profil" />
                     </div>
                 </div>
             </>

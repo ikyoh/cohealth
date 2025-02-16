@@ -8,12 +8,12 @@ const AccountFields = ({
     register,
     registration = true,
     control,
+    isEdit,
 }) => {
     return (
         <div
-            className={`grid gap-3 ${
-                registration ? "grid grid-cols-1 gap-3" : "grid-cols-2"
-            }`}
+            className={`grid gap-3 ${registration ? "grid grid-cols-1 gap-3" : "grid-cols-2"
+                }`}
         >
             <FormInput
                 type="text"
@@ -66,6 +66,7 @@ const AccountFields = ({
                 }
                 register={register}
                 required={true}
+                isDisabled={isEdit}
             />
             <FormMaskInput
                 control={control}
